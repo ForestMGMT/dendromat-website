@@ -1,0 +1,275 @@
+---
+/**
+ * NavBar.astro — sticky navigation bar.
+ *
+ * Sticks to top on scroll.
+ * Contains: logo wordmark + nav links + language switcher.
+ *
+ * TODO: Add active link highlighting based on current path.
+ */
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const navLinks = [
+  { href: '/',                   key: 'nav.home'         },
+  { href: '/tools/timelapse',    key: 'nav.timelapse'    },
+  { href: '/tools/baumportraets',key: 'nav.baumportraets'},
+  // TODO: add /about and /contact pages when ready
+  // { href: '/about',           key: 'nav.about'        },
+  // { href: '/contact',         key: 'nav.contact'      },
+];
+---
+
+<header class="navbar" id="navbar">
+  <div class="navbar__inner container">
+    <!-- Brand wordmark (small, links home) -->
+    <a href="/" class="navbar__brand" aria-label="Dendromat Startseite">
+      <img src="/logo/dendromat.svg" alt="Dendromat" class="navbar__brand-logo" width="40" height="36" />
+      <span class="navbar__brand-name">Dendromat</span>
+    </a>
+
+    <!-- Hamburger toggle (mobile) -->
+    <button
+      class="navbar__hamburger"
+      id="nav-toggle"
+      aria-controls="nav-menu"
+      aria-expanded="false"
+      aria-label="Navigation öffnen"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Navigation links -->
+    <nav id="nav-menu" class="navbar__nav" role="navigation">
+      <ul class="navbar__links" role="list">
+        {navLinks.map(link => (
+          <li>
+            <a href={link.href} class="navbar__link" data-i18n={link.key}>
+              {/* Fallback text (German) shown before JS hydrates */}
+              {link.key === 'nav.home'          && 'Start'}
+              {link.key === 'nav.timelapse'     && 'Timelapse Creator'}
+              {link.key === 'nav.baumportraets' && 'Baumarten\u00adportr\u00e4ts'}
+              {link.key === 'nav.about'         && '\u00dcber uns'}
+              {link.key === 'nav.contact'       && 'Kontakt'}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Language switcher (right side) -->
+    <div class="navbar__lang">
+      <LanguageSwitcher />
+    </div>
+  </div>
+</header>
+
+<style>
+  /* -------------------------------------------------------
+     Navbar shell
+  ------------------------------------------------------- */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: var(--nav-height);
+    background: var(--clr-green-dark);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    transition: background 0.3s;
+  }
+
+  /* Subtle darkening when user has scrolled */
+  .navbar.scrolled {
+    background: var(--clr-green-deep);
+  }
+
+  .navbar__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  /* -------------------------------------------------------
+     Brand
+  ------------------------------------------------------- */
+  .navbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .navbar__brand-logo {
+    width: 36px;
+    height: auto;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+  }
+
+  .navbar__brand-name {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--clr-yellow);
+    letter-spacing: -0.02em;
+  }
+
+  /* -------------------------------------------------------
+     Nav links
+  ------------------------------------------------------- */
+  .navbar__nav {
+    flex: 1;
+  }
+
+  .navbar__links {
+    display: flex;
+    gap: var(--space-md);
+    list-style: none;
+    align-items: center;
+  }
+
+  .navbar__link {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--clr-white);
+    text-decoration: none;
+    padding: 0.25rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .navbar__link:hover {
+    color: var(--clr-yellow);
+    border-bottom-color: var(--clr-yellow);
+    text-decoration: none;
+  }
+
+  /* Active link (set via JS based on pathname) */
+  .navbar__link.active {
+    color: var(--clr-yellow);
+    border-bottom-color: var(--clr-yellow-mid);
+  }
+
+  /* -------------------------------------------------------
+     Language switcher area
+  ------------------------------------------------------- */
+  .navbar__lang {
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  /* -------------------------------------------------------
+     Hamburger (hidden on desktop)
+  ------------------------------------------------------- */
+  .navbar__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .navbar__hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--clr-white);
+    border-radius: 2px;
+    transition: transform 0.25s, opacity 0.25s;
+  }
+
+  /* Hamburger → X when open */
+  .navbar__hamburger[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .navbar__hamburger[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+  }
+  .navbar__hamburger[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  /* -------------------------------------------------------
+     Mobile layout
+  ------------------------------------------------------- */
+  @media (max-width: 768px) {
+    .navbar__hamburger {
+      display: flex;
+      order: 3;
+    }
+
+    .navbar__lang {
+      order: 2;
+      margin-left: auto;
+    }
+
+    .navbar__nav {
+      position: absolute;
+      top: var(--nav-height);
+      left: 0;
+      right: 0;
+      background: var(--clr-green-deep);
+      padding: var(--space-md) var(--space-lg);
+      display: none;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+
+    .navbar__nav.open {
+      display: block;
+    }
+
+    .navbar__links {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .navbar__link {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // -------------------------------------------------------
+  // Scroll class
+  // -------------------------------------------------------
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar?.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // -------------------------------------------------------
+  // Hamburger toggle
+  // -------------------------------------------------------
+  const toggle  = document.getElementById('nav-toggle');
+  const navMenu = document.getElementById('nav-menu');
+
+  toggle?.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    navMenu?.classList.toggle('open', !expanded);
+  });
+
+  // -------------------------------------------------------
+  // Active link
+  // -------------------------------------------------------
+  const path = window.location.pathname;
+  document.querySelectorAll('.navbar__link').forEach((link) => {
+    const href = link.getAttribute('href');
+    if (href === path || (href !== '/' && path.startsWith(href))) {
+      link.classList.add('active');
+    }
+  });
+</script>

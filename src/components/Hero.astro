@@ -1,0 +1,680 @@
+---
+/**
+ * Hero.astro — Full-width interactive hero banner.
+ *
+ * Features:
+ * - Sky/forest atmosphere gradient background
+ * - Dendromat logo centred in the banner
+ * - Clicking the logo "sprinkles" tree SVGs along the bottom (JS-driven)
+ * - Trees accumulate over multiple clicks
+ * - On final sprinkle (MAX_TREES reached): a comic plane flies across
+ *   scanning the forest with a strobing laser cone
+ *
+ * TODO: Once real tree SVGs are in /public/trees/, update TREE_FILES below.
+ */
+---
+
+<section class="hero" id="hero" aria-label="Hero banner">
+  <!-- Sky + forest atmospheric gradient layers -->
+  <div class="hero__sky"></div>
+  <div class="hero__treeline"></div>
+
+  <!-- Logo — click target for sprinkling -->
+  <div class="hero__logo-wrap">
+    <button
+      class="hero__logo-btn"
+      id="sprinkle-trigger"
+      aria-label="Dendromat logo – click to sprinkle trees"
+      title="Klick mich!"
+    >
+      <img
+        src="/logo/dendromat.svg"
+        alt="Dendromat Logo"
+        class="hero__logo-img"
+        width="220"
+        height="200"
+      />
+    </button>
+    <p class="hero__click-hint" id="click-hint" data-i18n="hero.clickHint">
+      Klick auf das Logo, um Bäume zu verstreuen!
+    </p>
+  </div>
+
+  <!-- Tree accumulation zone — trees land here -->
+  <div class="hero__forest-floor" id="forest-floor" aria-hidden="true"></div>
+
+  <!-- Computing overlay — visible for 2 s after plane exits -->
+  <div class="scan-overlay" id="scan-overlay" aria-hidden="true">
+    <div class="scan-overlay__spinner"></div>
+    <p class="scan-overlay__label">Computing point cloud…</p>
+  </div>
+
+  <!-- Scanner plane — injected hidden, activated by JS when forest is full -->
+  <div class="scanner-plane" id="scanner-plane" aria-hidden="true">
+    <!-- Comic-style plane SVG -->
+    <svg
+   class="plane-svg"
+   viewBox="-100 0 120 55"
+   version="1.1"
+   id="svg12"
+   sodipodi:docname="svg_plane.svg"
+   xml:space="preserve"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs12" /><sodipodi:namedview
+     id="namedview12"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="6.8838821"
+     inkscape:cx="56.944613"
+     inkscape:cy="15.906722"
+     inkscape:window-width="1920"
+     inkscape:window-height="1094"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg12" /><!-- Fuselage --><path
+     style="fill:#f8da40;fill-opacity:1;stroke:#000000;stroke-width:1.06077;stroke-linejoin:round;stroke-opacity:1"
+     d="M -48.172146,21.430233 -56.11556,5.817314 c 0,0 -1.369555,-2.4651975 0.273911,-2.7391082 1.643463,-0.2739106 3.83475,-0.547823 3.83475,-0.547823 L -32.011406,17.32157"
+     id="path14" /><ellipse
+     cx="-41.137245"
+     cy="28.725477"
+     rx="43.034794"
+     ry="12.162007"
+     fill="#f8da40"
+     stroke="#1a3d18"
+     stroke-width="1.87108"
+     id="ellipse1" /><!-- Nose cone --><path
+     d="m 1.8975502,31.532092 q 13.0975458,0 11.2264668,-5.613233 -5.613233,-5.613233 -11.2264668,0 z"
+     fill="#c02020"
+     stroke="#1a3d18"
+     stroke-width="1.40331"
+     id="path1" /><!-- Tail fin --><path
+     d="m -82.30096,26.854398 q -5.613235,-11.226469 3.742156,-10.29093 l 9.35539,6.548774 z"
+     fill="#2a5c28"
+     stroke="#1a3d18"
+     stroke-width="1.40331"
+     id="path2" /><!-- Tail horizontal stabiliser --><path
+     d="m -84.172038,30.596553 q -7.484313,3.742158 -3.742157,7.484313 l 14.968624,-5.613235 z"
+     fill="#2a5c28"
+     stroke="#1a3d18"
+     stroke-width="1.40331"
+     id="path3" /><!-- Main wing --><!-- Cockpit windows --><ellipse
+     cx="-18.684313"
+     cy="23.11224"
+     rx="6.5487733"
+     ry="4.6776948"
+     fill="#a8dff5"
+     stroke="#1a3d18"
+     stroke-width="1.12265"
+     id="ellipse5" /><ellipse
+     cx="-28.039698"
+     cy="22.176704"
+     rx="4.6776948"
+     ry="3.7421558"
+     fill="#a8dff5"
+     stroke="#1a3d18"
+     stroke-width="1.12265"
+     id="ellipse6" /><!-- Window shine --><ellipse
+     cx="-17.74877"
+     cy="21.241163"
+     rx="1.8710779"
+     ry="1.4033085"
+     fill="#ffffff"
+     opacity="0.6"
+     id="ellipse7"
+     style="stroke-width:0.935539" /><!-- Engine pod --><!-- Scanner belly unit --><rect
+     x="-46.750477"
+     y="38.080864"
+     width="16.839703"
+     height="5.613234"
+     rx="2.806617"
+     fill="#1a3d18"
+     stroke="#a8cc80"
+     stroke-width="0.935539"
+     id="rect9" /><circle
+     cx="-38.330631"
+     cy="40.887482"
+     r="1.8710779"
+     fill="#ffe84e"
+     id="circle9"
+     style="stroke-width:0.935539" /><!-- Rivets / detail dots --><circle
+     cx="-57.976944"
+     cy="26.854393"
+     r="1.1226468"
+     fill="#1a3d18"
+     opacity="0.4"
+     id="circle10"
+     style="stroke-width:0.935539" /><circle
+     cx="-50.492638"
+     cy="25.918859"
+     r="1.1226468"
+     fill="#1a3d18"
+     opacity="0.4"
+     id="circle11"
+     style="stroke-width:0.935539" /><circle
+     cx="-62.654633"
+     cy="29.661013"
+     r="1.1226468"
+     fill="#1a3d18"
+     opacity="0.4"
+     id="circle12"
+     style="stroke-width:0.935539" /><path
+     style="fill:#f8da40;fill-opacity:1;stroke:#000000;stroke-width:1.06077;stroke-linejoin:round;stroke-opacity:1"
+     d="m -49.35457,31.026693 -6.573861,19.858536 c 0,0 -0.547821,0 1.369555,0.684777 1.917377,0.684778 3.28693,0 3.28693,0 l 20.269403,-21.365047"
+     id="path15" /></svg>
+
+
+    <!-- Laser scan cone — strobes while plane is in flight -->
+    <div class="laser-cone" id="laser-cone">
+      <svg class="laser-svg" viewBox="0 0 160 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <!-- Outer glow cone -->
+        <polygon points="80,0 0,220 160,220" fill="url(#laserGrad)" opacity="0.35"/>
+        <!-- Inner bright beam -->
+        <polygon points="80,0 55,220 105,220" fill="url(#laserGrad)" opacity="0.55"/>
+        <!-- Centre line -->
+        <line x1="80" y1="0" x2="80" y2="220" stroke="#ffe84e" stroke-width="2" opacity="0.7"/>
+        <defs>
+          <linearGradient id="laserGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#ffe84e" stop-opacity="1"/>
+            <stop offset="60%"  stop-color="#a8f060" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#40ff80" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* -------------------------------------------------------
+     Hero shell
+  ------------------------------------------------------- */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: clamp(420px, 60vh, 680px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* -------------------------------------------------------
+     Sky gradient layer
+  ------------------------------------------------------- */
+  .hero__sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      175deg,
+      #c8dff5 0%,
+      #a8c8e8 25%,
+      #88b0d0 50%,
+      #5a8a6a 70%,
+      #2e6830 100%
+    );
+    z-index: 0;
+  }
+
+  /* -------------------------------------------------------
+     Silhouette treeline at the bottom
+  ------------------------------------------------------- */
+  .hero__treeline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 38%;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 220' preserveAspectRatio='none'%3E%3Cpolygon points='0,220 0,180 40,100 80,150 120,60 160,120 200,40 240,110 280,30 320,100 360,50 400,130 440,20 480,110 520,60 560,140 600,30 640,110 680,55 720,130 760,25 800,105 840,50 880,120 920,40 960,115 1000,55 1040,130 1080,45 1120,115 1160,70 1200,140 1200,220' fill='%231a3d18'/%3E%3Cpolygon points='0,220 0,200 50,140 100,180 150,110 200,160 250,90 300,150 350,80 400,160 450,100 500,170 550,120 600,160 650,100 700,170 750,115 800,175 850,105 900,165 950,95 1000,165 1050,115 1100,175 1150,120 1200,170 1200,220' fill='%232a5c28'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+
+  /* -------------------------------------------------------
+     Logo button (centred, clickable)
+  ------------------------------------------------------- */
+  .hero__logo-wrap {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 6rem;
+  }
+
+  .hero__logo-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    filter: drop-shadow(0 4px 24px rgba(0,0,0,0.35));
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+
+  .hero__logo-btn:hover {
+    transform: scale(1.06) rotate(-2deg);
+    filter: drop-shadow(0 8px 32px rgba(0,0,0,0.45));
+  }
+
+  .hero__logo-btn:active {
+    transform: scale(0.97) rotate(3deg);
+    transition-duration: 0.08s;
+  }
+
+  .hero__logo-img {
+    width: clamp(140px, 18vw, 220px);
+    height: auto;
+  }
+
+  /* -------------------------------------------------------
+     Click hint text
+  ------------------------------------------------------- */
+  .hero__click-hint {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .hero__click-hint.hidden {
+    opacity: 0;
+  }
+
+  /* -------------------------------------------------------
+     Forest floor — where sprinkled trees land
+  ------------------------------------------------------- */
+  .hero__forest-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 42%;
+    z-index: 2;
+  }
+
+  /* -------------------------------------------------------
+     Sprinkled tree element (injected by JS)
+  ------------------------------------------------------- */
+  :global(.sprinkle-tree) {
+    position: absolute;
+    bottom: 0;
+    transform-origin: bottom center;
+    animation: treefall 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    pointer-events: none;
+  }
+
+  @keyframes treefall {
+    from {
+      transform: translateY(-80px) scale(0.3) rotate(var(--twist, 8deg));
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) scale(1) rotate(var(--lean, 0deg));
+      opacity: 1;
+    }
+  }
+
+  /* -------------------------------------------------------
+     Scanner plane
+  ------------------------------------------------------- */
+  .scanner-plane {
+    position: absolute;
+    /* Vertically: hover at ~28% from top, above the treeline */
+    top: 22%;
+    /* Start off-screen left; JS kicks off the fly animation */
+    left: 0;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    /* Hidden until triggered */
+    opacity: 0;
+  }
+
+  .scanner-plane.flying {
+    animation: plane-fly 6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  }
+
+  @keyframes plane-fly {
+    0%   { transform: translateX(-200px); opacity: 1; }
+    5%   { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateX(calc(100vw + 240px)); opacity: 0; }
+  }
+
+  .plane-svg {
+    width: clamp(200px, 24vw, 300px);
+    height: auto;
+    /* Subtle bobbing to feel alive */
+    animation: plane-bob 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  }
+
+  @keyframes plane-bob {
+    0%, 100% { transform: translateY(0px) rotate(-1deg); }
+    50%       { transform: translateY(-6px) rotate(1deg); }
+  }
+
+  /* -------------------------------------------------------
+     Laser cone
+  ------------------------------------------------------- */
+  .laser-cone {
+    /* Hangs below the plane's belly scanner unit */
+    margin-top: -4px;
+    width: clamp(80px, 10vw, 120px);
+    /* Height stretches down toward the forest floor */
+    height: clamp(120px, 22vh, 220px);
+    animation: laser-strobe 0.18s steps(1) infinite;
+  }
+
+  .laser-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes laser-strobe {
+    0%  { opacity: 1;    transform: skewX(-4deg) scaleX(0.9); }
+    25% { opacity: 0.15; transform: skewX(0deg)  scaleX(1);   }
+    50% { opacity: 0.85; transform: skewX(3deg)  scaleX(1.1); }
+    75% { opacity: 0.1;  transform: skewX(-1deg) scaleX(0.95);}
+  }
+
+  /* -------------------------------------------------------
+     Computing overlay + spinner
+  ------------------------------------------------------- */
+  .scan-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: rgba(10, 28, 10, 0.6);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  .scan-overlay.visible {
+    opacity: 1;
+  }
+
+  .scan-overlay__spinner {
+    width: 52px;
+    height: 52px;
+    border: 4px solid rgba(168, 204, 128, 0.2);
+    border-top-color: var(--clr-yellow);
+    border-right-color: var(--clr-green-light);
+    border-radius: 50%;
+    animation: spinner-turn 0.75s linear infinite;
+  }
+
+  @keyframes spinner-turn {
+    to { transform: rotate(360deg); }
+  }
+
+  .scan-overlay__label {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--clr-green-pale);
+    text-transform: uppercase;
+    animation: label-pulse 0.9s ease-in-out infinite alternate;
+  }
+
+  @keyframes label-pulse {
+    from { opacity: 0.5; }
+    to   { opacity: 1;   }
+  }
+
+  /* Point-cloud canvas trees — same positioning as .sprinkle-tree */
+  :global(.is-pointcloud) {
+    position: absolute;
+    bottom: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+/**
+ * Hero tree-sprinkling interaction + scanner plane finale.
+ *
+ * Each click on the logo:
+ *  1. Picks a random tree SVG from TREE_FILES
+ *  2. Picks a random horizontal position
+ *  3. Appends an <img> to #forest-floor with the fall animation
+ *  4. Hides the click hint after the first click
+ *
+ * When MAX_TREES is reached on the last click burst → launchPlane()
+ *
+ * TODO: Add real filenames to TREE_FILES when SVGs are in /public/trees/
+ */
+
+const TREE_FILES = [
+  '/trees/tree-1.svg',
+  '/trees/tree-2.svg',
+  '/trees/tree-3.svg',
+  '/trees/tree-4.svg',
+  '/trees/tree-5.svg',
+];
+
+const MAX_TREES = 60;
+let treeCount   = 0;
+let planeLaunched = false;
+
+const trigger   = document.getElementById('sprinkle-trigger');
+const floor     = document.getElementById('forest-floor');
+const clickHint = document.getElementById('click-hint');
+const plane     = document.getElementById('scanner-plane');
+
+trigger?.addEventListener('click', () => {
+  if (treeCount >= MAX_TREES) return;
+
+  if (treeCount === 0) {
+    clickHint?.classList.add('hidden');
+  }
+
+  const burst = Math.floor(Math.random() * 4) + 2;
+  for (let i = 0; i < burst && treeCount < MAX_TREES; i++) {
+    spawnTree(i * 80);
+    treeCount++;
+  }
+
+  // Launch the plane on the click that fills the forest
+  if (treeCount >= MAX_TREES && !planeLaunched) {
+    planeLaunched = true;
+    // Short delay so the last trees land first
+    setTimeout(launchPlane, 600);
+  }
+});
+
+function spawnTree(delayMs = 0) {
+  const file    = TREE_FILES[Math.floor(Math.random() * TREE_FILES.length)];
+  const leftPct = 5 + Math.random() * 90;
+  const size    = Math.floor(50 + Math.random() * 70);
+  const lean    = (Math.random() - 0.5) * 8;
+  const twist   = (Math.random() - 0.5) * 30;
+
+  const img = document.createElement('img');
+  img.src   = file;
+  img.alt   = '';
+  img.classList.add('sprinkle-tree');
+  img.style.cssText = `
+    left: ${leftPct}%;
+    width: ${size}px;
+    height: auto;
+    animation-delay: ${delayMs}ms;
+    --lean: ${lean}deg;
+    --twist: ${twist}deg;
+  `;
+  floor?.appendChild(img);
+}
+
+function launchPlane() {
+  if (!plane) return;
+  plane.classList.add('flying');
+
+  plane.addEventListener('animationend', (e) => {
+    if (e.animationName !== 'plane-fly') return;
+    plane.style.opacity = '0';
+    // Show computing spinner for 2 s, then convert all trees to point clouds
+    showComputingOverlay(2000, pointcloudifyAll);
+  }, { once: true });
+}
+
+// -------------------------------------------------------
+// Computing overlay
+// -------------------------------------------------------
+function showComputingOverlay(durationMs, callback) {
+  const overlay = document.getElementById('scan-overlay');
+  if (!overlay) { callback(); return; }
+  overlay.classList.add('visible');
+  setTimeout(() => {
+    overlay.classList.remove('visible');
+    // Wait for the fade-out transition before starting the tree swap
+    setTimeout(callback, 350);
+  }, durationMs);
+}
+
+// -------------------------------------------------------
+// Point-cloud conversion — all trees, staggered
+// -------------------------------------------------------
+function pointcloudifyAll() {
+  const trees = Array.from(
+    document.querySelectorAll('#forest-floor .sprinkle-tree')
+  );
+  trees.forEach((img, i) => {
+    // Small stagger so the conversion ripples across the forest
+    setTimeout(() => pointcloudify(img), i * 35);
+  });
+}
+
+// -------------------------------------------------------
+// Convert one <img> tree into a canvas point cloud.
+//
+// Uses fetch() → Blob URL so getImageData() works even with
+// Inkscape-edited SVGs (avoids canvas cross-origin taint).
+// The canvas inherits the img's inline style (position, size,
+// lean angle) so every tree stays exactly where it landed.
+// -------------------------------------------------------
+async function pointcloudify(imgEl) {
+  const src = imgEl.getAttribute('src');
+  if (!src) return;
+
+  // Fetch and re-wrap as a blob URL
+  let blobUrl;
+  try {
+    const resp = await fetch(src);
+    const blob = await resp.blob();
+    blobUrl = URL.createObjectURL(blob);
+  } catch {
+    return;
+  }
+
+  const displayW = imgEl.offsetWidth  || 60;
+  const displayH = imgEl.offsetHeight || 90;
+
+  await new Promise((resolve) => {
+    const tmpImg = new Image();
+
+    tmpImg.onload = () => {
+      // ---- 1. Sample pixels from the SVG ----
+      const offscreen = document.createElement('canvas');
+      offscreen.width  = displayW;
+      offscreen.height = displayH;
+      const sCtx = offscreen.getContext('2d');
+      sCtx.drawImage(tmpImg, 0, 0, displayW, displayH);
+
+      let pixels;
+      try {
+        pixels = sCtx.getImageData(0, 0, displayW, displayH).data;
+      } catch {
+        URL.revokeObjectURL(blobUrl);
+        resolve();
+        return;
+      }
+
+      // ---- 2. Build the point-cloud canvas ----
+      const canvas  = document.createElement('canvas');
+      canvas.width  = displayW;
+      canvas.height = displayH;
+
+      // Copy all inline styles from the original img so position /
+      // size / lean angle are preserved exactly
+      canvas.style.cssText  = imgEl.style.cssText;
+      canvas.style.opacity  = '0';
+      canvas.style.transition = 'opacity 0.9s ease';
+      canvas.style.animation  = 'none'; // suppress treefall replay
+      canvas.classList.add('is-pointcloud');
+
+      const cCtx = canvas.getContext('2d');
+
+      // Step size: ~22 sample points across the shorter axis
+      const step = Math.max(2, Math.floor(Math.min(displayW, displayH) / 22));
+
+      for (let y = 0; y < displayH; y += step) {
+        for (let x = 0; x < displayW; x += step) {
+          const idx   = (y * displayW + x) * 4;
+          const alpha = pixels[idx + 3];
+          if (alpha < 30) continue;
+
+          // LiDAR elevation colouring:
+          //   top of tree  → cyan-blue  (hue ≈ 180)
+          //   mid canopy   → green      (hue ≈ 120)
+          //   base / trunk → yellow     (hue ≈  80)
+          const t   = 1 - y / displayH;           // 1=top, 0=base
+          const hue = 80  + t * 100;               // 80 → 180
+          const sat = 85  + t * 15;
+          const lit = 35  + t * 35;
+          const a   = 0.65 + Math.random() * 0.35;
+
+          // Slight jitter for that real point-cloud look
+          const jx = x + (Math.random() - 0.5) * step * 0.7;
+          const jy = y + (Math.random() - 0.5) * step * 0.7;
+          const r  = 0.6 + Math.random() * 1.2;
+
+          cCtx.fillStyle = `hsla(${hue},${sat}%,${lit}%,${a})`;
+          cCtx.beginPath();
+          cCtx.arc(jx, jy, r, 0, Math.PI * 2);
+          cCtx.fill();
+        }
+      }
+
+      URL.revokeObjectURL(blobUrl);
+
+      // ---- 3. Swap img → canvas, then fade in ----
+      imgEl.parentNode?.insertBefore(canvas, imgEl);
+      imgEl.remove();
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        canvas.style.opacity = '1';
+      }));
+
+      resolve();
+    };
+
+    tmpImg.onerror = () => { URL.revokeObjectURL(blobUrl); resolve(); };
+    tmpImg.src = blobUrl;
+  });
+}
+</script>

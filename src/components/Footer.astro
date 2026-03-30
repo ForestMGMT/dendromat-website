@@ -1,0 +1,84 @@
+---
+/**
+ * Footer.astro — site footer.
+ * TODO: Add real legal/privacy page links when created.
+ */
+---
+
+<footer class="footer">
+  <div class="footer__inner container">
+    <div class="footer__brand">
+      <img src="/logo/dendromat.svg" alt="Dendromat" class="footer__logo" width="48" height="44" />
+      <p class="footer__tagline" data-i18n="hero.tagline">Die Würze des Waldes</p>
+    </div>
+
+    <nav class="footer__links" aria-label="Footer navigation">
+      <!-- TODO: Create /impressum and /datenschutz pages -->
+      <a href="/impressum" data-i18n="footer.legal">Impressum</a>
+      <a href="/datenschutz" data-i18n="footer.privacy">Datenschutz</a>
+    </nav>
+
+    <p class="footer__copy" data-i18n="footer.copyright">
+      © 2025 Dendromat. Alle Rechte vorbehalten.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--clr-green-deep);
+    padding: var(--space-xl) 0 var(--space-lg);
+    margin-top: auto;
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    text-align: center;
+  }
+
+  .footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer__logo {
+    width: 48px;
+    height: auto;
+    opacity: 0.85;
+  }
+
+  .footer__tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--clr-green-pale);
+    font-size: 0.95rem;
+  }
+
+  .footer__links {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .footer__links a {
+    color: var(--clr-green-light);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer__links a:hover {
+    color: var(--clr-yellow);
+    text-decoration: none;
+  }
+
+  .footer__copy {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted);
+    opacity: 0.7;
+  }
+</style>

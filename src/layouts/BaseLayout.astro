@@ -1,0 +1,134 @@
+---
+/**
+ * BaseLayout.astro — shared HTML shell for all pages.
+ * Props:
+ *   title    string  — page <title>
+ *   description  string  — meta description
+ */
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+
+    <!-- Favicon (TODO: replace with real favicon) -->
+    <link rel="icon" type="image/svg+xml" href="/logo/dendromat.svg" />
+
+    <!-- Google Fonts: Lora (serif headings) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style is:global>
+      /* =====================================================
+         CSS CUSTOM PROPERTIES — Dendromat Colour System
+         Derived from the logo SVG palette.
+      ===================================================== */
+      :root {
+        /* Brand greens */
+        --clr-green-deep:   #1a3d18;
+        --clr-green-dark:   #2a5c28;
+        --clr-green-mid:    #2e6830;
+        --clr-green-light:  #a8cc80;
+        --clr-green-pale:   #c8e8a0;
+        --clr-green-bg:     #f0f7ec;
+
+        /* Brand yellows */
+        --clr-yellow:       #ffe84e;
+        --clr-yellow-mid:   #f8da40;
+        --clr-yellow-warm:  #e8c820;
+
+        /* Brand reds */
+        --clr-red:          #c02020;
+        --clr-red-bright:   #e02626;
+
+        /* Neutrals */
+        --clr-white:        #ffffff;
+        --clr-offwhite:     #fafaf7;
+        --clr-text:         #1c2b1b;
+        --clr-text-muted:   #4a5e48;
+
+        /* Typography */
+        --font-serif:   'Lora', Georgia, 'Times New Roman', serif;
+        --font-sans:    'Inter', system-ui, sans-serif;
+
+        /* Spacing */
+        --space-xs:  0.25rem;
+        --space-sm:  0.5rem;
+        --space-md:  1rem;
+        --space-lg:  2rem;
+        --space-xl:  4rem;
+
+        /* Layout */
+        --max-width: 1200px;
+        --nav-height: 3.5rem;
+      }
+
+      /* =====================================================
+         RESET & BASE
+      ===================================================== */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        font-size: 1rem;
+        line-height: 1.65;
+        color: var(--clr-text);
+        background: var(--clr-offwhite);
+      }
+
+      img, svg {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: var(--clr-green-dark);
+        text-decoration: underline;
+        text-decoration-color: transparent;
+        transition: text-decoration-color 0.2s;
+      }
+
+      a:hover {
+        text-decoration-color: currentColor;
+      }
+
+      h1, h2, h3, h4 {
+        font-family: var(--font-serif);
+        line-height: 1.25;
+        color: var(--clr-green-deep);
+      }
+
+      .container {
+        width: 100%;
+        max-width: var(--max-width);
+        margin-inline: auto;
+        padding-inline: var(--space-lg);
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding-inline: var(--space-md);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

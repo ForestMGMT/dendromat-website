@@ -1,0 +1,280 @@
+---
+/**
+ * ToolsMosaic.astro — responsive grid of tool cards.
+ *
+ * To add a new tool:
+ *   1. Add a card object to the `tools` array below.
+ *   2. Add the tool's i18n strings to src/i18n/translations.js under tools.*
+ *   3. Create the tool page at src/pages/tools/<slug>.astro
+ *   4. Drop the preview image in public/tools/<slug>-preview.jpg
+ *
+ * Each card object:
+ *   slug        string  — matches /tools/<slug> route
+ *   i18nTitle   string  — key path into t[lang].tools.<slug>.title
+ *   i18nDesc    string  — key path into t[lang].tools.<slug>.desc
+ *   image       string  — path to preview image (relative to /public/)
+ *   imageAlt    string  — alt text (will be overridden by i18n in future)
+ *   ready       bool    — false shows "coming soon" badge
+ */
+
+const tools = [
+  {
+    slug:       'timelapse',
+    i18nTitle:  'tools.timelapse.title',
+    i18nDesc:   'tools.timelapse.desc',
+    // TODO: replace with real preview image /public/tools/timelapse-preview.jpg
+    image:      null,
+    imageAlt:   'Timelapse Creator Vorschau',
+    ready:      true,
+  },
+  {
+    slug:       'baumportraets',
+    i18nTitle:  'tools.baumportraets.title',
+    i18nDesc:   'tools.baumportraets.desc',
+    // TODO: replace with real preview image /public/tools/baumportraets-preview.jpg
+    image:      null,
+    imageAlt:   'Baumarten­porträts Vorschau',
+    ready:      true,
+  },
+  // TODO: Add more tools here following the pattern above
+];
+---
+
+<section class="mosaic" id="tools" aria-labelledby="tools-heading">
+  <div class="container">
+    <div class="mosaic__header">
+      <h2 class="mosaic__title" data-i18n="tools.sectionTitle">Werkzeuge</h2>
+      <p class="mosaic__subtitle" data-i18n="tools.sectionSubtitle">
+        Praktische Helfer für Forst­fachleute und Waldinteressierte.
+      </p>
+    </div>
+
+    <ul class="mosaic__grid" role="list">
+      {tools.map(tool => (
+        <li class="card">
+          <!-- Preview image or placeholder -->
+          <div class="card__image-wrap">
+            {tool.image ? (
+              <img
+                src={tool.image}
+                alt={tool.imageAlt}
+                class="card__image"
+                loading="lazy"
+                width="400"
+                height="250"
+              />
+            ) : (
+              /* TODO: Remove this placeholder once real images are added */
+              <div class="card__image-placeholder" aria-hidden="true">
+                <span class="card__image-placeholder-icon">🌲</span>
+                <span class="card__image-placeholder-text">
+                  {/* TODO: put {tool.slug}-preview.jpg in /public/tools/ */}
+                  preview image
+                </span>
+              </div>
+            )}
+            {!tool.ready && (
+              <span class="card__badge" data-i18n="tools.comingSoon">
+                Demnächst verfügbar
+              </span>
+            )}
+          </div>
+
+          <div class="card__body">
+            <h3 class="card__title" data-i18n={tool.i18nTitle}>
+              {/* Fallback text before JS hydration */}
+              {tool.slug === 'timelapse'     && 'Timelapse Creator'}
+              {tool.slug === 'baumportraets' && 'Baumarten\u00adportr\u00e4ts'}
+            </h3>
+            <p class="card__desc" data-i18n={tool.i18nDesc}>
+              {/* Fallback text before JS hydration */}
+              {tool.slug === 'timelapse'     && 'Erstelle Zeitraffer­aufnahmen aus dem Wald.'}
+              {tool.slug === 'baumportraets' && 'Detaillierte Porträts heimischer Baumarten.'}
+            </p>
+            <a
+              href={tool.ready ? `/tools/${tool.slug}` : '#'}
+              class={`card__link${!tool.ready ? ' card__link--disabled' : ''}`}
+              aria-disabled={!tool.ready}
+              data-i18n="tools.openTool"
+            >
+              Werkzeug öffnen
+            </a>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* -------------------------------------------------------
+     Section header
+  ------------------------------------------------------- */
+  .mosaic {
+    padding: var(--space-xl) 0;
+    background: var(--clr-green-bg);
+  }
+
+  .mosaic__header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+  }
+
+  .mosaic__title {
+    font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+    color: var(--clr-green-deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .mosaic__subtitle {
+    font-size: 1.05rem;
+    color: var(--clr-text-muted);
+    max-width: 55ch;
+    margin-inline: auto;
+  }
+
+  /* -------------------------------------------------------
+     Grid
+  ------------------------------------------------------- */
+  .mosaic__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--space-lg);
+  }
+
+  /* -------------------------------------------------------
+     Card
+  ------------------------------------------------------- */
+  .card {
+    background: var(--clr-white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(42, 92, 40, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(42, 92, 40, 0.18);
+  }
+
+  /* -------------------------------------------------------
+     Card image
+  ------------------------------------------------------- */
+  .card__image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--clr-green-bg);
+  }
+
+  .card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Placeholder (removed once real images are added) */
+  .card__image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(
+      135deg,
+      var(--clr-green-bg) 0%,
+      #dcefd8 100%
+    );
+    border-bottom: 2px dashed var(--clr-green-light);
+  }
+
+  .card__image-placeholder-icon {
+    font-size: 3rem;
+    opacity: 0.4;
+  }
+
+  .card__image-placeholder-text {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+    font-family: var(--font-sans);
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Coming-soon badge */
+  .card__badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: var(--clr-yellow);
+    color: var(--clr-green-deep);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  /* -------------------------------------------------------
+     Card body
+  ------------------------------------------------------- */
+  .card__body {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1;
+  }
+
+  .card__title {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--clr-green-deep);
+    line-height: 1.3;
+  }
+
+  .card__desc {
+    font-size: 0.9rem;
+    color: var(--clr-text-muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .card__link {
+    display: inline-block;
+    margin-top: 0.25rem;
+    padding: 0.55rem 1.2rem;
+    background: var(--clr-green-dark);
+    color: var(--clr-white);
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.15s, transform 0.1s;
+    align-self: flex-start;
+  }
+
+  .card__link:hover {
+    background: var(--clr-green-mid);
+    transform: translateX(2px);
+    text-decoration: none;
+    color: var(--clr-white);
+  }
+
+  .card__link--disabled {
+    background: var(--clr-text-muted);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+</style>

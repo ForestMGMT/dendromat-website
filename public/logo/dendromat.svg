@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="680"
+   height="620"
+   viewBox="0 0 680 620"
+   version="1.1"
+   id="svg72"
+   sodipodi:docname="dendromat_logo_entwurf.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview72"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="4.4946392"
+     inkscape:cx="307.03243"
+     inkscape:cy="121.81178"
+     inkscape:window-width="1920"
+     inkscape:window-height="1094"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg72" />
+  <defs
+     id="defs37">
+    <linearGradient
+       id="yBody"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#c8a800"
+         id="stop1" />
+      <stop
+         offset="12%"
+         stop-color="#e8c820"
+         id="stop2" />
+      <stop
+         offset="30%"
+         stop-color="#f8da40"
+         id="stop3" />
+      <stop
+         offset="50%"
+         stop-color="#ffe84e"
+         id="stop4" />
+      <stop
+         offset="70%"
+         stop-color="#f8da40"
+         id="stop5" />
+      <stop
+         offset="88%"
+         stop-color="#e8c820"
+         id="stop6" />
+      <stop
+         offset="100%"
+         stop-color="#b89000"
+         id="stop7" />
+    </linearGradient>
+    <linearGradient
+       id="gBand"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#1a3d18"
+         id="stop8" />
+      <stop
+         offset="15%"
+         stop-color="#2a5c28"
+         id="stop9" />
+      <stop
+         offset="50%"
+         stop-color="#2e6830"
+         id="stop10" />
+      <stop
+         offset="85%"
+         stop-color="#2a5c28"
+         id="stop11" />
+      <stop
+         offset="100%"
+         stop-color="#1a3d18"
+         id="stop12" />
+    </linearGradient>
+    <linearGradient
+       id="gBand2"
+       x1="148.49242"
+       y1="395.9798"
+       x2="332.34019"
+       y2="395.9798"
+       gradientTransform="scale(1.4142136,0.70710678)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#163014"
+         id="stop13" />
+      <stop
+         offset="15%"
+         stop-color="#245022"
+         id="stop14" />
+      <stop
+         offset="50%"
+         stop-color="#2a5e28"
+         id="stop15" />
+      <stop
+         offset="85%"
+         stop-color="#245022"
+         id="stop16" />
+      <stop
+         offset="100%"
+         stop-color="#163014"
+         id="stop17" />
+    </linearGradient>
+    <linearGradient
+       id="rLid"
+       x1="75.602775"
+       y1="242.29269"
+       x2="165.7582"
+       y2="242.29269"
+       gradientTransform="matrix(2.8839087,0,0,0.3549426,-8.0314961,0)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#5a1010"
+         id="stop18" />
+      <stop
+         offset="18%"
+         stop-color="#a01818"
+         id="stop19" />
+      <stop
+         offset="45%"
+         stop-color="#c82020"
+         id="stop20" />
+      <stop
+         offset="55%"
+         stop-color="#d42828"
+         id="stop21" />
+      <stop
+         offset="82%"
+         stop-color="#a01818"
+         id="stop22" />
+      <stop
+         offset="100%"
+         stop-color="#5a1010"
+         id="stop23" />
+    </linearGradient>
+    <linearGradient
+       id="rLidTop"
+       x1="63.230242"
+       y1="253.83423"
+       x2="137.68828"
+       y2="253.83423"
+       gradientTransform="matrix(3.3844564,0,0,0.29546842,-0.54681324,2.1433313)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#4a0c0c"
+         id="stop24" />
+      <stop
+         offset="35%"
+         stop-color="#981818"
+         id="stop25" />
+      <stop
+         offset="55%"
+         stop-color="#b82020"
+         id="stop26" />
+      <stop
+         offset="80%"
+         stop-color="#981818"
+         id="stop27" />
+      <stop
+         offset="100%"
+         stop-color="#4a0c0c"
+         id="stop28" />
+    </linearGradient>
+    <linearGradient
+       id="rBottom"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#4a0c0c"
+         id="stop29" />
+      <stop
+         offset="20%"
+         stop-color="#901818"
+         id="stop30" />
+      <stop
+         offset="50%"
+         stop-color="#b02020"
+         id="stop31" />
+      <stop
+         offset="80%"
+         stop-color="#901818"
+         id="stop32" />
+      <stop
+         offset="100%"
+         stop-color="#4a0c0c"
+         id="stop33" />
+    </linearGradient>
+    <linearGradient
+       id="knorrOval"
+       x1="174.53939"
+       y1="187.00649"
+       x2="261.80909"
+       y2="187.00649"
+       gradientTransform="scale(1.5583874,0.64168895)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#b81818"
+         id="stop34" />
+      <stop
+         offset="40%"
+         stop-color="#d82020"
+         id="stop35" />
+      <stop
+         offset="60%"
+         stop-color="#e22828"
+         id="stop36" />
+      <stop
+         offset="100%"
+         stop-color="#b81818"
+         id="stop37" />
+    </linearGradient>
+    <clipPath
+       id="cc">
+      <rect
+         x="210"
+         y="110"
+         width="260"
+         height="430"
+         rx="10"
+         id="rect37" />
+    </clipPath>
+    <linearGradient
+       id="rLidTop-0"
+       x1="63.230242"
+       y1="253.83423"
+       x2="137.68828"
+       y2="253.83423"
+       gradientTransform="matrix(3.3844564,0,0,0.29546842,0.9952893,451.24898)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#4a0c0c"
+         id="stop24-9" />
+      <stop
+         offset="35%"
+         stop-color="#981818"
+         id="stop25-4" />
+      <stop
+         offset="55%"
+         stop-color="#b82020"
+         id="stop26-8" />
+      <stop
+         offset="80%"
+         stop-color="#981818"
+         id="stop27-8" />
+      <stop
+         offset="100%"
+         stop-color="#4a0c0c"
+         id="stop28-2" />
+    </linearGradient>
+    <linearGradient
+       id="rLidTop-5"
+       x1="63.230242"
+       y1="253.83423"
+       x2="137.68828"
+       y2="253.83423"
+       gradientTransform="matrix(3.3844564,0,0,0.29546842,0,451)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#4a0c0c"
+         id="stop24-5" />
+      <stop
+         offset="35%"
+         stop-color="#981818"
+         id="stop25-1" />
+      <stop
+         offset="55%"
+         stop-color="#b82020"
+         id="stop26-7" />
+      <stop
+         offset="80%"
+         stop-color="#981818"
+         id="stop27-1" />
+      <stop
+         offset="100%"
+         stop-color="#4a0c0c"
+         id="stop28-1" />
+    </linearGradient>
+  </defs>
+  <!-- shadow -->
+  <!-- CAN BODY -->
+  <rect
+     x="210"
+     y="110"
+     width="260"
+     height="430"
+     rx="10"
+     fill="url(#yBody)"
+     id="rect38" />
+  <!-- TOP GREEN BAND (Knorr/Dendro area) -->
+  <!-- MIDDLE GREEN BAND (Dendromat name) -->
+  <rect
+     x="210"
+     y="280"
+     width="260"
+     height="130"
+     fill="url(#gBand2)"
+     clip-path="url(#cc)"
+     id="rect40"
+     style="fill:url(#gBand2)"
+     transform="matrix(1,0,0,1.0317924,0,-48.901886)" />
+  <!-- BOTTOM RIM (red) -->
+  <g
+     id="g77"
+     style="fill:#dc2323;fill-opacity:1">
+    <ellipse
+       cx="340"
+       cy="537"
+       rx="126"
+       ry="11"
+       fill="url(#rLidTop)"
+       id="ellipse62-5"
+       style="fill:#dc2323;fill-opacity:1" />
+    <rect
+       x="210"
+       y="500"
+       width="260"
+       height="40"
+       fill="url(#rBottom)"
+       clip-path="url(#cc)"
+       id="rect41"
+       style="fill:#dc2323;fill-opacity:1" />
+  </g>
+  <!-- TOP GREEN BAND CONTENT -->
+  <!-- "Dendro" oval (Knorr-style) -->
+  <g
+     id="g78"
+     transform="translate(0,16)">
+    <ellipse
+       cx="340"
+       cy="148"
+       rx="68"
+       ry="28"
+       fill="url(#knorrOval)"
+       id="ellipse41"
+       style="fill:url(#knorrOval)" />
+    <ellipse
+       cx="340"
+       cy="148"
+       rx="65"
+       ry="25"
+       fill="none"
+       stroke="#ffffff"
+       stroke-width="1.5"
+       opacity="0.6"
+       id="ellipse42" />
+    <text
+       x="340"
+       y="156"
+       text-anchor="middle"
+       font-family="Georgia, 'Times New Roman', serif"
+       font-size="24px"
+       font-weight="700"
+       font-style="italic"
+       fill="#ffffff"
+       letter-spacing="-0.5"
+       id="text42">Dendro</text>
+  </g>
+  <text
+     x="404"
+     y="141"
+     text-anchor="middle"
+     font-family="Arial, sans-serif"
+     font-size="9px"
+     fill="#ffffff"
+     opacity="0.8"
+     id="text43">®</text>
+  <!-- "ORIGINAL" small caps -->
+  <g
+     id="g79"
+     transform="translate(0,28)">
+    <text
+       x="340"
+       y="192"
+       text-anchor="middle"
+       font-family="Arial, sans-serif"
+       font-size="10px"
+       font-weight="700"
+       fill="#ffffff"
+       letter-spacing="3"
+       id="text44">ORIGINAL</text>
+    <line
+       x1="248"
+       y1="191"
+       x2="295"
+       y2="191"
+       stroke="#ffffff"
+       stroke-width="0.7"
+       opacity="0.5"
+       id="line44" />
+    <line
+       x1="385"
+       y1="191"
+       x2="432"
+       y2="191"
+       stroke="#ffffff"
+       stroke-width="0.7"
+       opacity="0.5"
+       id="line45" />
+  </g>
+  <!-- Corner tree silhouettes -->
+  <g
+     fill="#ffffff"
+     opacity="0.25"
+     id="g46"
+     transform="translate(0,6.0562043)">
+    <polygon
+       points="222,135 234,135 228,118 "
+       id="polygon45" />
+    <rect
+       x="226.25768"
+       y="134.71898"
+       width="4"
+       height="6"
+       id="rect45" />
+    <polygon
+       points="444,135 456,135 450,118 "
+       id="polygon46" />
+    <rect
+       x="448.08905"
+       y="134.83139"
+       width="4"
+       height="6"
+       id="rect46" />
+  </g>
+  <!-- Star on yellow section -->
+  <text
+     x="220.70612"
+     y="276.08603"
+     text-anchor="middle"
+     font-family="Arial, sans-serif"
+     font-size="18px"
+     fill="#2a5c28"
+     font-weight="900"
+     id="text46">✦</text>
+  <!-- MIDDLE GREEN BAND CONTENT -->
+  <!-- "ORIGINAL" above name -->
+  <!-- Big Dendromat name -->
+  <text
+     text-anchor="middle"
+     font-family="Georgia, 'Times New Roman', serif"
+     font-size="43.4629px"
+     font-weight="700"
+     font-style="italic"
+     fill="#ffffff"
+     letter-spacing="-1"
+     id="text48"
+     style="stroke-width:0.74936"
+     y="314.7002"
+     x="339.51648">Dendromat</text>
+  <!-- Star before name -->
+  <text
+     x="253.80659"
+     y="325.89951"
+     text-anchor="middle"
+     font-family="Arial, sans-serif"
+     font-size="22px"
+     fill="#a8cc80"
+     font-weight="900"
+     id="text49">✦</text>
+  <!-- Tagline inside green band -->
+  <text
+     x="340"
+     y="340"
+     text-anchor="middle"
+     font-family="Georgia, serif"
+     font-size="11px"
+     font-style="italic"
+     fill="#c8e8a0"
+     letter-spacing="0.5"
+     id="text50">Die Würze des Waldes</text>
+  <!-- YELLOW LOWER SECTION -->
+  <!-- Little forester stick figure -->
+  <!-- Head -->
+  <!-- Torso -->
+  <!-- Left arm (holding flag) -->
+  <!-- Right arm -->
+  <!-- Left leg -->
+  <!-- Right leg -->
+  <!-- Flag pole -->
+  <!-- Swiss flag -->
+  <!-- White cross -->
+  <g
+     id="g76"
+     transform="translate(-14.246457,-0.1570977)">
+    <line
+       x1="268"
+       y1="448"
+       x2="248"
+       y2="442"
+       stroke="#c02020"
+       stroke-width="4"
+       stroke-linecap="round"
+       id="line51" />
+    <g
+       id="g75">
+      <circle
+         cx="268"
+         cy="430"
+         r="10"
+         fill="#c02020"
+         id="circle50" />
+      <line
+         x1="268"
+         y1="440"
+         x2="268"
+         y2="465"
+         stroke="#c02020"
+         stroke-width="5"
+         stroke-linecap="round"
+         id="line50" />
+      <line
+         x1="268"
+         y1="448"
+         x2="284"
+         y2="455"
+         stroke="#c02020"
+         stroke-width="4"
+         stroke-linecap="round"
+         id="line52" />
+      <line
+         x1="268"
+         y1="465"
+         x2="256"
+         y2="480"
+         stroke="#c02020"
+         stroke-width="4"
+         stroke-linecap="round"
+         id="line53" />
+      <line
+         x1="268"
+         y1="465"
+         x2="278"
+         y2="480"
+         stroke="#c02020"
+         stroke-width="4"
+         stroke-linecap="round"
+         id="line54" />
+    </g>
+    <line
+       x1="248"
+       y1="442"
+       x2="242"
+       y2="408"
+       stroke="#5a3a10"
+       stroke-width="2.5"
+       stroke-linecap="round"
+       id="line55" />
+    <rect
+       x="242"
+       y="408"
+       width="26"
+       height="20"
+       fill="#c02020"
+       id="rect55" />
+    <rect
+       x="252"
+       y="411"
+       width="6"
+       height="14"
+       fill="#ffffff"
+       id="rect56" />
+    <rect
+       x="245"
+       y="416"
+       width="20"
+       height="5"
+       fill="#ffffff"
+       id="rect57" />
+  </g>
+  <!-- Forest badge (replaces OK badge) -->
+  <g
+     id="g74"
+     transform="translate(10,2)">
+    <g
+       id="g73">
+      <circle
+         cx="428"
+         cy="450"
+         r="20"
+         fill="#2a5c28"
+         id="circle57" />
+      <circle
+         cx="428"
+         cy="450"
+         r="18"
+         fill="none"
+         stroke="#a8cc80"
+         stroke-width="1.2"
+         id="circle58" />
+      <g
+         id="g72"
+         transform="translate(0,2.1758187)">
+        <polygon
+           points="420,448 436,448 428,434 "
+           fill="#a8cc80"
+           id="polygon58" />
+        <polygon
+           points="419,453 437,453 428,440 "
+           fill="#a8cc80"
+           id="polygon59" />
+        <rect
+           x="425"
+           y="453"
+           width="6"
+           height="6"
+           fill="#8aaa60"
+           id="rect59" />
+      </g>
+    </g>
+    <text
+       x="427.87201"
+       y="477.47961"
+       text-anchor="middle"
+       font-family="Arial, sans-serif"
+       font-size="8px"
+       font-weight="700"
+       fill="#2a5c28"
+       id="text59">FORST</text>
+  </g>
+  <!-- Three-language tagline -->
+  <text
+     x="342"
+     y="416"
+     text-anchor="middle"
+     font-family="Georgia, serif"
+     font-size="12px"
+     font-style="italic"
+     font-weight="700"
+     fill="#2a5c28"
+     id="text60">Streuwürze des Waldes</text>
+  <text
+     x="342"
+     y="432"
+     text-anchor="middle"
+     font-family="Georgia, serif"
+     font-size="10px"
+     font-style="italic"
+     fill="#2a5c28"
+     id="text61">Condiment de la forêt</text>
+  <text
+     x="342"
+     y="447"
+     text-anchor="middle"
+     font-family="Georgia, serif"
+     font-size="10px"
+     font-style="italic"
+     fill="#2a5c28"
+     id="text62">Condimento del bosco</text>
+  <!-- LID (red shaker top) -->
+  <!-- Shaker holes -->
+  <!-- Lid bottom seam -->
+  <rect
+     x="210"
+     y="110"
+     width="260"
+     height="7"
+     rx="0"
+     fill="#8a1515"
+     opacity="0.6"
+     id="rect71"
+     style="opacity:1;fill:#e02626;fill-opacity:1" />
+  <!-- Bottom rim URL -->
+  <text
+     text-anchor="middle"
+     font-family="Arial, sans-serif"
+     font-size="9px"
+     font-weight="700"
+     fill="#ffdd88"
+     letter-spacing="2"
+     id="text71"
+     y="527"
+     x="340">WWW.DENDROMAT.CH</text>
+  <path
+     style="opacity:1;fill:#e02626;fill-opacity:1;stroke:none;stroke-width:1.13386;stroke-linejoin:round"
+     d="M 210,110 V 99.57001 H 470 V 110 Z"
+     id="path80" />
+  <!-- Highlight sheen -->
+  <rect
+     x="253.80659"
+     y="112.26202"
+     width="14"
+     height="422"
+     rx="4"
+     fill="#ffffff"
+     opacity="0.05"
+     id="rect72" />
+  <path
+     style="opacity:1;fill:#e02626;fill-opacity:1;stroke:#000000;stroke-width:1.13386;stroke-linejoin:round"
+     d="m 210,110 c 0,0 146.13735,-7.41671 260,0"
+     id="path79" />
+  <path
+     style="fill:#e02626;fill-opacity:1;stroke:none;stroke-width:1.13386;stroke-linejoin:round"
+     d="m 210,99.57001 c 0,0 146.13735,-7.416707 260,0"
+     id="path79-7" />
+</svg>

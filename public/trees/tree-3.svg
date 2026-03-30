@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  PLACEHOLDER: tree-3.svg — Slim Fir / Schlanke Tanne
+  TODO: Replace with your real tree SVG artwork.
+  Used by the hero sprinkling effect (Hero.astro).
+-->
+
+<svg
+   viewBox="0 0 60 90"
+   width="60"
+   height="90"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="tree-3.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="9.0333333"
+     inkscape:cx="30"
+     inkscape:cy="45"
+     inkscape:window-width="1920"
+     inkscape:window-height="1094"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <!-- Narrow crown layers -->
+  <!-- Trunk -->
+  <g
+     id="use98-3-3-7-2-2-7-4-3-1-4-1-7-0-8-6-1-5-03-5-3-9-1"
+     transform="matrix(3.6390894,0,0,3.8295377,-275.21821,-349.62583)"
+     style="display:inline">
+    <rect
+       style="fill:#95570a;fill-opacity:1;stroke:none;stroke-width:0.142291"
+       id="rect1046-6-89-1-1-6-3-2-5-8"
+       width="0.69123352"
+       height="9.3644714"
+       x="83.510223"
+       y="104.70016" />
+    <path
+       style="fill:#04c800;fill-opacity:1;stroke:#000000;stroke-width:0.1"
+       d="m 83.98249,105.06829 c 0,0 3.148113,-0.36072 4.295862,-2.06595 1.14775,-1.70523 -0.06558,-5.771538 -0.06558,-5.771538 0,0 -1.180544,-3.115323 -2.131536,-4.45983 -0.950992,-1.344507 -2.361086,-0.787027 -2.361086,-0.787027 0,0 -2.721806,1.738022 -3.11532,3.016941 -0.393512,1.278921 -1.934777,3.640007 -1.508469,6.329024 0.426304,2.68901 4.886134,3.73838 4.886134,3.73838 z"
+       id="path1047-5-8-1-6-94-2-2-5-2" />
+    <path
+       style="fill:#04c800;fill-opacity:1;stroke:#000000;stroke-width:0.1"
+       d="m 86.802673,101.03477 c -3.11532,-0.8854 -2.820183,4.03352 -2.820183,4.03352 0,0 0.131172,-4.06631 -3.508835,-4.19748"
+       id="path1048-7-9-0-7-20-4-2-8-8" />
+    <path
+       style="fill:#04c800;fill-opacity:1;stroke:#000000;stroke-width:0.1"
+       d="m 83.720145,101.62504 c 0,0 0.863883,-4.211025 2.787394,-3.869553"
+       id="path1049-1-97-8-8-4-4-7-3-0" />
+    <path
+       style="fill:#04c800;fill-opacity:1;stroke:#000000;stroke-width:0.1"
+       d="m 84.032531,100.49367 c 0,0 -1.075005,-3.930094 -2.804642,-3.328456"
+       id="path1050-0-0-9-3-4-4-0-7-1" />
+    <path
+       style="fill:#04c800;fill-opacity:1;stroke:#000000;stroke-width:0.1"
+       d="m 83.916903,97.230802 c 0,0 0.852614,-3.541628 1.738021,-2.229916"
+       id="path1051-2-8-1-9-3-2-3-8-8" />
+    <path
+       style="fill:#04c800;fill-opacity:1;stroke:#000000;stroke-width:0.1"
+       d="m 84.312455,95.965273 c 0,0 0.01042,-1.956501 -2.002401,-1.062765"
+       id="path1052-8-4-0-3-69-7-1-3-4" />
+  </g>
+</svg>

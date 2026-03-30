@@ -1,0 +1,144 @@
+---
+/**
+ * tools/baumportraets.astro — Baumarten­porträts tool page (placeholder).
+ *
+ * TODO: Replace this placeholder with the actual Baumarten­porträts application.
+ * TODO: Add real species data, images and search/filter functionality.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavBar from '../../components/NavBar.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Baumarten­porträts – Dendromat"
+  description="Detaillierte Porträts heimischer Baumarten mit Bestimmungs­hilfen."
+>
+  <NavBar />
+
+  <main class="tool-page">
+    <div class="tool-page__hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Dendromat</a>
+          <span aria-hidden="true">›</span>
+          <span data-i18n="nav.tools">Werkzeuge</span>
+          <span aria-hidden="true">›</span>
+          <span data-i18n="nav.baumportraets">Baumarten­porträts</span>
+        </nav>
+        <h1 class="tool-page__title" data-i18n="tools.baumportraets.title">
+          Baumarten­porträts
+        </h1>
+        <p class="tool-page__lead" data-i18n="tools.baumportraets.desc">
+          Detaillierte Porträts heimischer Baumarten mit Bestimmungs­hilfen, Standort­ansprüchen und forstlichem Wissen.
+        </p>
+      </div>
+    </div>
+
+    <div class="container tool-page__body">
+      <!-- TODO: Replace this placeholder block with the real tool UI -->
+      <div class="placeholder-block">
+        <div class="placeholder-block__icon" aria-hidden="true">🌳</div>
+        <h2>Hier entstehen die Baumarten­porträts</h2>
+        <p>
+          <!-- TODO: Add real species browser, search, and portrait content -->
+          Diese Seite ist noch in Entwicklung. Die Baumarten­porträts werden hier verfügbar sein.
+        </p>
+        <a href="/" class="btn-back">← Zurück zur Startseite</a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .tool-page__hero {
+    background: linear-gradient(135deg, var(--clr-green-dark), var(--clr-green-mid));
+    padding: var(--space-xl) 0 var(--space-lg);
+    color: var(--clr-white);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--clr-green-pale);
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb a {
+    color: var(--clr-green-light);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--clr-yellow);
+  }
+
+  .tool-page__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--clr-white);
+    margin-bottom: var(--space-sm);
+  }
+
+  .tool-page__lead {
+    font-size: 1.1rem;
+    color: var(--clr-green-pale);
+    max-width: 60ch;
+    line-height: 1.65;
+  }
+
+  .tool-page__body {
+    padding-block: var(--space-xl);
+  }
+
+  /* Placeholder — remove when real tool is built */
+  .placeholder-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+    padding: var(--space-xl);
+    background: var(--clr-white);
+    border: 2px dashed var(--clr-green-light);
+    border-radius: 16px;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+
+  .placeholder-block__icon {
+    font-size: 4rem;
+  }
+
+  .placeholder-block h2 {
+    font-size: 1.4rem;
+    color: var(--clr-green-deep);
+  }
+
+  .placeholder-block p {
+    color: var(--clr-text-muted);
+    max-width: 45ch;
+  }
+
+  .btn-back {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    background: var(--clr-green-dark);
+    color: var(--clr-white);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.15s;
+  }
+
+  .btn-back:hover {
+    background: var(--clr-green-mid);
+    color: var(--clr-white);
+    text-decoration: none;
+  }
+</style>

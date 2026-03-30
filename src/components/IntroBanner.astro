@@ -1,0 +1,122 @@
+---
+/**
+ * IntroBanner.astro — full-width introductory text section.
+ *
+ * Intro text is translatable via data-i18n attributes (src/i18n/translations.js).
+ */
+---
+
+<section class="intro" id="intro" aria-labelledby="intro-headline">
+  <div class="intro__inner container">
+    <!-- Decorative leaf accent -->
+    <div class="intro__accent" aria-hidden="true">✦</div>
+
+    <h2 class="intro__headline" data-i18n="intro.headline">
+      Digitale Werkzeuge für den Wald
+    </h2>
+
+    <div class="intro__body">
+      <p data-i18n="intro.p1">
+        Dendromat versammelt digitale Werk- und Spielzeuge rund um die Waldbewirtschaftung, die Forstwissenschaft und frei verfügbare Geodaten — alles an einem Ort, frei zugänglich für alle.
+      </p>
+      <p data-i18n="intro.p2">
+        Wissenschaft und Entdecken soll Spass machen. Ob Fachperson, Studierende oder einfach neugierig: Die Tools hier sind so gestaltet, dass der Wald ein bisschen verständlicher — und spielerischer — wird.
+      </p>
+      <p data-i18n="intro.p3">
+        Alle Tools sowie die gesamte Web-Architektur und die Übersetzungen wurden mithilfe von künstlicher Intelligenz erstellt und können Fehler enthalten. Korrekturen und Rückmeldungen sind herzlich willkommen.
+      </p>
+    </div>
+
+    <!-- Disclaimer -->
+    <p class="intro__disclaimer" data-i18n="intro.disclaimer">
+      Diese Website ist ein experimenteller Prototyp und wird laufend überarbeitet — es kann dadurch zu längeren Funktionsunterbrechungen kommen.
+    </p>
+  </div>
+
+  <!-- Decorative bottom wave -->
+  <div class="intro__wave" aria-hidden="true">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z"
+        fill="#f0f7ec"
+      />
+    </svg>
+  </div>
+</section>
+
+<style>
+  .intro {
+    position: relative;
+    background: linear-gradient(
+      135deg,
+      var(--clr-green-dark) 0%,
+      var(--clr-green-mid) 60%,
+      var(--clr-green-deep) 100%
+    );
+    padding: var(--space-xl) 0 calc(var(--space-xl) + 40px);
+    overflow: hidden;
+  }
+
+  .intro__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    text-align: center;
+  }
+
+  .intro__accent {
+    font-size: 2rem;
+    color: var(--clr-yellow);
+    margin-bottom: var(--space-md);
+    display: block;
+  }
+
+  .intro__headline {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 700;
+    color: var(--clr-white);
+    margin-bottom: var(--space-lg);
+    line-height: 1.2;
+  }
+
+  .intro__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .intro__body p {
+    font-size: clamp(0.95rem, 1.5vw, 1.075rem);
+    color: var(--clr-green-pale);
+    line-height: 1.7;
+    max-width: 70ch;
+    margin-inline: auto;
+  }
+
+  .intro__disclaimer {
+    margin-top: var(--space-lg);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-style: italic;
+    max-width: 60ch;
+    margin-inline: auto;
+    line-height: 1.5;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: var(--space-md);
+  }
+
+  /* Bottom wave decoration */
+  .intro__wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+  }
+
+  .intro__wave svg {
+    width: 100%;
+    height: 100%;
+  }
+</style>

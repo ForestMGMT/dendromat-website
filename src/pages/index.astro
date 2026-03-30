@@ -1,0 +1,41 @@
+---
+/**
+ * index.astro — Dendromat Homepage
+ *
+ * Sections (in order):
+ *   1. Hero banner (interactive logo + tree sprinkling)
+ *   2. NavBar (sticky, includes language switcher)
+ *   3. Intro text banner
+ *   4. Tools mosaic (card grid)
+ *   5. Footer
+ *
+ * All user-visible strings are translatable via data-i18n attributes
+ * and the i18n engine in LanguageSwitcher.astro.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import NavBar from '../components/NavBar.astro';
+import IntroBanner from '../components/IntroBanner.astro';
+import ToolsMosaic from '../components/ToolsMosaic.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Dendromat – Forstliche Werkzeuge"
+  description="Dendromat – digitale Werkzeuge für den Schweizer Forstbereich."
+>
+  <!-- 1. Hero (above the nav so it feels immersive) -->
+  <Hero />
+
+  <!-- 2. Sticky navigation bar (with language switcher) -->
+  <NavBar />
+
+  <!-- 3. Introductory text -->
+  <IntroBanner />
+
+  <!-- 4. Tool cards -->
+  <ToolsMosaic />
+
+  <!-- 5. Footer -->
+  <Footer />
+</BaseLayout>

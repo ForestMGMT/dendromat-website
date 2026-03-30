@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  PLACEHOLDER: tree-4.svg — Broad Deciduous / Breiter Laubbaum
+  TODO: Replace with your real tree SVG artwork.
+  Used by the hero sprinkling effect (Hero.astro).
+-->
+
+<svg
+   viewBox="0 0 80 90"
+   width="80"
+   height="90"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="tree-4.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="4.5166667"
+     inkscape:cx="84.354243"
+     inkscape:cy="15.387454"
+     inkscape:window-width="1920"
+     inkscape:window-height="1094"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5" />
+  <!-- Wide spreading crown -->
+  <!-- Trunk -->
+  <!-- Exposed roots suggestion -->
+  <g
+     id="g14-3-1"
+     transform="matrix(2.0793409,0,0,2.0793409,-19.476333,100.50342)"
+     inkscape:label="Nadelholz"
+     style="display:inline">
+    <path
+       style="fill:none;fill-opacity:0.470588;stroke:#95570a;stroke-width:1.4;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+       d="M 28.603454,-6.3925629 V -24.769109"
+       id="path1-4-9" />
+    <g
+       id="g13-2-0"
+       transform="matrix(0.73948974,0,0,0.73948974,3.8569582,-60.816432)">
+      <path
+         id="path3-8-4"
+         style="fill:#267c32;fill-opacity:1;stroke:#000000;stroke-width:0.179569;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+         d="m 33.464286,20.11635 -10.181624,13.733262 6.075367,-2.859081 -6.636793,9.444999 6.432574,-3.318755 -7.19822,11.844405 7.91299,-5.922024 -6.790138,13.682028 10.385844,-7.974973 10.385844,7.974973 -6.790138,-13.682028 7.91299,5.922024 -7.198219,-11.844405 6.432573,3.318755 -6.636794,-9.444999 6.075368,2.859081 z" />
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.179569;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+         d="m 35.971863,47.346802 c 0,0 -0.216354,-2.239438 -2.507574,-4.958754"
+         id="path10-8-2" />
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.179569;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+         d="m 30.213309,48.346551 c 0,0 0.383496,-4.118966 3.25098,-5.958503"
+         id="path11-7-9" />
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.179569;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+         d="m 29.093589,40.868429 c 0,0 2.502964,-4.558856 4.3707,-4.798796 0,0 3.933213,2.446634 4.107174,5.398645"
+         id="path12-5-3" />
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.179569;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+         d="m 28.77367,34.829944 c 0,0 3.262774,-4.198946 4.690619,-4.518866 0,0 3.664037,2.471839 3.987204,4.638836"
+         id="path13-81-1" />
+    </g>
+  </g>
+</svg>
