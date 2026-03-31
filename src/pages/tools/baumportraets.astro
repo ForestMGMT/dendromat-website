@@ -271,10 +271,14 @@ function populateDropdown() {
 }
 
 /* ── Data table ──────────────────────────────────────────── */
+var SKIP_KEYS = ['Frucht (alt)', 'Frucht (alt2)', 'Besonderheit 2'];
+
 function kvTable(obj) {
   if (!obj || !Object.keys(obj).length)
     return '<p class="bp-no-data">' + bpt('noData') + '</p>';
-  var rows = Object.entries(obj).map(function(entry) {
+  var rows = Object.entries(obj).filter(function(entry) {
+    return SKIP_KEYS.indexOf(entry[0]) === -1;
+  }).map(function(entry) {
     return '<tr><td>' + bpEsc(translateKey(entry[0])) + '</td><td>' + bpEsc(translateValue(String(entry[1]))) + '</td></tr>';
   }).join('');
   return '<table class="bp-data-table">' + rows + '</table>';
