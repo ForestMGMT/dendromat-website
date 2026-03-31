@@ -34,6 +34,14 @@ const tools = [
     imageAlt:   'Baumarten­porträts Vorschau',
     ready:      true,
   },
+  {
+    slug:       'geodaten',
+    i18nTitle:  'tools.geodaten.title',
+    i18nDesc:   'tools.geodaten.desc',
+    image:      null,
+    imageAlt:   'Geodaten Downloader Vorschau',
+    ready:      true,
+  },
   // TODO: Add more tools here following the pattern above
 ];
 ---
@@ -83,11 +91,13 @@ const tools = [
               {/* Fallback text before JS hydration */}
               {tool.slug === 'timelapse'     && 'Timelapse Creator'}
               {tool.slug === 'baumportraets' && 'Baumarten\u00adportr\u00e4ts'}
+              {tool.slug === 'geodaten'      && 'Geodaten Downloader'}
             </h3>
             <p class="card__desc" data-i18n={tool.i18nDesc}>
               {/* Fallback text before JS hydration */}
               {tool.slug === 'timelapse'     && 'Erstelle Zeitraffer­aufnahmen aus dem Wald.'}
               {tool.slug === 'baumportraets' && 'Detaillierte Porträts heimischer Baumarten.'}
+              {tool.slug === 'geodaten'      && 'Schweizer Geodaten als GeoTIFF oder GeoPackage herunterladen.'}
             </p>
             <a
               href={tool.ready ? `/tools/${tool.slug}` : '#'}

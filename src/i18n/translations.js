@@ -28,6 +28,7 @@ export const t = {
       tools: 'Werkzeuge',
       timelapse: 'Timelapse Creator',
       baumportraets: 'Baumarten­porträts',
+      geodaten: 'Geodaten Downloader',
       about: 'Über uns',       // TODO: add /about page later
       contact: 'Kontakt',     // TODO: add /contact page later
     },
@@ -56,6 +57,10 @@ export const t = {
         // TODO: Replace with real description
         desc: 'Detaillierte Porträts heimischer Baumarten mit Bestimmungs­hilfen, Standort­ansprüchen und forstlichem Wissen.',
       },
+      geodaten: {
+        title: 'Geodaten Downloader',
+        desc: 'Zeichne ein Gebiet auf der Karte und lade Schweizer Geodaten (swisstopo, BAFU, Kantone) als GeoTIFF oder GeoPackage herunter.',
+      },
     },
     footer: {
       // TODO: Replace with real footer content
@@ -75,6 +80,7 @@ export const t = {
       tools: 'Outils',
       timelapse: 'Créateur Timelapse',
       baumportraets: 'Portraits d\'essences',
+      geodaten: 'Téléchargeur de géodonnées',
       about: 'À propos',
       contact: 'Contact',
     },
@@ -102,6 +108,10 @@ export const t = {
         title: 'Portraits d\'essences',
         desc: 'Portraits détaillés des essences indigènes avec aides à la détermination, exigences stationnelles et savoir forestier.',
       },
+      geodaten: {
+        title: 'Téléchargeur de géodonnées',
+        desc: 'Dessinez une zone sur la carte et téléchargez des géodonnées suisses (swisstopo, OFEV, cantons) en GeoTIFF ou GeoPackage.',
+      },
     },
     footer: {
       copyright: '© 2025 Dendromat. Tous droits réservés.',
@@ -120,6 +130,7 @@ export const t = {
       tools: 'Strumenti',
       timelapse: 'Creatore Timelapse',
       baumportraets: 'Ritratti di specie arboree',
+      geodaten: 'Scaricatore di geodati',
       about: 'Chi siamo',
       contact: 'Contatto',
     },
@@ -147,6 +158,10 @@ export const t = {
         title: 'Ritratti di specie arboree',
         desc: 'Ritratti dettagliati delle specie autoctone con aiuti per la determinazione, esigenze stazionali e conoscenze forestali.',
       },
+      geodaten: {
+        title: 'Scaricatore di geodati',
+        desc: 'Disegna un\'area sulla mappa e scarica geodati svizzeri (swisstopo, UFAM, cantoni) in formato GeoTIFF o GeoPackage.',
+      },
     },
     footer: {
       copyright: '© 2025 Dendromat. Tutti i diritti riservati.',
@@ -165,6 +180,7 @@ export const t = {
       tools: 'Tools',
       timelapse: 'Timelapse Creator',
       baumportraets: 'Tree Species Portraits',
+      geodaten: 'Geodata Downloader',
       about: 'About',
       contact: 'Contact',
     },
@@ -191,6 +207,10 @@ export const t = {
       baumportraets: {
         title: 'Tree Species Portraits',
         desc: 'Detailed portraits of native tree species with identification aids, site requirements and forestry knowledge.',
+      },
+      geodaten: {
+        title: 'Geodata Downloader',
+        desc: 'Draw an area on the map and download Swiss geodata (swisstopo, FOEN, cantons) as GeoTIFF or GeoPackage.',
       },
     },
     footer: {

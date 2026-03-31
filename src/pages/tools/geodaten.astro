@@ -1,0 +1,216 @@
+---
+/**
+ * tools/geodaten.astro — Geodaten Downloader tool page.
+ *
+ * Embeds the Streamlit app via iframe using the ?embed=true parameter.
+ * Replace STREAMLIT_URL once the app is deployed to Streamlit Community Cloud.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavBar from '../../components/NavBar.astro';
+import Footer from '../../components/Footer.astro';
+
+const STREAMLIT_URL = 'https://PLACEHOLDER.streamlit.app/?embed=true';
+---
+
+<BaseLayout
+  title="Geodaten Downloader – Dendromat"
+  description="Lade Schweizer Geodaten (swisstopo, BAFU, Kantone) als GeoTIFF oder GeoPackage herunter — einfach Gebiet auf der Karte zeichnen und Layer auswählen."
+>
+  <NavBar />
+
+  <main class="tool-page">
+
+    <!-- Tool header -->
+    <div class="tool-page__hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Dendromat</a>
+          <span aria-hidden="true">›</span>
+          <span data-i18n="nav.tools">Werkzeuge</span>
+          <span aria-hidden="true">›</span>
+          <span data-i18n="nav.geodaten">Geodaten Downloader</span>
+        </nav>
+        <h1 class="tool-page__title" data-i18n="tools.geodaten.title">
+          Geodaten Downloader
+        </h1>
+        <p class="tool-page__lead" data-i18n="tools.geodaten.desc">
+          Zeichne ein Gebiet auf der Karte und lade Schweizer Geodaten (swisstopo, BAFU, Kantone) als GeoTIFF oder GeoPackage herunter.
+        </p>
+      </div>
+    </div>
+
+    <!-- Iframe wrapper -->
+    <div class="embed-wrapper">
+
+      <!-- Loading overlay -->
+      <div class="embed-loader" id="embed-loader" aria-live="polite">
+        <div class="embed-loader__spinner" aria-hidden="true"></div>
+        <p class="embed-loader__text">Tool wird gestartet…</p>
+        <p class="embed-loader__hint">
+          Streamlit-Apps brauchen beim ersten Aufruf manchmal einen Moment zum Aufwachen.
+        </p>
+      </div>
+
+      <iframe
+        id="tool-frame"
+        src={STREAMLIT_URL}
+        title="Geodaten Downloader"
+        class="tool-frame"
+        allow="clipboard-write"
+        loading="lazy"
+      ></iframe>
+
+    </div>
+
+    <!-- Open in new tab fallback -->
+    <div class="container tool-page__fallback">
+      <p>
+        Problem mit der Ansicht?
+        <a href="https://PLACEHOLDER.streamlit.app/" target="_blank" rel="noopener">
+          Tool in neuem Tab öffnen ↗
+        </a>
+      </p>
+    </div>
+
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .tool-page__hero {
+    background: linear-gradient(135deg, var(--clr-green-dark), var(--clr-green-mid));
+    padding: var(--space-lg) 0;
+    color: var(--clr-white);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--clr-green-pale);
+    margin-bottom: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb a {
+    color: var(--clr-green-light);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--clr-yellow);
+  }
+
+  .tool-page__title {
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    color: var(--clr-white);
+    margin-bottom: 0.35rem;
+  }
+
+  .tool-page__lead {
+    font-size: 1rem;
+    color: var(--clr-green-pale);
+    max-width: 65ch;
+    line-height: 1.6;
+  }
+
+  .embed-wrapper {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - var(--nav-height) - 220px);
+    min-height: 640px;
+    background: #f7f7f7;
+  }
+
+  .tool-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .embed-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: var(--clr-offwhite);
+    transition: opacity 0.4s ease;
+  }
+
+  .embed-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .embed-loader__spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--clr-green-pale);
+    border-top-color: var(--clr-green-dark);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .embed-loader__text {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--clr-green-deep);
+    font-style: italic;
+  }
+
+  .embed-loader__hint {
+    font-size: 0.82rem;
+    color: var(--clr-text-muted);
+    max-width: 36ch;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .tool-page__fallback {
+    padding: 0.6rem 0 var(--space-lg);
+    font-size: 0.85rem;
+    color: var(--clr-text-muted);
+    text-align: center;
+  }
+
+  .tool-page__fallback a {
+    color: var(--clr-green-dark);
+    font-weight: 500;
+  }
+
+  @media (max-width: 600px) {
+    .embed-wrapper {
+      height: calc(100vh - var(--nav-height) - 160px);
+      min-height: 520px;
+    }
+  }
+</style>
+
+<script>
+  const loader = document.getElementById('embed-loader');
+  const frame  = document.getElementById('tool-frame');
+
+  const fallbackTimer = setTimeout(() => {
+    loader?.classList.add('hidden');
+  }, 25000);
+
+  frame?.addEventListener('load', () => {
+    setTimeout(() => {
+      loader?.classList.add('hidden');
+      clearTimeout(fallbackTimer);
+    }, 1200);
+  });
+</script>
