@@ -330,24 +330,23 @@ function traitsViz(sp) {
 
   function makeRows(list) {
     return list.map(function(row) {
-      /* support both umlaut key and escaped key */
       var val = vals[row.key] || (row.dataKey ? vals[row.dataKey] : undefined);
-      var scaleIdx = val ? SCALE_KEYS.indexOf(val) : -1;
-      var valLabel = scaleIdx >= 0 ? bpt(SCALE_TKEYS[scaleIdx]) : (val || '–');
       return '<div class="bp-trait-row">'
         + '<span class="bp-trait-label">' + bpEsc(bpt(row.tKey)) + '</span>'
         + '<span class="bp-trait-dots">' + traitDots(val) + '</span>'
-        + '<span class="bp-trait-val">' + bpEsc(valLabel) + '</span>'
         + '</div>';
     }).join('');
   }
 
-  var scaleLabels = SCALE_TKEYS.map(function(tk) {
-    return '<span>' + bpEsc(bpt(tk)) + '</span>';
+  var headerLabels = SCALE_TKEYS.map(function(tk) {
+    return '<span class="bp-dot-col-label">' + bpEsc(bpt(tk)) + '</span>';
   }).join('');
 
   return '<div class="bp-traits">'
-    + '<div class="bp-trait-scale-header"><span></span>' + scaleLabels + '<span></span></div>'
+    + '<div class="bp-trait-row bp-trait-header">'
+    + '<span></span>'
+    + '<div class="bp-dot-header">' + headerLabels + '</div>'
+    + '</div>'
     + makeRows(PHYSIO_ROWS)
     + '<div class="bp-trait-sep"></div>'
     + makeRows(EINFL_ROWS)
@@ -570,18 +569,16 @@ document.addEventListener('click',   function(e) { if (e.target.matches('.bp-mor
   :global(.bp-lang-sel)        { font-size: 0.85rem; border: 1px solid #d8e8d8; border-radius: 4px; padding: 0.15rem 0.4rem; background: #fff; cursor: pointer; }
 
   /* ── Visual traits scale ─────────────────────────────────── */
-  :global(.bp-traits)              { font-size: 0.85rem; }
-  :global(.bp-trait-scale-header)  { display: grid; grid-template-columns: 1fr auto 80px; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
-  :global(.bp-trait-scale-header span) { font-size: 0.68rem; color: var(--clr-text-muted); text-align: center; }
-  :global(.bp-trait-scale-header span:first-child) { text-align: left; }
-  :global(.bp-trait-scale-header span:last-child)  { text-align: right; }
-  :global(.bp-trait-row)   { display: grid; grid-template-columns: 1fr auto 80px; align-items: center; gap: 0.5rem; padding: 0.3rem 0; border-bottom: 1px solid #f0f5f0; }
-  :global(.bp-trait-label) { font-size: 0.82rem; color: var(--clr-text); }
-  :global(.bp-trait-dots)  { display: flex; gap: 5px; align-items: center; justify-content: center; }
-  :global(.bp-dot)         { width: 13px; height: 13px; border-radius: 50%; background: #ddeedd; border: 1.5px solid #b8d4b8; flex-shrink: 0; transition: transform 0.1s; }
-  :global(.bp-dot--active) { background: var(--clr-green-mid); border-color: var(--clr-green-mid); width: 17px; height: 17px; box-shadow: 0 0 0 3px rgba(46,104,48,0.18); }
-  :global(.bp-trait-val)   { font-size: 0.75rem; color: var(--clr-text-muted); text-align: right; }
-  :global(.bp-trait-sep)   { height: 8px; background: #f0f6f0; margin: 0.25rem 0; border-radius: 2px; }
+  :global(.bp-traits)           { font-size: 0.85rem; }
+  :global(.bp-trait-row)        { display: grid; grid-template-columns: 1fr 500px; align-items: center; gap: 1rem; padding: 0.3rem 0; border-bottom: 1px solid #f0f5f0; }
+  :global(.bp-trait-header)     { border-bottom: 2px solid #d8e8d8; padding-bottom: 0.35rem; margin-bottom: 0.1rem; }
+  :global(.bp-trait-label)      { font-size: 0.82rem; color: var(--clr-text); }
+  :global(.bp-dot-header)       { display: grid; grid-template-columns: repeat(5, 1fr); }
+  :global(.bp-dot-col-label)    { font-size: 0.68rem; color: var(--clr-text-muted); font-style: italic; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  :global(.bp-trait-dots)       { display: grid; grid-template-columns: repeat(5, 1fr); place-items: center; }
+  :global(.bp-dot)              { width: 16px; height: 16px; border-radius: 50%; background: #ddeedd; border: 1.5px solid #b8d4b8; }
+  :global(.bp-dot--active)      { background: var(--clr-green-mid); border-color: var(--clr-green-mid); width: 22px; height: 22px; box-shadow: 0 0 0 3px rgba(46,104,48,0.18); }
+  :global(.bp-trait-sep)        { height: 8px; background: #f0f6f0; margin: 0.25rem 0; border-radius: 2px; }
 
   /* ── Distribution / Ecogram image tiles ─────────────────── */
   :global(.bp-images-grid)    { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
@@ -617,6 +614,7 @@ document.addEventListener('click',   function(e) { if (e.target.matches('.bp-mor
     :global(.bp-images-grid), :global(.bp-tax-names) { grid-template-columns: 1fr; }
     :global(.bp-acc-body), :global(.bp-p-header), :global(.bp-p-desc) { padding-left: 1rem; padding-right: 1rem; }
     :global(.bp-morph-grid) { grid-template-columns: repeat(2,1fr); }
-    :global(.bp-trait-row), :global(.bp-trait-scale-header) { grid-template-columns: 1fr auto 60px; }
+    :global(.bp-trait-row) { grid-template-columns: 1fr 260px; gap: 0.5rem; }
+    :global(.bp-dot-col-label) { font-size: 0.6rem; }
   }
 </style>
