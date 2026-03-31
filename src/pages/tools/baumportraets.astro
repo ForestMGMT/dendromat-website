@@ -1,9 +1,16 @@
 ---
 /**
- * tools/baumportraets.astro — Baumarten­porträts tool page (placeholder).
+ * tools/baumportraets.astro — Baumarten­porträts tool page.
  *
- * TODO: Replace this placeholder with the actual Baumarten­porträts application.
- * TODO: Add real species data, images and search/filter functionality.
+ * Integrates ETH Zürich dendrological species portraits into Dendromat.
+ * Language syncs with Dendromat's global switcher via dendromat:langchange event.
+ *
+ * Data (served as classic scripts from /public/baumportraets/):
+ *   species_data.js          → const SPECIES_DATA
+ *   translations_data.js     → const DATA_TRANSLATIONS
+ *   beschreibung_translations.js → const BESCHREIBUNG_TRANSLATIONS
+ *
+ * Images: /public/baumportraets/images/[slug]_[type].jpg
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavBar from '../../components/NavBar.astro';
@@ -12,11 +19,13 @@ import Footer from '../../components/Footer.astro';
 
 <BaseLayout
   title="Baumarten­porträts – Dendromat"
-  description="Detaillierte Porträts heimischer Baumarten mit Bestimmungs­hilfen."
+  description="Detaillierte Porträts heimischer Baumarten mit Bestimmungs­hilfen, Standort­ansprüchen und forstlichem Wissen."
 >
   <NavBar />
 
   <main class="tool-page">
+
+    <!-- ── Tool hero header ───────────────────────────────── -->
     <div class="tool-page__hero">
       <div class="container">
         <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -35,110 +44,579 @@ import Footer from '../../components/Footer.astro';
       </div>
     </div>
 
-    <div class="container tool-page__body">
-      <!-- TODO: Replace this placeholder block with the real tool UI -->
-      <div class="placeholder-block">
-        <div class="placeholder-block__icon" aria-hidden="true">🌳</div>
-        <h2>Hier entstehen die Baumarten­porträts</h2>
-        <p>
-          <!-- TODO: Add real species browser, search, and portrait content -->
-          Diese Seite ist noch in Entwicklung. Die Baumarten­porträts werden hier verfügbar sein.
-        </p>
-        <a href="/" class="btn-back">← Zurück zur Startseite</a>
+    <!-- ── Attribution disclaimer ─────────────────────────── -->
+    <div class="attribution">
+      <div class="container">
+        <div class="attribution__inner">
+          <span class="attribution__icon" aria-hidden="true">📚</span>
+          <div class="attribution__text">
+            <strong>Datenquelle:</strong> Alle Inhalte und Bilder stammen aus den folgenden Publikationen:<br>
+            <span class="attribution__ref">
+              Rudow, A., 2024: <em>Dendrologie Artenportraits. Morphologische und ökologische Eigenschaften der Gehölzarten Mitteleuropas.</em>
+              <a href="https://www.dendro.ethz.ch" target="_blank" rel="noopener">www.dendro.ethz.ch</a>.
+              Hrsg. Dendrologie und Vegetationskunde, ETH Zürich.
+            </span>
+            <span class="attribution__ref">
+              Rudow, A., Könz, G., Manohar, N., Glanzmann, L., Zürcher, S., 2024: <em>Kurzportraits Baumarten.</em>
+              <a href="https://www.gebirgswald.ch" target="_blank" rel="noopener">www.gebirgswald.ch</a> /
+              <a href="https://www.dendro.ethz.ch" target="_blank" rel="noopener">www.dendro.ethz.ch</a>.
+              Hrsg. Fachstelle Gebirgswaldpflege GWP Maienfeld und Dendrologie und Vegetationskunde ETH Zürich.
+            </span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- ── Species selector + portrait ───────────────────── -->
+    <div class="tool-body">
+      <div class="container">
+
+        <div class="select-wrap">
+          <label id="select-label" for="sp-sel">Baumart auswählen</label>
+          <select id="sp-sel">
+            <option value="">– Bitte Baumart wählen –</option>
+          </select>
+        </div>
+
+        <div id="bp-empty" class="bp-empty">
+          <div class="bp-empty__icon" aria-hidden="true">🌲</div>
+          <p id="empty-msg">Wähle eine Baumart aus dem Dropdown-Menü.</p>
+        </div>
+
+        <div id="portrait"></div>
+
+      </div>
+    </div>
+
   </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Bildvergrösserung">
+    <span id="lightbox-close" title="Schliessen">✕</span>
+    <img id="lightbox-img" src="" alt="">
+  </div>
 
   <Footer />
 </BaseLayout>
 
+<!-- Load data as classic scripts (must be before main is:inline script) -->
+<script src="/baumportraets/species_data.js" is:inline></script>
+<script src="/baumportraets/translations_data.js" is:inline></script>
+<script src="/baumportraets/beschreibung_translations.js" is:inline></script>
+
+<script is:inline>
+/* ══════════════════════════════════════════════════════════
+   BAUMPORTRAETS — species portrait viewer
+   Runs as classic (non-module) script to access SPECIES_DATA globals.
+   Language syncs with Dendromat via dendromat:langchange event.
+══════════════════════════════════════════════════════════ */
+
+/* ── UI strings ─────────────────────────────────────────── */
+var BP_UI = {
+  de: {
+    selectLabel:'Baumart auswählen', selectPlaceholder:'– Bitte Baumart wählen –',
+    emptyMsg:'Wähle eine Baumart aus dem Dropdown-Menü.',
+    accUeberblick:'Überblick', accTaxonomie:'Taxonomie', accMorphologie:'Morphologie', accOekologie:'Ökologie',
+    subArteOeko:'Arteigenschaften & Ökogramm', imgVerbreitung:'Gesamtverbreitung', imgOekogramm:'Ökogramm',
+    oekoLegend:'Legende', oekoFund:'Fundamentale Nische', oekoDom:'dominierend', oekoBeigem:'beigemischt', oekoVerein:'vereinzelt',
+    morphBorke:'Borke', morphKnospe:'Knospe', morphBlatt:'Blatt', morphBluete:'Blütenstand', morphFrucht:'Frucht',
+    subWachstum:'Wachstum & Stamm', subWinterzweig:'Winterzweig', subBlatt:'Blatt', subBlueteFrucht:'Blüte / Frucht',
+    subGrundlegendes:'Grundlegendes', subVerbreitung:'Verbreitung & Standort', subFortpflanzung:'Fortpflanzung & Keimung', subArtbeziehungen:'Artbeziehungen',
+    taxLatein:'Artname lateinisch', taxName:'Artname', taxSynonymDe:'Synonym Deutsch', taxKuerzel:'Kürzel',
+    taxAbteilung:'Abteilung', taxUnterklasse:'Unterklasse', taxOrdnung:'Ordnung', taxFamilie:'Familie', taxGattung:'Gattung', taxArt:'Art',
+    noData:'Keine Daten', noImage:'Kein Bild', lightboxClose:'Schliessen',
+    scaleVerySmall:'sehr klein', scaleSmall:'klein', scaleMedium:'mittel', scaleLarge:'gross', scaleVeryLarge:'sehr gross',
+    physioSchatten:'Schattentoleranz', physioSchattenerzeugung:'Schattenerzeugung',
+    physioKaelte:'Kältetoleranz', physioSpaetfrost:'Spätfrosttoleranz', physioTrocken:'Trockenheitstoleranz',
+    physioNaesse:'Nässetoleranz', physioNaehrstoff:'Nährstoffarmutstoleranz', physioStreu:'Streuabbaubarkeit',
+    einflWild:'Einfluss Wild', einflSchaedlinge:'Einfluss Schädlinge', einflNuetzlinge:'Einfluss Nützlinge',
+    traitsTitle:'Arteigenschaften',
+  },
+  fr: {
+    selectLabel:'Choisir l\'essence', selectPlaceholder:'– Veuillez choisir une essence –',
+    emptyMsg:'Choisissez une essence dans le menu déroulant.',
+    accUeberblick:'Aperçu', accTaxonomie:'Taxonomie', accMorphologie:'Morphologie', accOekologie:'Écologie',
+    subArteOeko:'Propriétés de l\'espèce & Écogramme', imgVerbreitung:'Répartition générale', imgOekogramm:'Écogramme',
+    oekoLegend:'Légende', oekoFund:'Niche fondamentale', oekoDom:'dominant', oekoBeigem:'mélangé', oekoVerein:'dispersé',
+    morphBorke:'Écorce', morphKnospe:'Bourgeon', morphBlatt:'Feuille', morphBluete:'Inflorescence', morphFrucht:'Fruit',
+    subWachstum:'Croissance & Tronc', subWinterzweig:'Rameau hivernal', subBlatt:'Feuille', subBlueteFrucht:'Fleur / Fruit',
+    subGrundlegendes:'Informations générales', subVerbreitung:'Répartition & Station', subFortpflanzung:'Reproduction & Germination', subArtbeziehungen:'Relations interspécifiques',
+    taxLatein:'Nom latin', taxName:'Nom', taxSynonymDe:'Synonyme allemand', taxKuerzel:'Abréviation',
+    taxAbteilung:'Division', taxUnterklasse:'Sous-classe', taxOrdnung:'Ordre', taxFamilie:'Famille', taxGattung:'Genre', taxArt:'Espèce',
+    noData:'Aucune donnée', noImage:'Pas d\'image', lightboxClose:'Fermer',
+    scaleVerySmall:'très petit', scaleSmall:'petit', scaleMedium:'moyen', scaleLarge:'grand', scaleVeryLarge:'très grand',
+    physioSchatten:'Tolérance à l\'ombre', physioSchattenerzeugung:'Production d\'ombre',
+    physioKaelte:'Tolérance au froid', physioSpaetfrost:'Tolérance aux gelées tardives', physioTrocken:'Tolérance à la sécheresse',
+    physioNaesse:'Tolérance à l\'humidité', physioNaehrstoff:'Tolérance à la pauvreté en nutriments', physioStreu:'Décomposabilité de la litière',
+    einflWild:'Influence faune sauvage', einflSchaedlinge:'Influence ravageurs', einflNuetzlinge:'Influence organismes utiles',
+    traitsTitle:'Propriétés de l\'espèce',
+  },
+  it: {
+    selectLabel:'Seleziona la specie', selectPlaceholder:'– Seleziona una specie –',
+    emptyMsg:'Seleziona una specie arborea dal menu a discesa.',
+    accUeberblick:'Panoramica', accTaxonomie:'Tassonomia', accMorphologie:'Morfologia', accOekologie:'Ecologia',
+    subArteOeko:'Proprietà della specie & Ecogramma', imgVerbreitung:'Distribuzione generale', imgOekogramm:'Ecogramma',
+    oekoLegend:'Legenda', oekoFund:'Nicchia fondamentale', oekoDom:'dominante', oekoBeigem:'misto', oekoVerein:'sparso',
+    morphBorke:'Corteccia', morphKnospe:'Gemma', morphBlatt:'Foglia', morphBluete:'Infiorescenza', morphFrucht:'Frutto',
+    subWachstum:'Crescita & Fusto', subWinterzweig:'Ramoscello invernale', subBlatt:'Foglia', subBlueteFrucht:'Fiore / Frutto',
+    subGrundlegendes:'Informazioni generali', subVerbreitung:'Distribuzione & Stazione', subFortpflanzung:'Riproduzione & Germinazione', subArtbeziehungen:'Relazioni interspecifiche',
+    taxLatein:'Nome latino', taxName:'Nome', taxSynonymDe:'Sinonimo tedesco', taxKuerzel:'Abbreviazione',
+    taxAbteilung:'Divisione', taxUnterklasse:'Sottoclasse', taxOrdnung:'Ordine', taxFamilie:'Famiglia', taxGattung:'Genere', taxArt:'Specie',
+    noData:'Nessun dato', noImage:'Nessuna immagine', lightboxClose:'Chiudi',
+    scaleVerySmall:'molto piccolo', scaleSmall:'piccolo', scaleMedium:'medio', scaleLarge:'grande', scaleVeryLarge:'molto grande',
+    physioSchatten:'Tolleranza all\'ombra', physioSchattenerzeugung:'Produzione d\'ombra',
+    physioKaelte:'Tolleranza al freddo', physioSpaetfrost:'Tolleranza alle gelate tardive', physioTrocken:'Tolleranza alla siccità',
+    physioNaesse:'Tolleranza all\'umidità', physioNaehrstoff:'Tolleranza alla povertà di nutrienti', physioStreu:'Decomponibilità della lettiera',
+    einflWild:'Influenza fauna selvatica', einflSchaedlinge:'Influenza parassiti', einflNuetzlinge:'Influenza organismi utili',
+    traitsTitle:'Proprietà della specie',
+  },
+  en: {
+    selectLabel:'Select tree species', selectPlaceholder:'– Please select a species –',
+    emptyMsg:'Select a tree species from the dropdown menu.',
+    accUeberblick:'Overview', accTaxonomie:'Taxonomy', accMorphologie:'Morphology', accOekologie:'Ecology',
+    subArteOeko:'Species traits & Ecogram', imgVerbreitung:'General distribution', imgOekogramm:'Ecogram',
+    oekoLegend:'Legend', oekoFund:'Fundamental niche', oekoDom:'dominant', oekoBeigem:'mixed', oekoVerein:'scattered',
+    morphBorke:'Bark', morphKnospe:'Bud', morphBlatt:'Leaf', morphBluete:'Inflorescence', morphFrucht:'Fruit',
+    subWachstum:'Growth & Stem', subWinterzweig:'Winter twig', subBlatt:'Leaf', subBlueteFrucht:'Flower / Fruit',
+    subGrundlegendes:'General information', subVerbreitung:'Distribution & Site', subFortpflanzung:'Reproduction & Germination', subArtbeziehungen:'Species relationships',
+    taxLatein:'Latin name', taxName:'Common name', taxSynonymDe:'German synonym', taxKuerzel:'Abbreviation',
+    taxAbteilung:'Division', taxUnterklasse:'Subclass', taxOrdnung:'Order', taxFamilie:'Family', taxGattung:'Genus', taxArt:'Species',
+    noData:'No data', noImage:'No image', lightboxClose:'Close',
+    scaleVerySmall:'very small', scaleSmall:'small', scaleMedium:'medium', scaleLarge:'large', scaleVeryLarge:'very large',
+    physioSchatten:'Shade tolerance', physioSchattenerzeugung:'Shade production',
+    physioKaelte:'Cold tolerance', physioSpaetfrost:'Late frost tolerance', physioTrocken:'Drought tolerance',
+    physioNaesse:'Waterlogging tolerance', physioNaehrstoff:'Nutrient poverty tolerance', physioStreu:'Litter decomposability',
+    einflWild:'Wildlife influence', einflSchaedlinge:'Pest influence', einflNuetzlinge:'Beneficial organism influence',
+    traitsTitle:'Species traits',
+  },
+};
+
+/* ── Scale / trait definitions ───────────────────────────── */
+var SCALE_KEYS  = ['sehr klein','klein','mittel','gross','sehr gross'];
+var SCALE_TKEYS = ['scaleVerySmall','scaleSmall','scaleMedium','scaleLarge','scaleVeryLarge'];
+
+var PHYSIO_ROWS = [
+  {key:'Schattentoleranz',        tKey:'physioSchatten'},
+  {key:'Schattenerzeugung',       tKey:'physioSchattenerzeugung'},
+  {key:'Kaeltetoleranz',          tKey:'physioKaelte',     dataKey:'K\u00e4ltetoleranz'},
+  {key:'Sp\u00e4tfrosttoleranz',  tKey:'physioSpaetfrost'},
+  {key:'Trockenheitstoleranz',    tKey:'physioTrocken'},
+  {key:'N\u00e4ssetoleranz',      tKey:'physioNaesse'},
+  {key:'N\u00e4hrstoffarmutstoleranz', tKey:'physioNaehrstoff'},
+  {key:'Streuabbaubarkeit',       tKey:'physioStreu'},
+];
+var EINFL_ROWS = [
+  {key:'Einfluss Wild',       tKey:'einflWild'},
+  {key:'Einfluss Sch\u00e4dlinge', tKey:'einflSchaedlinge'},
+  {key:'Einfluss N\u00fctzlinge',  tKey:'einflNuetzlinge'},
+];
+
+/* ── Language state ──────────────────────────────────────── */
+var bpLang = localStorage.getItem('dendromat-lang') || 'de';
+if (!BP_UI[bpLang]) bpLang = 'de';
+
+function bpt(key) {
+  return (BP_UI[bpLang] || BP_UI.de)[key] || BP_UI.de[key] || key;
+}
+
+/* ── DOM refs ────────────────────────────────────────────── */
+var sel   = document.getElementById('sp-sel');
+var port  = document.getElementById('portrait');
+var empty = document.getElementById('bp-empty');
+
+/* ── Helpers ─────────────────────────────────────────────── */
+function bpEsc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function getLangName(sp) {
+  var tax = sp.taxonomie || {};
+  if (bpLang === 'fr') return tax['Name Franz\u00f6sisch'] || sp.german;
+  if (bpLang === 'en') return tax['Name Englisch']         || sp.german;
+  if (bpLang === 'it') return tax['Name Italienisch']      || sp.german;
+  return sp.german;
+}
+
+function translateKey(k) {
+  if (bpLang === 'de') return k;
+  return (DATA_TRANSLATIONS.keys[bpLang] || {})[k] || k;
+}
+
+function translateValue(v) {
+  if (bpLang === 'de') return v;
+  var direct = (DATA_TRANSLATIONS.values[bpLang] || {})[v];
+  if (direct !== undefined) return direct;
+  var result = String(v);
+  var subs = DATA_TRANSLATIONS.wordSubs[bpLang] || [];
+  for (var i = 0; i < subs.length; i++) {
+    result = result.split(subs[i][0]).join(subs[i][1]);
+  }
+  return result;
+}
+
+/* ── Dropdown ────────────────────────────────────────────── */
+function populateDropdown() {
+  var currentVal = sel.value;
+  sel.innerHTML = '<option value="">' + bpt('selectPlaceholder') + '</option>';
+  var species = Object.values(SPECIES_DATA).sort(function(a,b) {
+    return getLangName(a).localeCompare(getLangName(b), bpLang);
+  });
+  species.forEach(function(sp) {
+    var o = document.createElement('option');
+    o.value = sp.latin;
+    o.textContent = getLangName(sp) + ' \u2013 ' + sp.latin;
+    sel.appendChild(o);
+  });
+  sel.value = currentVal;
+}
+
+/* ── Data table ──────────────────────────────────────────── */
+function kvTable(obj) {
+  if (!obj || !Object.keys(obj).length)
+    return '<p class="bp-no-data">' + bpt('noData') + '</p>';
+  var rows = Object.entries(obj).map(function(entry) {
+    return '<tr><td>' + bpEsc(translateKey(entry[0])) + '</td><td>' + bpEsc(translateValue(String(entry[1]))) + '</td></tr>';
+  }).join('');
+  return '<table class="bp-data-table">' + rows + '</table>';
+}
+
+/* ── Taxonomy ────────────────────────────────────────────── */
+function renderTaxonomie(tx) {
+  var nameDe = tx['Name Deutsch']         || '';
+  var nameFr = tx['Name Franz\u00f6sisch']|| '';
+  var nameIt = tx['Name Italienisch']     || '';
+  var nameEn = tx['Name Englisch']        || '';
+  var opts = [
+    nameDe ? '<option value="' + bpEsc(nameDe) + '">\uD83C\uDDE9\uD83C\uDDEA ' + bpEsc(nameDe) + '</option>' : '',
+    nameFr ? '<option value="' + bpEsc(nameFr) + '">\uD83C\uDDEB\uD83C\uDDF7 ' + bpEsc(nameFr) + '</option>' : '',
+    nameIt ? '<option value="' + bpEsc(nameIt) + '">\uD83C\uDDEE\uD83C\uDDF9 ' + bpEsc(nameIt) + '</option>' : '',
+    nameEn ? '<option value="' + bpEsc(nameEn) + '">\uD83C\uDDEC\uD83C\uDDE7 ' + bpEsc(nameEn) + '</option>' : '',
+  ].join('');
+
+  var html = '<div class="bp-tax-names">'
+    + '<div class="bp-tax-item"><label>' + bpt('taxLatein') + '</label><span class="bp-tax-val bp-tax-val--latin">' + bpEsc(tx['Taxon']||'') + '</span></div>'
+    + '<div class="bp-tax-item"><label>' + bpt('taxName') + '</label><select class="bp-lang-sel">' + opts + '</select></div>'
+    + '</div>';
+
+  var rows1 = [];
+  if (tx['Synonym Deutsch']) rows1.push('<tr><td>' + bpt('taxSynonymDe') + '</td><td>' + bpEsc(tx['Synonym Deutsch']) + '</td></tr>');
+  if (tx['K\u00fcrzel'])     rows1.push('<tr><td>' + bpt('taxKuerzel')   + '</td><td>' + bpEsc(tx['K\u00fcrzel'])   + '</td></tr>');
+  if (rows1.length) html += '<table class="bp-data-table">' + rows1.join('') + '</table>';
+
+  html += '<hr class="bp-tax-divider">';
+
+  var rows2 = [];
+  if (tx['Abteilung'])   rows2.push('<tr><td>' + bpt('taxAbteilung')   + '</td><td>' + bpEsc(tx['Abteilung'])   + '</td></tr>');
+  if (tx['Unterklasse']) rows2.push('<tr><td>' + bpt('taxUnterklasse') + '</td><td>' + bpEsc(tx['Unterklasse']) + '</td></tr>');
+  if (tx['Ordnung'])     rows2.push('<tr><td>' + bpt('taxOrdnung')     + '</td><td>' + bpEsc(tx['Ordnung'])     + '</td></tr>');
+  if (tx['Familie'])     rows2.push('<tr><td>' + bpt('taxFamilie')     + '</td><td>' + bpEsc(tx['Familie'])     + '</td></tr>');
+  if (tx['Gattung'])     rows2.push('<tr><td>' + bpt('taxGattung')     + '</td><td>' + bpEsc(tx['Gattung'])     + '</td></tr>');
+  if (tx['Taxon'])       rows2.push('<tr><td>' + bpt('taxArt')         + '</td><td><em>' + bpEsc(tx['Taxon']) + '</em></td></tr>');
+  if (rows2.length) html += '<table class="bp-data-table">' + rows2.join('') + '</table>';
+
+  return html;
+}
+
+/* ── Visual traits scale (replaces table) ───────────────── */
+function traitDots(val) {
+  var idx = SCALE_KEYS.indexOf(val);
+  return SCALE_KEYS.map(function(s, i) {
+    return '<span class="bp-dot' + (i === idx ? ' bp-dot--active' : '') + '"></span>';
+  }).join('');
+}
+
+function traitsViz(sp) {
+  var vals = Object.assign({}, sp.physio_values || {}, sp.einfluss_values || {});
+
+  function makeRows(list) {
+    return list.map(function(row) {
+      /* support both umlaut key and escaped key */
+      var val = vals[row.key] || (row.dataKey ? vals[row.dataKey] : undefined);
+      var scaleIdx = val ? SCALE_KEYS.indexOf(val) : -1;
+      var valLabel = scaleIdx >= 0 ? bpt(SCALE_TKEYS[scaleIdx]) : (val || '–');
+      return '<div class="bp-trait-row">'
+        + '<span class="bp-trait-label">' + bpEsc(bpt(row.tKey)) + '</span>'
+        + '<span class="bp-trait-dots">' + traitDots(val) + '</span>'
+        + '<span class="bp-trait-val">' + bpEsc(valLabel) + '</span>'
+        + '</div>';
+    }).join('');
+  }
+
+  var scaleLabels = SCALE_TKEYS.map(function(tk) {
+    return '<span>' + bpEsc(bpt(tk)) + '</span>';
+  }).join('');
+
+  return '<div class="bp-traits">'
+    + '<div class="bp-trait-scale-header"><span></span>' + scaleLabels + '<span></span></div>'
+    + makeRows(PHYSIO_ROWS)
+    + '<div class="bp-trait-sep"></div>'
+    + makeRows(EINFL_ROWS)
+    + '</div>';
+}
+
+/* ── Distribution + ecogram image tiles ─────────────────── */
+function imgBlock(slug, oekoLabel) {
+  var v = '/baumportraets/images/' + slug + '_verbreitung.jpg';
+  var o = '/baumportraets/images/' + slug + '_oekogramm.jpg';
+  var noImg = bpt('noImage');
+  return '<div class="bp-images-grid">'
+    + '<div class="bp-img-tile"><p class="bp-img-label">' + bpt('imgVerbreitung') + '</p>'
+    + '<img src="' + v + '" alt="' + bpt('imgVerbreitung') + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<div class=bp-img-missing>' + noImg + '</div>\'"></div>'
+    + '<div class="bp-img-tile bp-oeko-panel"><p class="bp-img-label">' + bpt('imgOekogramm') + bpEsc(oekoLabel) + '</p>'
+    + '<img src="' + o + '" alt="' + bpt('imgOekogramm') + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<div class=bp-img-missing>' + noImg + '</div>\'">'
+    + '<div class="bp-oeko-legend"><strong>' + bpt('oekoLegend') + '</strong>'
+    + '<div class="bp-oeko-items">'
+    + '<div class="bp-oeko-item"><span class="bp-oeko-sw bp-oeko-sw--fund"></span>' + bpt('oekoFund') + '</div>'
+    + '<div class="bp-oeko-item"><span class="bp-oeko-sw bp-oeko-sw--dom"></span><em>' + bpt('oekoDom') + '</em></div>'
+    + '<div class="bp-oeko-item"><span class="bp-oeko-sw bp-oeko-sw--beigem"></span><em>' + bpt('oekoBeigem') + '</em></div>'
+    + '<div class="bp-oeko-item"><span class="bp-oeko-sw bp-oeko-sw--verein"></span><em>' + bpt('oekoVerein') + '</em></div>'
+    + '</div></div></div></div>';
+}
+
+/* ── Morphology image tiles ──────────────────────────────── */
+function morphGrid(slug) {
+  var types = [
+    {key:'borke',        tKey:'morphBorke'},
+    {key:'knospe',       tKey:'morphKnospe'},
+    {key:'blatt',        tKey:'morphBlatt'},
+    {key:'bluetenstand', tKey:'morphBluete'},
+    {key:'frucht',       tKey:'morphFrucht'},
+  ];
+  var items = types.map(function(t) {
+    var src = '/baumportraets/images/' + slug + '_' + t.key + '.jpg';
+    return '<div class="bp-morph-tile">'
+      + '<p class="bp-img-label">' + bpt(t.tKey) + '</p>'
+      + '<img src="' + src + '" alt="' + bpt(t.tKey) + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'">'
+      + '</div>';
+  }).join('');
+  return '<div class="bp-morph-grid">' + items + '</div>';
+}
+
+/* ── Accordion helpers ───────────────────────────────────── */
+function acc(icon, label, content) {
+  return '<details><summary><span class="bp-sum-left"><span>' + icon + '</span> ' + label
+    + '</span><span class="bp-chevron" aria-hidden="true">\u203a</span></summary>'
+    + '<div class="bp-acc-body">' + content + '</div></details>';
+}
+function sub(title, html) {
+  return '<div class="bp-subsection"><div class="bp-sub-title">' + title + '</div>' + html + '</div>';
+}
+
+/* ── Description (language-aware) ───────────────────────── */
+function getBeschreibung(sp) {
+  if (bpLang === 'de') return sp.beschreibung;
+  var trans = BESCHREIBUNG_TRANSLATIONS[sp.latin];
+  if (trans && trans[bpLang]) return trans[bpLang];
+  return sp.beschreibung;
+}
+
+/* ── Main render ─────────────────────────────────────────── */
+function renderPortrait(sp) {
+  var oekoLabel = sp.oekogramm_label ? ' (' + translateValue(sp.oekogramm_label) + ')' : '';
+
+  var ueberblick = sub(bpt('subArteOeko'),
+    imgBlock(sp.slug, oekoLabel) + '<br>' + traitsViz(sp)
+  );
+
+  var morphologie = [
+    morphGrid(sp.slug),
+    sub(bpt('subWachstum'),     kvTable(sp.wachstum_stamm)),
+    sub(bpt('subWinterzweig'),  kvTable(sp.winterzweig)),
+    sub(bpt('subBlatt'),        kvTable(sp.blatt)),
+    sub(bpt('subBlueteFrucht'), kvTable(sp.bluete_frucht)),
+  ].join('');
+
+  var oekologie = [
+    sub(bpt('subGrundlegendes'),  kvTable(sp.grundlegendes)),
+    sub(bpt('subVerbreitung'),    kvTable(sp.verbreitung)),
+    sub(bpt('subFortpflanzung'),  kvTable(sp.fortpflanzung)),
+    sub(bpt('subArtbeziehungen'), kvTable(sp.artbeziehungen)),
+  ].join('');
+
+  return '<div class="bp-p-header">'
+    + '<h2 class="bp-p-name">' + bpEsc(getLangName(sp)) + '</h2>'
+    + '<div class="bp-p-latin">' + bpEsc(sp.latin) + '</div>'
+    + '</div>'
+    + '<div class="bp-p-desc">' + bpEsc(getBeschreibung(sp)) + '</div>'
+    + '<div class="bp-accordion">'
+    + acc('\uD83D\uDCCB', bpt('accUeberblick'),  ueberblick)
+    + acc('\uD83D\uDD2C', bpt('accTaxonomie'),   renderTaxonomie(sp.taxonomie||{}))
+    + acc('\uD83C\uDF3F', bpt('accMorphologie'), morphologie)
+    + acc('\uD83C\uDF0D', bpt('accOekologie'),   oekologie)
+    + '</div>';
+}
+
+/* ── Apply language ──────────────────────────────────────── */
+function bpApplyLanguage() {
+  document.getElementById('select-label').textContent = bpt('selectLabel');
+  document.getElementById('empty-msg').textContent    = bpt('emptyMsg');
+  document.getElementById('lightbox-close').title     = bpt('lightboxClose');
+  populateDropdown();
+  if (sel.value) port.innerHTML = renderPortrait(SPECIES_DATA[sel.value]);
+}
+
+/* ── Init ────────────────────────────────────────────────── */
+populateDropdown();
+
+/* ── Species selection ───────────────────────────────────── */
+sel.addEventListener('change', function() {
+  var latin = sel.value;
+  if (!latin) { port.innerHTML = ''; empty.style.display = ''; return; }
+  port.innerHTML = renderPortrait(SPECIES_DATA[latin]);
+  empty.style.display = 'none';
+});
+
+/* ── Language sync with Dendromat ────────────────────────── */
+document.addEventListener('dendromat:langchange', function(e) {
+  var lang = e.detail && e.detail.lang;
+  if (lang && BP_UI[lang]) { bpLang = lang; bpApplyLanguage(); }
+});
+
+/* ── Lightbox ────────────────────────────────────────────── */
+var lb    = document.getElementById('lightbox');
+var lbImg = document.getElementById('lightbox-img');
+var lbCl  = document.getElementById('lightbox-close');
+
+function openLb(src, alt) { lbImg.src = src; lbImg.alt = alt; lb.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeLb()         { lb.classList.remove('open'); document.body.style.overflow = ''; }
+
+lb.addEventListener('click',    function(e) { if (e.target !== lbImg) closeLb(); });
+lbCl.addEventListener('click',  closeLb);
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLb(); });
+document.addEventListener('click',   function(e) { if (e.target.matches('.bp-morph-tile img, .bp-img-tile img')) openLb(e.target.src, e.target.alt); });
+</script>
+
 <style>
+  /* ── Static elements (scoped) ───────────────────────────── */
   .tool-page__hero {
     background: linear-gradient(135deg, var(--clr-green-dark), var(--clr-green-mid));
-    padding: var(--space-xl) 0 var(--space-lg);
+    padding: var(--space-lg) 0;
     color: var(--clr-white);
   }
+  .breadcrumb { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--clr-green-pale); margin-bottom: var(--space-sm); flex-wrap: wrap; }
+  .breadcrumb a { color: var(--clr-green-light); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--clr-yellow); }
+  .tool-page__title { font-size: clamp(1.6rem, 4vw, 2.8rem); color: var(--clr-white); margin-bottom: 0.35rem; }
+  .tool-page__lead  { font-size: 1rem; color: var(--clr-green-pale); max-width: 65ch; line-height: 1.6; }
 
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    color: var(--clr-green-pale);
-    margin-bottom: var(--space-md);
-    flex-wrap: wrap;
+  .attribution { background: #fffbf0; border-bottom: 1px solid #e8d9a0; padding: 0.75rem 0; font-size: 0.8rem; }
+  .attribution__inner { display: flex; align-items: flex-start; gap: 0.75rem; }
+  .attribution__icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .attribution__text { color: #5a4a00; line-height: 1.6; }
+  .attribution__text strong { display: block; margin-bottom: 0.25rem; color: #3d3300; }
+  .attribution__ref { display: block; margin-top: 0.2rem; padding-left: 0.75rem; border-left: 2px solid #c8b040; }
+  .attribution__ref + .attribution__ref { margin-top: 0.4rem; }
+  .attribution a { color: #7a6000; }
+
+  .tool-body { padding: var(--space-lg) 0 var(--space-xl); background: var(--clr-offwhite); min-height: 60vh; }
+
+  .select-wrap { margin-bottom: var(--space-lg); }
+  .select-wrap label { display: block; font-weight: 600; color: var(--clr-green-deep); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  select#sp-sel {
+    width: 100%; max-width: 620px; padding: 0.75rem 2.5rem 0.75rem 1rem; font-size: 1.05rem;
+    border: 2px solid var(--clr-green-light); border-radius: 10px;
+    background: var(--clr-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232a5c28' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 1rem center;
+    appearance: none; cursor: pointer; color: var(--clr-text); transition: border-color 0.2s, box-shadow 0.2s;
   }
+  select#sp-sel:focus { outline: none; border-color: var(--clr-green-mid); box-shadow: 0 0 0 3px rgba(46,104,48,0.15); }
 
-  .breadcrumb a {
-    color: var(--clr-green-light);
-    text-decoration: none;
+  .bp-empty { text-align: center; padding: 4rem 1rem; color: var(--clr-text-muted); }
+  .bp-empty__icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
+
+  #portrait { max-width: 900px; }
+
+  /* ── Lightbox ───────────────────────────────────────────── */
+  #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
+  #lightbox.open { display: flex; }
+  #lightbox img { max-width: 92vw; max-height: 90vh; border-radius: 6px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default; }
+  #lightbox-close { position: absolute; top: 1rem; right: 1.25rem; color: #fff; font-size: 2rem; line-height: 1; cursor: pointer; opacity: 0.8; user-select: none; }
+  #lightbox-close:hover { opacity: 1; }
+
+  /* ══ Dynamic content styles — :global() so they apply to JS-rendered HTML ══ */
+
+  /* ── Portrait header ─────────────────────────────────────── */
+  :global(.bp-p-header) { background: linear-gradient(135deg, var(--clr-green-dark), var(--clr-green-mid)); color: var(--clr-white); border-radius: 10px 10px 0 0; padding: 1.5rem 2rem; }
+  :global(.bp-p-name)   { font-family: var(--font-serif); font-size: 2rem; font-weight: 700; }
+  :global(.bp-p-latin)  { font-style: italic; opacity: 0.8; font-size: 1.05rem; margin-top: 0.15rem; }
+  :global(.bp-p-desc)   { background: #fff; border: 1px solid #d8e8d8; border-top: none; padding: 1.25rem 2rem; color: var(--clr-text-muted); font-size: 0.97rem; line-height: 1.75; }
+
+  /* ── Accordion ───────────────────────────────────────────── */
+  :global(.bp-accordion)            { border: 1px solid #d8e8d8; border-top: none; border-radius: 0 0 10px 10px; overflow: hidden; }
+  :global(.bp-accordion details)    { border-top: 1px solid #d8e8d8; }
+  :global(.bp-accordion summary)    { list-style: none; display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 2rem; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--clr-green-deep); background: #fff; user-select: none; transition: background 0.15s; }
+  :global(.bp-accordion summary::-webkit-details-marker) { display: none; }
+  :global(.bp-accordion summary:hover)                   { background: var(--clr-green-bg); }
+  :global(.bp-accordion details[open] > summary)         { background: var(--clr-green-bg); }
+  :global(.bp-sum-left)  { display: flex; align-items: center; gap: 0.6rem; }
+  :global(.bp-chevron)   { color: var(--clr-green-mid); font-size: 1.1rem; transition: transform 0.2s; }
+  :global(.bp-accordion details[open] > summary .bp-chevron) { transform: rotate(90deg); }
+  :global(.bp-acc-body)  { background: #fff; padding: 1.25rem 2rem 1.5rem; }
+  :global(.bp-subsection + .bp-subsection) { margin-top: 1.5rem; }
+  :global(.bp-sub-title) { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #7a5c3a; border-bottom: 1px solid #d8e8d8; padding-bottom: 0.3rem; margin-bottom: 0.75rem; }
+
+  /* ── Data table ─────────────────────────────────────────── */
+  :global(.bp-data-table)                          { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  :global(.bp-data-table tr:not(:last-child) td)   { border-bottom: 1px solid #edf2ed; }
+  :global(.bp-data-table td)                       { padding: 0.4rem 0.5rem; vertical-align: top; }
+  :global(.bp-data-table td:first-child)           { color: var(--clr-text-muted); font-size: 0.8rem; font-weight: 500; width: 40%; padding-right: 1rem; }
+  :global(.bp-no-data)                             { color: #aaa; font-size: 0.85rem; }
+
+  /* ── Taxonomy ────────────────────────────────────────────── */
+  :global(.bp-tax-names)       { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem; margin-bottom: 0.8rem; }
+  :global(.bp-tax-item label)  { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--clr-text-muted); display: block; margin-bottom: 0.15rem; }
+  :global(.bp-tax-val)         { font-size: 1rem; font-weight: 600; color: var(--clr-text); }
+  :global(.bp-tax-val--latin)  { font-style: italic; }
+  :global(.bp-tax-divider)     { border: none; border-top: 1px solid #d8e8d8; margin: 0.8rem 0; }
+  :global(.bp-lang-sel)        { font-size: 0.85rem; border: 1px solid #d8e8d8; border-radius: 4px; padding: 0.15rem 0.4rem; background: #fff; cursor: pointer; }
+
+  /* ── Visual traits scale ─────────────────────────────────── */
+  :global(.bp-traits)              { font-size: 0.85rem; }
+  :global(.bp-trait-scale-header)  { display: grid; grid-template-columns: 1fr auto 80px; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+  :global(.bp-trait-scale-header span) { font-size: 0.68rem; color: var(--clr-text-muted); text-align: center; }
+  :global(.bp-trait-scale-header span:first-child) { text-align: left; }
+  :global(.bp-trait-scale-header span:last-child)  { text-align: right; }
+  :global(.bp-trait-row)   { display: grid; grid-template-columns: 1fr auto 80px; align-items: center; gap: 0.5rem; padding: 0.3rem 0; border-bottom: 1px solid #f0f5f0; }
+  :global(.bp-trait-label) { font-size: 0.82rem; color: var(--clr-text); }
+  :global(.bp-trait-dots)  { display: flex; gap: 5px; align-items: center; justify-content: center; }
+  :global(.bp-dot)         { width: 13px; height: 13px; border-radius: 50%; background: #ddeedd; border: 1.5px solid #b8d4b8; flex-shrink: 0; transition: transform 0.1s; }
+  :global(.bp-dot--active) { background: var(--clr-green-mid); border-color: var(--clr-green-mid); width: 17px; height: 17px; box-shadow: 0 0 0 3px rgba(46,104,48,0.18); }
+  :global(.bp-trait-val)   { font-size: 0.75rem; color: var(--clr-text-muted); text-align: right; }
+  :global(.bp-trait-sep)   { height: 8px; background: #f0f6f0; margin: 0.25rem 0; border-radius: 2px; }
+
+  /* ── Distribution / Ecogram image tiles ─────────────────── */
+  :global(.bp-images-grid)    { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  :global(.bp-img-tile)       { background: #f0f6f0; border-radius: 8px; overflow: hidden; }
+  :global(.bp-img-label)      { font-size: 0.7rem; font-weight: 700; color: var(--clr-text-muted); text-align: center; padding: 0.35rem 0.5rem 0.2rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  :global(.bp-img-tile img)   { width: 100%; height: 180px; object-fit: contain; background: #f8fbf8; display: block; cursor: zoom-in; transition: opacity 0.15s; }
+  :global(.bp-img-tile img:hover) { opacity: 0.88; }
+  :global(.bp-img-missing)    { text-align: center; padding: 2rem; color: #aaa; font-size: 0.85rem; }
+
+  /* ── Ökogramm legend ────────────────────────────────────── */
+  :global(.bp-oeko-panel)   { display: flex; flex-direction: column; }
+  :global(.bp-oeko-legend)  { padding: 0.5rem 0.6rem; background: #fdf5f3; border-top: 1px solid #e8c8be; }
+  :global(.bp-oeko-legend strong) { font-size: 0.7rem; display: block; margin-bottom: 0.3rem; color: #6b3a2a; font-weight: 700; text-transform: uppercase; }
+  :global(.bp-oeko-items)   { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  :global(.bp-oeko-item)    { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; font-size: 0.65rem; color: var(--clr-text-muted); text-align: center; }
+  :global(.bp-oeko-sw)      { width: 30px; height: 14px; border-radius: 2px; }
+  :global(.bp-oeko-sw--fund)   { background: #fff; border: 2px solid #f0b8a8; }
+  :global(.bp-oeko-sw--dom)    { background: #d4826e; }
+  :global(.bp-oeko-sw--beigem) { background: repeating-linear-gradient(45deg,#d4826e 0,#d4826e 3px,#fff 3px,#fff 7px); }
+  :global(.bp-oeko-sw--verein) { background: repeating-linear-gradient(45deg,#bbb 0,#bbb 3px,#fff 3px,#fff 7px); border: 1px solid #ccc; }
+
+  /* ── Morphology tile grid ────────────────────────────────── */
+  :global(.bp-morph-grid)        { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.6rem; margin: 0.5rem 0 1.25rem; }
+  :global(.bp-morph-tile)        { background: #f0f6f0; border-radius: 8px; overflow: hidden; }
+  :global(.bp-morph-tile img)    { width: 100%; height: 110px; object-fit: cover; display: block; cursor: zoom-in; transition: opacity 0.15s; }
+  :global(.bp-morph-tile img:hover) { opacity: 0.85; }
+
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 800px) {
+    :global(.bp-morph-grid) { grid-template-columns: repeat(3,1fr); }
   }
-
-  .breadcrumb a:hover {
-    color: var(--clr-yellow);
-  }
-
-  .tool-page__title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    color: var(--clr-white);
-    margin-bottom: var(--space-sm);
-  }
-
-  .tool-page__lead {
-    font-size: 1.1rem;
-    color: var(--clr-green-pale);
-    max-width: 60ch;
-    line-height: 1.65;
-  }
-
-  .tool-page__body {
-    padding-block: var(--space-xl);
-  }
-
-  /* Placeholder — remove when real tool is built */
-  .placeholder-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: var(--space-md);
-    padding: var(--space-xl);
-    background: var(--clr-white);
-    border: 2px dashed var(--clr-green-light);
-    border-radius: 16px;
-    max-width: 600px;
-    margin-inline: auto;
-  }
-
-  .placeholder-block__icon {
-    font-size: 4rem;
-  }
-
-  .placeholder-block h2 {
-    font-size: 1.4rem;
-    color: var(--clr-green-deep);
-  }
-
-  .placeholder-block p {
-    color: var(--clr-text-muted);
-    max-width: 45ch;
-  }
-
-  .btn-back {
-    display: inline-block;
-    padding: 0.6rem 1.4rem;
-    background: var(--clr-green-dark);
-    color: var(--clr-white);
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: background 0.15s;
-  }
-
-  .btn-back:hover {
-    background: var(--clr-green-mid);
-    color: var(--clr-white);
-    text-decoration: none;
+  @media (max-width: 600px) {
+    :global(.bp-images-grid), :global(.bp-tax-names) { grid-template-columns: 1fr; }
+    :global(.bp-acc-body), :global(.bp-p-header), :global(.bp-p-desc) { padding-left: 1rem; padding-right: 1rem; }
+    :global(.bp-morph-grid) { grid-template-columns: repeat(2,1fr); }
+    :global(.bp-trait-row), :global(.bp-trait-scale-header) { grid-template-columns: 1fr auto 60px; }
   }
 </style>

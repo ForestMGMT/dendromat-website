@@ -110,6 +110,9 @@ function initSwitcher() {
         btn.getAttribute('data-lang') === lang ? 'true' : 'false'
       );
     });
+
+    // Notify other components (e.g. Baumporträts tool) of the language change
+    document.dispatchEvent(new CustomEvent('dendromat:langchange', { detail: { lang } }));
   }
 
   buttons.forEach((btn) => {
