@@ -60,6 +60,17 @@ const navLinks = [
       </ul>
     </nav>
 
+    <!-- Sound toggle (homepage only, hidden by default) -->
+    <button
+      id="sound-toggle"
+      class="navbar__sound"
+      aria-label="Sound einschalten"
+      aria-pressed="false"
+      style="display:none"
+    >
+      🔇
+    </button>
+
     <!-- Language switcher (right side) -->
     <div class="navbar__lang">
       <LanguageSwitcher />
@@ -156,6 +167,26 @@ const navLinks = [
   .navbar__link.active {
     color: var(--clr-yellow);
     border-bottom-color: var(--clr-yellow-mid);
+  }
+
+  /* -------------------------------------------------------
+     Sound toggle button
+  ------------------------------------------------------- */
+  .navbar__sound {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    color: var(--clr-white);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.2rem 0.5rem;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .navbar__sound:hover {
+    border-color: var(--clr-yellow);
+    background: rgba(255,255,255,0.08);
   }
 
   /* -------------------------------------------------------
@@ -274,4 +305,31 @@ const navLinks = [
       link.classList.add('active');
     }
   });
+
+  // -------------------------------------------------------
+  // Sound toggle (homepage only)
+  // -------------------------------------------------------
+  const soundBtn = document.getElementById('sound-toggle');
+  const audio = document.getElementById('bg-audio');
+
+  if (audio && soundBtn) {
+    // Show button only on homepage
+    soundBtn.style.display = 'inline-flex';
+
+    soundBtn.addEventListener('click', () => {
+      const muted = audio.muted;
+      audio.muted = !muted;
+      if (audio.muted) {
+        soundBtn.textContent = '🔇';
+        soundBtn.setAttribute('aria-label', 'Sound einschalten');
+        soundBtn.setAttribute('aria-pressed', 'false');
+      } else {
+        // Resume playback if browser paused it
+        audio.play().catch(() => {});
+        soundBtn.textContent = '🔊';
+        soundBtn.setAttribute('aria-label', 'Sound ausschalten');
+        soundBtn.setAttribute('aria-pressed', 'true');
+      }
+    });
+  }
 </script>
