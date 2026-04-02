@@ -493,6 +493,19 @@ trigger?.addEventListener('click', () => {
 
   if (treeCount === 0) {
     clickHint?.classList.add('hidden');
+
+    // First click — start background audio
+    const audio = document.getElementById('bg-audio');
+    if (audio) {
+      audio.muted = false;
+      audio.play().catch(() => {});
+      const soundBtn = document.getElementById('sound-toggle');
+      if (soundBtn) {
+        soundBtn.textContent = '🔊';
+        soundBtn.setAttribute('aria-label', 'Sound ausschalten');
+        soundBtn.setAttribute('aria-pressed', 'true');
+      }
+    }
   }
 
   const burst = Math.floor(Math.random() * 4) + 2;
