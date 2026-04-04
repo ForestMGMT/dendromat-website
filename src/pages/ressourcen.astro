@@ -1,0 +1,351 @@
+---
+/**
+ * ressourcen.astro — Kuratierte Linksammlung für den Forstbereich
+ *
+ * Links sind direkt hier im Array gepflegt (kein CMS nötig).
+ * Um einen Link hinzuzufügen: einfach einen neuen Eintrag in
+ * der passenden Kategorie ergänzen.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/NavBar.astro';
+import Footer from '../components/Footer.astro';
+
+const CATEGORIES = [
+  {
+    id: 'behoerden',
+    emoji: '🏛️',
+    title: 'Bund & Behörden',
+    links: [
+      {
+        title: 'BAFU',
+        subtitle: 'Bundesamt für Umwelt',
+        url: 'https://www.bafu.admin.ch/bafu/de/home/themen/wald.html',
+        display: 'bafu.admin.ch',
+        desc: 'Waldpolitik, Gesetze, Bundesinventar, Schutzwald, Klimaanpassung',
+      },
+      {
+        title: 'Swisstopo',
+        subtitle: 'Bundesamt für Landestopografie',
+        url: 'https://www.swisstopo.admin.ch',
+        display: 'swisstopo.admin.ch',
+        desc: 'Nationale Geodaten, Karten, map.geo.admin.ch, WMS/WFS-Dienste',
+      },
+      {
+        title: 'WSL',
+        subtitle: 'Eidg. Forschungsanstalt für Wald, Schnee und Landschaft',
+        url: 'https://www.wsl.ch',
+        display: 'wsl.ch',
+        desc: 'Forstliche Forschung, Borkenkäfer-Monitoring, Waldbeobachtung Schweiz, LFI',
+      },
+      {
+        title: 'Landesforstinventar (LFI)',
+        subtitle: '',
+        url: 'https://www.lfi.ch',
+        display: 'lfi.ch',
+        desc: 'Nationale Walddaten, Statistiken, Ergebnistool — unverzichtbar für Fachleute',
+      },
+      {
+        title: 'job-room.ch',
+        subtitle: 'arbeit.swiss / Öffentliche Stellenvermittlung',
+        url: 'https://www.job-room.ch',
+        display: 'job-room.ch',
+        desc: 'Offizielle Stellenmeldepflicht, öffentliche Stellenvermittlung inkl. Forstberufe',
+      },
+    ],
+  },
+  {
+    id: 'verbaende',
+    emoji: '🌲',
+    title: 'Verbände & Branche',
+    links: [
+      {
+        title: 'WaldSchweiz',
+        subtitle: 'Dachverband der Waldeigentümer',
+        url: 'https://www.waldschweiz.ch',
+        display: 'waldschweiz.ch',
+        desc: 'Stellenmarkt, Zeitschrift WALD und HOLZ, Interessenvertretung Waldeigentümer',
+      },
+      {
+        title: 'VSF — Verband Schweizer Forstpersonal',
+        subtitle: '',
+        url: 'https://www.foresters.ch',
+        display: 'foresters.ch',
+        desc: 'Lohnempfehlungen, Stellenportal, Interessenvertretung Forstpersonal',
+      },
+      {
+        title: 'FUS — Verband Schweizer Forstunternehmer',
+        subtitle: '',
+        url: 'https://www.forstunternehmer.ch',
+        display: 'forstunternehmer.ch',
+        desc: 'Branchenverband Forstunternehmer, Tarife, Akkreditierung',
+      },
+      {
+        title: 'Holzindustrie Schweiz',
+        subtitle: '',
+        url: 'https://www.holz-bois.ch',
+        display: 'holz-bois.ch',
+        desc: 'Holzmarkt, Statistiken, Brancheninfos Sägereien und Holzverarbeitung',
+      },
+      {
+        title: 'Lignum',
+        subtitle: 'Holzwirtschaft Schweiz',
+        url: 'https://www.lignum.ch',
+        display: 'lignum.ch',
+        desc: 'Technische Dokumentationen, Normen, Holzwirtschaft Schweiz',
+      },
+    ],
+  },
+  {
+    id: 'ausbildung',
+    emoji: '🎓',
+    title: 'Ausbildung',
+    links: [
+      {
+        title: 'OdA Wald',
+        subtitle: 'Organisation der Arbeitswelt Wald',
+        url: 'https://www.odawald.ch',
+        display: 'odawald.ch',
+        desc: 'Nationale Bildungsorganisation für Forstberufe (Forstwart EFZ, Forstpraktiker EBA), Lehrmittel, Bildungsplan',
+      },
+      {
+        title: 'HAFL',
+        subtitle: 'Hochschule für Agrar-, Forst- und Lebensmittelwissenschaften',
+        url: 'https://www.hafl.bfh.ch',
+        display: 'hafl.bfh.ch',
+        desc: 'Bachelorstudium Forstwirtschaft, Weiterbildung, Forschung',
+      },
+      {
+        title: 'ETH Zürich — Waldwissenschaften',
+        subtitle: 'Dept. Umweltsystemwissenschaften',
+        url: 'https://usys.ethz.ch',
+        display: 'usys.ethz.ch',
+        desc: 'Wissenschaftliche Grundlagen, Masterstudium, Publikationen',
+      },
+      {
+        title: 'BZWL — Bildungszentrum Wald Lyss',
+        subtitle: '',
+        url: 'https://www.bzwlyss.ch',
+        display: 'bzwlyss.ch',
+        desc: 'Berufsschule Forstwart EFZ, Weiterbildung Vorarbeiter, Förster',
+      },
+      {
+        title: 'BZW Maienfeld',
+        subtitle: 'Bildungszentrum Wald Maienfeld',
+        url: 'https://www.bzwmaienfeld.ch',
+        display: 'bzwmaienfeld.ch',
+        desc: 'Berufsschule Forstwart EFZ, Weiterbildung, Kaderausbildung',
+      },
+    ],
+  },
+  {
+    id: 'gis',
+    emoji: '🗺️',
+    title: 'GIS & Geodaten',
+    links: [
+      {
+        title: 'map.geo.admin.ch',
+        subtitle: 'Nationaler Kartenviewer',
+        url: 'https://map.geo.admin.ch',
+        display: 'map.geo.admin.ch',
+        desc: 'Kartenviewer mit Waldlayer, Schutzwald, Forststrassen, LFI-Daten',
+      },
+      {
+        title: 'SOGI',
+        subtitle: 'Schweizerische Organisation für Geo-Information',
+        url: 'https://www.sogi.ch',
+        display: 'sogi.ch',
+        desc: 'Fachverband GIS Schweiz, Weiterbildung, Veranstaltungen',
+      },
+      {
+        title: 'Geodienste Bund',
+        subtitle: 'geo.admin.ch REST-API & WMS/WFS',
+        url: 'https://api3.geo.admin.ch',
+        display: 'api3.geo.admin.ch',
+        desc: 'REST-API und WMS/WFS für alle Bundeslayer — direkt für GIS-Projekte nutzbar',
+      },
+    ],
+  },
+  {
+    id: 'medien',
+    emoji: '📰',
+    title: 'Fachmedien & Wissen',
+    links: [
+      {
+        title: 'Schweizerische Zeitschrift für Forstwesen (SZF)',
+        subtitle: '',
+        url: 'https://www.szf-jfs.org',
+        display: 'szf-jfs.org',
+        desc: 'Peer-reviewed Fachzeitschrift, Open Access für viele Artikel, DE/FR',
+      },
+      {
+        title: 'Waldwissen.net',
+        subtitle: '',
+        url: 'https://www.waldwissen.net',
+        display: 'waldwissen.net',
+        desc: 'Praxisorientierte Fachartikel für Förster und Forstwarte — gemeinsames Portal von WSL, LWF Bayern, FVA Baden-Württemberg und BFW Österreich',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Ressourcen — Dendromat"
+  description="Kuratierte Linksammlung forstlicher Ressourcen: Behörden, Verbände, Ausbildung, GIS und Fachmedien."
+>
+  <NavBar />
+
+  <main class="ressourcen-page container">
+    <header class="page-header">
+      <h1 class="page-title">Linksammlung</h1>
+      <p class="page-subtitle">Kuratierte Ressourcen für den Schweizer Forstbereich</p>
+    </header>
+
+    {CATEGORIES.map(cat => (
+      <section class="category" id={cat.id}>
+        <h2 class="category__title">
+          <span class="category__emoji">{cat.emoji}</span>
+          {cat.title}
+        </h2>
+        <div class="link-grid">
+          {cat.links.map(link => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link-card"
+            >
+              <div class="link-card__body">
+                <span class="link-card__title">{link.title}</span>
+                {link.subtitle && (
+                  <span class="link-card__subtitle">{link.subtitle}</span>
+                )}
+                <span class="link-card__desc">{link.desc}</span>
+              </div>
+              <span class="link-card__url">{link.display} ↗</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .ressourcen-page {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+    max-width: 1100px;
+  }
+
+  /* ── Page header ─────────────────────────────────── */
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--clr-green-dark);
+    margin: 0 0 0.4rem;
+  }
+
+  .page-subtitle {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--clr-text-muted, #666);
+    margin: 0;
+  }
+
+  /* ── Category section ────────────────────────────── */
+  .category {
+    margin-bottom: 3rem;
+  }
+
+  .category__title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--clr-green-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--clr-green-light, #a8cc80);
+  }
+
+  .category__emoji {
+    font-size: 1.1rem;
+  }
+
+  /* ── Link card grid ──────────────────────────────── */
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1.1rem;
+    background: #fff;
+    border: 1px solid #e0e8d8;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+  }
+
+  .link-card:hover {
+    box-shadow: 0 4px 16px rgba(42, 92, 40, 0.12);
+    border-color: var(--clr-green-light, #a8cc80);
+    transform: translateY(-2px);
+  }
+
+  .link-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .link-card__title {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--clr-green-dark);
+  }
+
+  .link-card__subtitle {
+    font-size: 0.78rem;
+    color: #666;
+    font-style: italic;
+  }
+
+  .link-card__desc {
+    font-size: 0.82rem;
+    color: #444;
+    line-height: 1.45;
+    margin-top: 0.3rem;
+  }
+
+  .link-card__url {
+    font-size: 0.75rem;
+    font-family: var(--font-sans);
+    color: var(--clr-green-mid, #3a7a38);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-width: 600px) {
+    .link-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

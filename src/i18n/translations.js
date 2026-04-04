@@ -29,6 +29,7 @@ export const t = {
       timelapse: 'Timelapse Creator',
       baumportraets: 'Baumarten­porträts',
       geodaten: 'Geodaten Downloader',
+      ressourcen: 'Ressourcen',
       about: 'Über uns',       // TODO: add /about page later
       contact: 'Kontakt',     // TODO: add /contact page later
     },
@@ -81,6 +82,7 @@ export const t = {
       timelapse: 'Créateur Timelapse',
       baumportraets: 'Portraits d\'essences',
       geodaten: 'Téléchargeur de géodonnées',
+      ressourcen: 'Ressources',
       about: 'À propos',
       contact: 'Contact',
     },
@@ -131,6 +133,7 @@ export const t = {
       timelapse: 'Creatore Timelapse',
       baumportraets: 'Ritratti di specie arboree',
       geodaten: 'Scaricatore di geodati',
+      ressourcen: 'Risorse',
       about: 'Chi siamo',
       contact: 'Contatto',
     },
@@ -181,6 +184,7 @@ export const t = {
       timelapse: 'Timelapse Creator',
       baumportraets: 'Tree Species Portraits',
       geodaten: 'Geodata Downloader',
+      ressourcen: 'Resources',
       about: 'About',
       contact: 'Contact',
     },
