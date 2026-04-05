@@ -5,6 +5,10 @@
  * Links sind direkt hier im Array gepflegt (kein CMS nötig).
  * Um einen Link hinzuzufügen: einfach einen neuen Eintrag in
  * der passenden Kategorie ergänzen.
+ *
+ * Mehrsprachigkeit: Jedes übersetzte Feld ist ein Objekt { de, fr, it, en }.
+ * Das Page-Script liest die aktive Sprache aus localStorage und tauscht
+ * alle .ml-text-Elemente aus — identisch zum restlichen i18n-System.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavBar from '../components/NavBar.astro';
@@ -14,263 +18,421 @@ const CATEGORIES = [
   {
     id: 'behoerden',
     emoji: '🏛️',
-    title: 'Bund & Behörden',
+    title: { de: 'Bund & Behörden', fr: 'Confédération & Autorités', it: 'Confederazione & Autorità', en: 'Federal Authorities' },
     links: [
       {
         title: 'BAFU',
-        subtitle: 'Bundesamt für Umwelt',
+        subtitle: { de: 'Bundesamt für Umwelt', fr: "Office fédéral de l'environnement", it: "Ufficio federale dell'ambiente", en: 'Federal Office for the Environment' },
         url: 'https://www.bafu.admin.ch/bafu/de/home/themen/wald.html',
         display: 'bafu.admin.ch',
-        desc: 'Waldpolitik, Gesetze, Bundesinventar, Schutzwald, Klimaanpassung',
+        desc: {
+          de: 'Waldpolitik, Gesetze, Bundesinventar, Schutzwald, Klimaanpassung',
+          fr: 'Politique forestière, lois, inventaire fédéral, forêt protectrice, adaptation climatique',
+          it: 'Politica forestale, leggi, inventario federale, foresta protettiva, adattamento climatico',
+          en: 'Forest policy, legislation, federal inventory, protection forests, climate adaptation',
+        },
       },
       {
         title: 'Swisstopo',
-        subtitle: 'Bundesamt für Landestopografie',
+        subtitle: { de: 'Bundesamt für Landestopografie', fr: 'Office fédéral de topographie', it: 'Ufficio federale di topografia', en: 'Federal Office of Topography' },
         url: 'https://www.swisstopo.admin.ch',
         display: 'swisstopo.admin.ch',
-        desc: 'Nationale Geodaten, Karten, WMS/WFS-Dienste',
+        desc: {
+          de: 'Nationale Geodaten, Karten, WMS/WFS-Dienste',
+          fr: 'Géodonnées nationales, cartes, services WMS/WFS',
+          it: 'Geodati nazionali, carte, servizi WMS/WFS',
+          en: 'National geodata, maps, WMS/WFS services',
+        },
       },
       {
         title: 'WSL',
-        subtitle: 'Eidg. Forschungsanstalt für Wald, Schnee und Landschaft',
+        subtitle: { de: 'Eidg. Forschungsanstalt für Wald, Schnee und Landschaft', fr: 'Institut fédéral de recherches sur la forêt, la neige et le paysage', it: 'Istituto federale di ricerca per la foresta, la neve e il paesaggio', en: 'Swiss Federal Institute for Forest, Snow and Landscape Research' },
         url: 'https://www.wsl.ch',
         display: 'wsl.ch',
-        desc: 'Forstliche Forschung, Borkenkäfer-Monitoring, Waldbeobachtung Schweiz, LFI',
+        desc: {
+          de: 'Forstliche Forschung, Borkenkäfer-Monitoring, Waldbeobachtung Schweiz, LFI',
+          fr: 'Recherche forestière, monitoring bostryche, observation des forêts suisses, IFN',
+          it: 'Ricerca forestale, monitoraggio bostrico, osservazione delle foreste svizzere, IFN',
+          en: 'Forest research, bark beetle monitoring, Swiss forest observation, NFI',
+        },
       },
       {
         title: 'Landesforstinventar (LFI)',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.lfi.ch',
         display: 'lfi.ch',
-        desc: 'Nationale Walddaten, Statistiken, Ergebnistool',
+        desc: {
+          de: 'Nationale Walddaten, Statistiken, Ergebnistool',
+          fr: 'Données nationales sur les forêts, statistiques, outil de résultats — indispensable pour les professionnels',
+          it: 'Dati nazionali sulle foreste, statistiche, strumento dei risultati — indispensabile per i professionisti',
+          en: 'National forest data, statistics, results tool — indispensable for professionals',
+        },
       },
     ],
   },
   {
     id: 'verbaende',
     emoji: '🌲',
-    title: 'Verbände & Branche',
+    title: { de: 'Verbände & Branche', fr: 'Associations & Branche', it: 'Associazioni & Settore', en: 'Associations & Industry' },
     links: [
       {
         title: 'WaldSchweiz',
-        subtitle: 'Dachverband der kantonalen Waldeigentümerverbände',
+        subtitle: { de: 'Dachverband der Waldeigentümer', fr: 'Association faîtière des propriétaires de forêts', it: 'Associazione mantello dei proprietari forestali', en: 'Umbrella association of forest owners' },
         url: 'https://www.waldschweiz.ch',
         display: 'waldschweiz.ch',
-        desc: 'Stellenmarkt, Zeitschrift WALD und HOLZ, Interessenvertretung Waldeigentümer',
+        desc: {
+          de: 'Stellenmarkt, Zeitschrift WALD und HOLZ, Interessenvertretung Waldeigentümer',
+          fr: "Bourse d'emploi, revue FORÊT, représentation des propriétaires forestiers",
+          it: 'Offerte di lavoro, rivista FORESTA, rappresentanza dei proprietari forestali',
+          en: 'Job board, FOREST magazine, representation of forest owners',
+        },
       },
       {
         title: 'VSF — Verband Schweizer Forstpersonal',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.foresters.ch',
         display: 'foresters.ch',
-        desc: 'Lohnempfehlungen, Stellenportal, Interessenvertretung Forstpersonal',
+        desc: {
+          de: 'Lohnempfehlungen, Stellenportal, Interessenvertretung Forstpersonal',
+          fr: "Recommandations salariales, portail d'emploi, représentation du personnel forestier",
+          it: 'Raccomandazioni salariali, portale lavoro, rappresentanza del personale forestale',
+          en: 'Salary recommendations, job portal, representation of forestry staff',
+        },
       },
       {
         title: 'FUS — Verband Schweizer Forstunternehmer',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.forstunternehmer.ch',
         display: 'forstunternehmer.ch',
-        desc: 'Branchenverband Forstunternehmer, Tarife, Akkreditierung',
+        desc: {
+          de: 'Branchenverband Forstunternehmer, Tarife, Akkreditierung',
+          fr: "Association des entrepreneurs forestiers, tarifs, accréditation",
+          it: 'Associazione degli imprenditori forestali, tariffe, accreditamento',
+          en: 'Association of forestry contractors, rates, accreditation',
+        },
       },
       {
         title: 'Holzindustrie Schweiz',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.holz-bois.ch',
         display: 'holz-bois.ch',
-        desc: 'Holzmarkt, Statistiken, Brancheninfos Sägereien und Holzverarbeitung',
+        desc: {
+          de: 'Holzmarkt, Statistiken, Brancheninfos Sägereien und Holzverarbeitung',
+          fr: 'Marché du bois, statistiques, informations sectorielles scieries et transformation du bois',
+          it: 'Mercato del legno, statistiche, informazioni di settore segherie e trasformazione del legno',
+          en: 'Timber market, statistics, industry information for sawmills and wood processing',
+        },
       },
       {
         title: 'Lignum',
-        subtitle: 'Holzwirtschaft Schweiz',
+        subtitle: { de: 'Holzwirtschaft Schweiz', fr: 'Économie suisse du bois', it: 'Economia svizzera del legno', en: 'Swiss timber economy' },
         url: 'https://www.lignum.ch',
         display: 'lignum.ch',
-        desc: 'Technische Dokumentationen, Normen, Holzwirtschaft Schweiz',
+        desc: {
+          de: 'Technische Dokumentationen, Normen, Holzwirtschaft Schweiz',
+          fr: 'Documentations techniques, normes, économie suisse du bois',
+          it: 'Documentazioni tecniche, norme, economia svizzera del legno',
+          en: 'Technical documentation, standards, Swiss timber economy',
+        },
       },
     ],
   },
   {
     id: 'ausbildung',
     emoji: '🎓',
-    title: 'Ausbildung',
+    title: { de: 'Ausbildung', fr: 'Formation', it: 'Formazione', en: 'Education' },
     links: [
       {
         title: 'OdA Wald',
-        subtitle: 'Organisation der Arbeitswelt Wald',
+        subtitle: { de: 'Organisation der Arbeitswelt Wald', fr: 'Organisation du monde du travail Forêt', it: 'Organizzazione del mondo del lavoro Foresta', en: 'Forest Vocational Training Organisation' },
         url: 'https://www.odawald.ch',
         display: 'odawald.ch',
-        desc: 'Nationale Bildungsorganisation für Forstberufe (Forstwart EFZ, Forstpraktiker EBA), Lehrmittel, Bildungsplan',
+        desc: {
+          de: 'Nationale Bildungsorganisation für Forstberufe (Forstwart EFZ, Forstpraktiker EBA), Lehrmittel, Bildungsplan',
+          fr: "Organisation nationale de formation pour les métiers forestiers (bûcheron-sylviculteur CFC, praticien forestier AFP), matériel didactique, plan de formation",
+          it: 'Organizzazione nazionale di formazione per le professioni forestali (boscaiolo-silvicolture AFC, praticante forestale CFP), materiale didattico, piano di formazione',
+          en: 'National training organisation for forestry professions (forestry worker EFZ, forestry practitioner EBA), teaching materials, training plan',
+        },
       },
       {
         title: 'HAFL',
-        subtitle: 'Hochschule für Agrar-, Forst- und Lebensmittelwissenschaften',
+        subtitle: { de: 'Hochschule für Agrar-, Forst- und Lebensmittelwissenschaften', fr: 'Haute école des sciences agronomiques, forestières et alimentaires', it: 'Scuola universitaria professionale di scienze agrarie, forestali e alimentari', en: 'School of Agricultural, Forest and Food Sciences' },
         url: 'https://www.hafl.bfh.ch',
         display: 'hafl.bfh.ch',
-        desc: 'Bachelor- und Masterstudium Waldwissenschaften, Weiterbildung, Forschung',
+        desc: {
+          de: 'Bachelorstudium Forstwirtschaft, Weiterbildung, Forschung',
+          fr: 'Bachelor en foresterie, formation continue, recherche',
+          it: 'Bachelor in scienze forestali, formazione continua, ricerca',
+          en: 'Bachelor in forestry, continuing education, research',
+        },
       },
       {
         title: 'ETH Zürich — Waldwissenschaften',
-        subtitle: 'Dept. Umweltsystemwissenschaften',
+        subtitle: { de: 'Dept. Umweltsystemwissenschaften', fr: 'Dept. Sciences des systèmes environnementaux', it: 'Dept. Scienze dei sistemi ambientali', en: 'Dept. Environmental Systems Science' },
         url: 'https://usys.ethz.ch',
         display: 'usys.ethz.ch',
-        desc: 'Bachelor- und Masterstudium Umweltnaturwissenschaften, Publikationen',
+        desc: {
+          de: 'Wissenschaftliche Grundlagen, Masterstudium, Publikationen',
+          fr: 'Fondements scientifiques, master, publications',
+          it: 'Basi scientifiche, master, pubblicazioni',
+          en: 'Scientific foundations, master\'s programme, publications',
+        },
       },
       {
-        title: 'BZWL Lyss',
-        subtitle: 'Bildungszentrum Wald Lyss',
+        title: 'BZWL — Bildungszentrum Wald Lyss',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.bzwlyss.ch',
         display: 'bzwlyss.ch',
-        desc: 'Ausbildungsgänge Förster HF, Vorstwart-Vorarbeiter, Ranger und Weiterbildungen im Forstbereich',
+        desc: {
+          de: 'Berufsschule Forstwart EFZ, Weiterbildung Vorarbeiter, Förster',
+          fr: 'École professionnelle bûcheron-sylviculteur CFC, formation continue chef d\'équipe, forestier',
+          it: 'Scuola professionale boscaiolo-silvicolture AFC, formazione continua caposquadra, guardia forestale',
+          en: 'Vocational school for forestry workers, further training for supervisors and foresters',
+        },
       },
       {
         title: 'BZW Maienfeld',
-        subtitle: 'Bildungszentrum Wald Maienfeld',
+        subtitle: { de: 'Bildungszentrum Wald Maienfeld', fr: 'Centre de formation forestière Maienfeld', it: 'Centro di formazione forestale Maienfeld', en: 'Forest Training Centre Maienfeld' },
         url: 'https://www.bzwmaienfeld.ch',
         display: 'bzwmaienfeld.ch',
-        desc: 'Ausbildungsgänge Förster HF, Vorstwart-Vorarbeiter, Ranger und Weiterbildungen im Forstbereich',
+        desc: {
+          de: 'Berufsschule Forstwart EFZ, Weiterbildung, Kaderausbildung',
+          fr: 'École professionnelle bûcheron-sylviculteur CFC, formation continue, formation des cadres',
+          it: 'Scuola professionale boscaiolo-silvicolture AFC, formazione continua, formazione dei quadri',
+          en: 'Vocational school for forestry workers, continuing education, management training',
+        },
       },
       {
         title: 'CODOC',
-        subtitle: 'Dokumentation für den Schweizer Forstbereich',
+        subtitle: { de: 'Dokumentation für den Schweizer Forstbereich', fr: 'Documentation pour le secteur forestier suisse', it: 'Documentazione per il settore forestale svizzero', en: 'Documentation for the Swiss forestry sector' },
         url: 'http://www.codoc.ch',
         display: 'codoc.ch',
-        desc: 'Fachstelle für forstliche Bildung und Dokumentationsplattform für forstliche Fachliteratur',
+        desc: {
+          de: 'Fachbibliothek und Dokumentationsplattform für forstliche Fachliteratur und Berichte',
+          fr: 'Bibliothèque spécialisée et plateforme de documentation pour la littérature forestière et les rapports',
+          it: 'Biblioteca specializzata e piattaforma di documentazione per la letteratura forestale e i rapporti',
+          en: 'Specialist library and documentation platform for forestry literature and reports',
+        },
       },
     ],
   },
   {
     id: 'gis',
     emoji: '🗺️',
-    title: 'GIS & Geodaten',
+    title: { de: 'GIS & Geodaten', fr: 'SIG & Géodonnées', it: 'GIS & Geodati', en: 'GIS & Geodata' },
     links: [
       {
         title: 'map.geo.admin.ch',
-        subtitle: 'Nationaler Kartenviewer',
+        subtitle: { de: 'Nationaler Kartenviewer', fr: 'Visionneuse de cartes nationale', it: 'Visualizzatore di mappe nazionale', en: 'National map viewer' },
         url: 'https://map.geo.admin.ch',
         display: 'map.geo.admin.ch',
-        desc: 'Kartenviewer mit Waldlayer, Schutzwald, Waldstrassen, LFI-Daten',
+        desc: {
+          de: 'Kartenviewer mit Waldlayer, Schutzwald, Forststrassen, LFI-Daten',
+          fr: 'Visionneuse avec couches forêt, forêt protectrice, routes forestières, données IFN',
+          it: 'Visualizzatore con strati foresta, foresta protettiva, strade forestali, dati IFN',
+          en: 'Map viewer with forest layer, protection forests, forest roads, NFI data',
+        },
       },
       {
         title: 'Planfor',
-        subtitle: 'Plattform für digitale Planungstools in der Waldbewirtschaftung',
+        subtitle: { de: 'Forstliches Planungstool', fr: 'Outil de planification forestière', it: 'Strumento di pianificazione forestale', en: 'Forest planning tool' },
         url: 'https://www.planfor.ch',
         display: 'planfor.ch',
-        desc: 'Toolsammlung und Fachartikel rund um die Waldplanung',
+        desc: {
+          de: 'Digitales Planungstool für die Schweizer Forstwirtschaft',
+          fr: 'Outil de planification numérique pour la foresterie suisse',
+          it: 'Strumento di pianificazione digitale per la silvicoltura svizzera',
+          en: 'Digital planning tool for Swiss forestry',
+        },
       },
     ],
   },
   {
     id: 'tools',
     emoji: '🛠️',
-    title: 'Tools',
+    title: { de: 'Tools', fr: 'Outils', it: 'Strumenti', en: 'Tools' },
     links: [
       {
         title: 'Tree-App',
-        subtitle: 'Baumarten-Entscheidungshilfe',
+        subtitle: { de: 'WSL Baumarten-Entscheidungshilfe', fr: 'Aide à la décision WSL pour les essences', it: 'Supporto decisionale WSL per le specie arboree', en: 'WSL tree species decision tool' },
         url: 'https://www.tree-app.ch',
         display: 'tree-app.ch',
-        desc: 'Interaktives Tool zur standortgerechten Baumartenwahl unter aktuellem und künftigem Klima',
+        desc: {
+          de: 'Interaktives Tool der WSL zur standortgerechten Baumartenwahl unter aktuellem und künftigem Klima',
+          fr: "Outil interactif du WSL pour le choix des essences adapté à la station sous le climat actuel et futur",
+          it: 'Strumento interattivo del WSL per la scelta delle specie arboree adatte alla stazione sotto il clima attuale e futuro',
+          en: 'Interactive WSL tool for site-appropriate tree species selection under current and future climate',
+        },
       },
       {
         title: 'MOTI',
-        subtitle: 'Bestandesaufnahme und Monitoring',
+        subtitle: { de: 'Bestandesaufnahme und Monitoring', fr: 'Inventaire et monitoring des peuplements', it: 'Inventario e monitoraggio dei popolamenti', en: 'Stand inventory and monitoring' },
         url: 'https://www.moti.ch',
         display: 'moti.ch',
-        desc: 'Digitales Tool für Bestandesaufnahmen (G, N, V) und nicht-permanente Stichprobeninventuren',
+        desc: {
+          de: 'Digitales Tool für forstliche Bestandesaufnahmen und Waldmonitoring',
+          fr: 'Outil numérique pour les inventaires forestiers et le monitoring forestier',
+          it: 'Strumento digitale per gli inventari forestali e il monitoraggio forestale',
+          en: 'Digital tool for forest stand inventories and forest monitoring',
+        },
       },
       {
         title: 'HeProMo',
-        subtitle: 'WSL Holzernteproduktivität',
+        subtitle: { de: 'WSL Holzernteproduktivität', fr: 'Productivité de la récolte de bois WSL', it: 'Produttività della raccolta del legno WSL', en: 'WSL timber harvesting productivity' },
         url: 'https://www.wsl.ch/de/services-produkte/hepromo/',
         display: 'wsl.ch › hepromo',
-        desc: 'Kostenalkulationsmodell der WSL für Holzerntekosten verschiedener Ernteverfahren',
+        desc: {
+          de: 'Kalkulationsmodell der WSL für Holzernteproduktivität und -kosten verschiedener Ernteverfahren',
+          fr: 'Modèle de calcul du WSL pour la productivité et les coûts de récolte de bois selon différentes méthodes',
+          it: 'Modello di calcolo del WSL per la produttività e i costi della raccolta del legno con diversi metodi',
+          en: 'WSL calculation model for timber harvesting productivity and costs of different harvesting methods',
+        },
       },
       {
         title: 'JuWaPfl',
-        subtitle: 'WSL Jungwaldpflege',
+        subtitle: { de: 'WSL Jungwaldpflege', fr: 'Soins aux jeunes forêts WSL', it: 'Cure alle giovani foreste WSL', en: 'WSL young forest care' },
         url: 'https://www.wsl.ch/de/services-produkte/juwapfl/',
         display: 'wsl.ch › juwapfl',
-        desc: 'Kostenkalkulationsmodell der WSL für Bestandesbegründung und Jungwaldpflege',
+        desc: {
+          de: 'Entscheidungshilfe der WSL für die Planung und Beurteilung von Jungwaldpflegeeingriffen',
+          fr: "Aide à la décision du WSL pour la planification et l'évaluation des interventions d'entretien des jeunes forêts",
+          it: 'Supporto decisionale del WSL per la pianificazione e la valutazione degli interventi di cura delle giovani foreste',
+          en: 'WSL decision support for planning and evaluating young forest tending interventions',
+        },
       },
       {
         title: 'Seilaplan',
-        subtitle: 'WSL Seillinienplanung',
+        subtitle: { de: 'WSL Seillinienplanung', fr: 'Planification de câble-grue WSL', it: 'Pianificazione gru a cavo WSL', en: 'WSL cable crane planning' },
         url: 'https://seilaplan.wsl.ch/de/',
         display: 'seilaplan.wsl.ch',
-        desc: 'GIS-Plugin der WSL zur Planung und Optimierung von Seilkranlinien im Gebirge',
+        desc: {
+          de: 'GIS-Plugin der WSL zur Planung und Optimierung von Seilkranlinien im Gebirge',
+          fr: "Plugin GIS du WSL pour la planification et l'optimisation de lignes de câble-grue en montagne",
+          it: 'Plugin GIS del WSL per la pianificazione e l\'ottimizzazione di linee di gru a cavo in montagna',
+          en: 'WSL GIS plugin for planning and optimising cable crane lines in mountain terrain',
+        },
       },
     ],
   },
   {
     id: 'medien',
     emoji: '📰',
-    title: 'Fachmedien & Wissen',
+    title: { de: 'Fachmedien & Wissen', fr: 'Médias spécialisés & Savoirs', it: 'Media specializzati & Conoscenza', en: 'Specialist Media & Knowledge' },
     links: [
       {
         title: 'Schweizerische Zeitschrift für Forstwesen (SZF)',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.szf-jfs.org',
         display: 'szf-jfs.org',
-        desc: 'Fachzeitschrift, Open Access für viele Artikel, DE/FR',
+        desc: {
+          de: 'Peer-reviewed Fachzeitschrift, Open Access für viele Artikel, DE/FR',
+          fr: 'Revue scientifique à comité de lecture, Open Access pour de nombreux articles, DE/FR',
+          it: 'Rivista scientifica peer-reviewed, Open Access per molti articoli, DE/FR',
+          en: 'Peer-reviewed specialist journal, Open Access for many articles, DE/FR',
+        },
       },
       {
         title: 'Waldwissen.net',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.waldwissen.net',
         display: 'waldwissen.net',
-        desc: 'Praxisorientierte Fachartikel für Förster und Forstwarte — gemeinsames Portal von WSL, LWF Bayern, FVA Baden-Württemberg und BFW Österreich',
+        desc: {
+          de: 'Praxisorientierte Fachartikel für Förster und Forstwarte — gemeinsames Portal von WSL, LWF Bayern, FVA Baden-Württemberg und BFW Österreich',
+          fr: 'Articles spécialisés pratiques pour gardes forestiers et bûcherons — portail commun WSL, LWF Bavière, FVA Bade-Wurtemberg et BFW Autriche',
+          it: 'Articoli specializzati pratici per guardie forestali e boscaioli — portale comune WSL, LWF Baviera, FVA Baden-Württemberg e BFW Austria',
+          en: 'Practice-oriented specialist articles for foresters — joint portal of WSL, LWF Bavaria, FVA Baden-Württemberg and BFW Austria',
+        },
       },
       {
-        title: 'Fachstelle Waldbau',
-        subtitle: '',
+        title: 'Waldbau Schweiz',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.waldbau-sylviculture.ch',
         display: 'waldbau-sylviculture.ch',
-        desc: 'Waldbauliches Wissen und Praxishilfen für den Schweizer Wald. DE/FR',
+        desc: {
+          de: 'Waldbauliches Wissen und Praxishilfen für den Schweizer Forstbereich, DE/FR',
+          fr: 'Connaissances sylvicoles et aides pratiques pour le secteur forestier suisse, DE/FR',
+          it: 'Conoscenze selvicolturali e aiuti pratici per il settore forestale svizzero, DE/FR',
+          en: 'Silvicultural knowledge and practical guidance for the Swiss forestry sector, DE/FR',
+        },
       },
       {
-        title: 'Fachstelle Gebirgswaldpflege',
-        subtitle: '',
+        title: 'Gebirgswald',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.gebirgswald.ch',
         display: 'gebirgswald.ch',
-        desc: 'Fachportal für Schutzwald und Gebirgswaldbewirtschaftung in der Schweiz',
+        desc: {
+          de: 'Fachportal für Schutzwald und Gebirgswaldbewirtschaftung in der Schweiz',
+          fr: 'Portail spécialisé pour la forêt protectrice et la gestion des forêts de montagne en Suisse',
+          it: 'Portale specializzato per la foresta protettiva e la gestione delle foreste di montagna in Svizzera',
+          en: 'Specialist portal for protection forests and mountain forest management in Switzerland',
+        },
       },
     ],
   },
   {
     id: 'jobs',
     emoji: '👷',
-    title: 'Waldberufe & Jobportale',
+    title: { de: 'Waldberufe & Jobportale', fr: "Métiers de la forêt & Portails d'emploi", it: 'Professioni forestali & Portali di lavoro', en: 'Forest Careers & Job Portals' },
     links: [
       {
         title: 'job-room.ch',
-        subtitle: 'arbeit.swiss / Öffentliche Stellenvermittlung',
+        subtitle: { de: 'arbeit.swiss / Öffentliche Stellenvermittlung', fr: "arbeit.swiss / Service public de l'emploi", it: 'arbeit.swiss / Collocamento pubblico', en: 'arbeit.swiss / Public employment service' },
         url: 'https://www.job-room.ch',
         display: 'job-room.ch',
-        desc: 'Offizielle Stellenmeldepflicht, öffentliche Stellenvermittlung inkl. Forstberufe',
+        desc: {
+          de: 'Offizielle Stellenmeldepflicht, öffentliche Stellenvermittlung inkl. Forstberufe',
+          fr: 'Obligation de notification des postes vacants, service public d\'emploi incl. métiers forestiers',
+          it: 'Obbligo di notifica dei posti vacanti, collocamento pubblico incl. professioni forestali',
+          en: 'Mandatory job notification obligation, public employment service incl. forestry professions',
+        },
       },
       {
         title: 'Karriere im Wald',
-        subtitle: 'CODOC Berufsübersicht',
+        subtitle: { de: 'CODOC Berufsübersicht', fr: 'Aperçu des métiers forestiers CODOC', it: 'Panoramica delle professioni forestali CODOC', en: 'CODOC overview of forest professions' },
         url: 'https://www.codoc.ch/karriere-im-wald/uebersicht-waldberufe/',
         display: 'codoc.ch › karriere-im-wald',
-        desc: 'Übersicht aller Waldberufe mit Ausbildungswegen, Anforderungen und Perspektiven',
+        desc: {
+          de: 'Übersicht aller Waldberufe mit Ausbildungswegen, Anforderungen und Perspektiven',
+          fr: 'Aperçu de tous les métiers forestiers avec voies de formation, exigences et perspectives',
+          it: 'Panoramica di tutte le professioni forestali con percorsi formativi, requisiti e prospettive',
+          en: 'Overview of all forest professions with training pathways, requirements and prospects',
+        },
       },
       {
         title: 'umwelt-stellen.ch',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://umwelt-stellen.ch',
         display: 'umwelt-stellen.ch',
-        desc: 'Stellenportal für Umwelt- und Forstberufe in der Schweiz',
+        desc: {
+          de: 'Stellenportal für Umwelt- und Forstberufe in der Schweiz',
+          fr: "Portail d'emploi pour les métiers de l'environnement et des forêts en Suisse",
+          it: 'Portale di lavoro per le professioni ambientali e forestali in Svizzera',
+          en: 'Job portal for environmental and forestry professions in Switzerland',
+        },
       },
       {
         title: 'Stellenmarkt WaldSchweiz',
-        subtitle: '',
+        subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.waldschweiz.ch/de/zeitschriften/stellenmarkt',
         display: 'waldschweiz.ch › stellenmarkt',
-        desc: 'Forstspezifischer Stellenmarkt des Dachverbands der Waldeigentümer',
+        desc: {
+          de: 'Forstspezifischer Stellenmarkt des Dachverbands der Waldeigentümer',
+          fr: "Bourse d'emploi forestière de l'association faîtière des propriétaires forestiers",
+          it: "Mercato del lavoro forestale dell'associazione mantello dei proprietari forestali",
+          en: 'Forestry job board of the umbrella association of forest owners',
+        },
       },
     ],
   },
 ];
+
+const pageTitle = { de: 'Linksammlung', fr: 'Liens utiles', it: 'Raccolta di link', en: 'Link Collection' };
+const pageSubtitle = {
+  de: 'Kuratierte Ressourcen für den Schweizer Forstbereich',
+  fr: 'Ressources sélectionnées pour la sylviculture suisse',
+  it: 'Risorse selezionate per il settore forestale svizzero',
+  en: 'Curated resources for the Swiss forestry sector',
+};
 ---
 
 <BaseLayout
@@ -281,30 +443,25 @@ const CATEGORIES = [
 
   <main class="ressourcen-page container">
     <header class="page-header">
-      <h1 class="page-title">Linksammlung</h1>
-      <p class="page-subtitle">Kuratierte Ressourcen für den Schweizer Forstbereich</p>
+      <h1 class="page-title ml-text" data-de={pageTitle.de} data-fr={pageTitle.fr} data-it={pageTitle.it} data-en={pageTitle.en}>{pageTitle.de}</h1>
+      <p class="page-subtitle ml-text" data-de={pageSubtitle.de} data-fr={pageSubtitle.fr} data-it={pageSubtitle.it} data-en={pageSubtitle.en}>{pageSubtitle.de}</p>
     </header>
 
     {CATEGORIES.map(cat => (
       <section class="category" id={cat.id}>
         <h2 class="category__title">
           <span class="category__emoji">{cat.emoji}</span>
-          {cat.title}
+          <span class="ml-text" data-de={cat.title.de} data-fr={cat.title.fr} data-it={cat.title.it} data-en={cat.title.en}>{cat.title.de}</span>
         </h2>
         <div class="link-grid">
           {cat.links.map(link => (
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link-card"
-            >
+            <a href={link.url} target="_blank" rel="noopener noreferrer" class="link-card">
               <div class="link-card__body">
                 <span class="link-card__title">{link.title}</span>
-                {link.subtitle && (
-                  <span class="link-card__subtitle">{link.subtitle}</span>
+                {link.subtitle.de && (
+                  <span class="ml-text link-card__subtitle" data-de={link.subtitle.de} data-fr={link.subtitle.fr} data-it={link.subtitle.it} data-en={link.subtitle.en}>{link.subtitle.de}</span>
                 )}
-                <span class="link-card__desc">{link.desc}</span>
+                <span class="ml-text link-card__desc" data-de={link.desc.de} data-fr={link.desc.fr} data-it={link.desc.it} data-en={link.desc.en}>{link.desc.de}</span>
               </div>
               <span class="link-card__url">{link.display} ↗</span>
             </a>
@@ -433,3 +590,23 @@ const CATEGORIES = [
     }
   }
 </style>
+
+<script>
+  // Apply the active language to all .ml-text elements on this page.
+  // Hooks into the same localStorage key and event as the main i18n system.
+  function applyLang(lang) {
+    document.querySelectorAll('.ml-text').forEach((el) => {
+      const text = el.dataset[lang] || el.dataset.de || '';
+      if (text) el.textContent = text;
+    });
+  }
+
+  // Apply on load
+  const lang = localStorage.getItem('dendromat-lang') || 'de';
+  applyLang(lang);
+
+  // React to language switches
+  document.addEventListener('dendromat:langchange', (e) => {
+    applyLang(e.detail.lang);
+  });
+</script>
