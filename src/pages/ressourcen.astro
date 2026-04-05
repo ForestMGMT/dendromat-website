@@ -3,12 +3,7 @@
  * ressourcen.astro — Kuratierte Linksammlung für den Forstbereich
  *
  * Links sind direkt hier im Array gepflegt (kein CMS nötig).
- * Um einen Link hinzuzufügen: einfach einen neuen Eintrag in
- * der passenden Kategorie ergänzen.
- *
- * Mehrsprachigkeit: Jedes übersetzte Feld ist ein Objekt { de, fr, it, en }.
- * Das Page-Script liest die aktive Sprache aus localStorage und tauscht
- * alle .ml-text-Elemente aus — identisch zum restlichen i18n-System.
+ * Jedes übersetzte Feld ist ein Objekt { de, fr, it, en }.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavBar from '../components/NavBar.astro';
@@ -21,7 +16,7 @@ const CATEGORIES = [
     title: { de: 'Bund & Behörden', fr: 'Confédération & Autorités', it: 'Confederazione & Autorità', en: 'Federal Authorities' },
     links: [
       {
-        title: 'BAFU',
+        title: { de: 'BAFU', fr: 'OFEV', it: 'UFAM', en: 'FOEN' },
         subtitle: { de: 'Bundesamt für Umwelt', fr: "Office fédéral de l'environnement", it: "Ufficio federale dell'ambiente", en: 'Federal Office for the Environment' },
         url: 'https://www.bafu.admin.ch/bafu/de/home/themen/wald.html',
         display: 'bafu.admin.ch',
@@ -33,7 +28,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Swisstopo',
+        title: { de: 'Swisstopo', fr: 'Swisstopo', it: 'Swisstopo', en: 'Swisstopo' },
         subtitle: { de: 'Bundesamt für Landestopografie', fr: 'Office fédéral de topographie', it: 'Ufficio federale di topografia', en: 'Federal Office of Topography' },
         url: 'https://www.swisstopo.admin.ch',
         display: 'swisstopo.admin.ch',
@@ -45,7 +40,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'WSL',
+        title: { de: 'WSL', fr: 'WSL', it: 'WSL', en: 'WSL' },
         subtitle: { de: 'Eidg. Forschungsanstalt für Wald, Schnee und Landschaft', fr: 'Institut fédéral de recherches sur la forêt, la neige et le paysage', it: 'Istituto federale di ricerca per la foresta, la neve e il paesaggio', en: 'Swiss Federal Institute for Forest, Snow and Landscape Research' },
         url: 'https://www.wsl.ch',
         display: 'wsl.ch',
@@ -57,7 +52,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Landesforstinventar (LFI)',
+        title: { de: 'Landesforstinventar (LFI)', fr: 'Inventaire forestier national (IFN)', it: 'Inventario forestale nazionale (IFN)', en: 'National Forest Inventory (NFI)' },
         subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.lfi.ch',
         display: 'lfi.ch',
@@ -76,7 +71,7 @@ const CATEGORIES = [
     title: { de: 'Verbände & Branche', fr: 'Associations & Branche', it: 'Associazioni & Settore', en: 'Associations & Industry' },
     links: [
       {
-        title: 'WaldSchweiz',
+        title: { de: 'WaldSchweiz', fr: 'WaldSchweiz', it: 'WaldSchweiz', en: 'WaldSchweiz' },
         subtitle: { de: 'Dachverband der Waldeigentümer', fr: 'Association faîtière des propriétaires de forêts', it: 'Associazione mantello dei proprietari forestali', en: 'Umbrella association of forest owners' },
         url: 'https://www.waldschweiz.ch',
         display: 'waldschweiz.ch',
@@ -88,7 +83,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'VSF — Verband Schweizer Forstpersonal',
+        title: { de: 'VSF — Verband Schweizer Forstpersonal', fr: 'VSF — Association du personnel forestier suisse', it: 'VSF — Associazione del personale forestale svizzero', en: 'VSF — Swiss Forest Personnel Association' },
         subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.foresters.ch',
         display: 'foresters.ch',
@@ -100,7 +95,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'FUS — Verband Schweizer Forstunternehmer',
+        title: { de: 'FUS — Verband Schweizer Forstunternehmer', fr: 'FUS — Association suisse des entrepreneurs forestiers', it: 'FUS — Associazione svizzera degli imprenditori forestali', en: 'FUS — Swiss Association of Forestry Contractors' },
         subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.forstunternehmer.ch',
         display: 'forstunternehmer.ch',
@@ -112,7 +107,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Holzindustrie Schweiz',
+        title: { de: 'Holzindustrie Schweiz', fr: 'Industrie du bois Suisse', it: 'Industria del legno Svizzera', en: 'Swiss Timber Industry' },
         subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.holz-bois.ch',
         display: 'holz-bois.ch',
@@ -124,7 +119,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Lignum',
+        title: { de: 'Lignum', fr: 'Lignum', it: 'Lignum', en: 'Lignum' },
         subtitle: { de: 'Holzwirtschaft Schweiz', fr: 'Économie suisse du bois', it: 'Economia svizzera del legno', en: 'Swiss timber economy' },
         url: 'https://www.lignum.ch',
         display: 'lignum.ch',
@@ -143,7 +138,7 @@ const CATEGORIES = [
     title: { de: 'Ausbildung', fr: 'Formation', it: 'Formazione', en: 'Education' },
     links: [
       {
-        title: 'OdA Wald',
+        title: { de: 'OdA Wald', fr: 'OdA Wald', it: 'OdA Wald', en: 'OdA Wald' },
         subtitle: { de: 'Organisation der Arbeitswelt Wald', fr: 'Organisation du monde du travail Forêt', it: 'Organizzazione del mondo del lavoro Foresta', en: 'Forest Vocational Training Organisation' },
         url: 'https://www.odawald.ch',
         display: 'odawald.ch',
@@ -155,7 +150,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'HAFL',
+        title: { de: 'HAFL', fr: 'HAFL', it: 'HAFL', en: 'HAFL' },
         subtitle: { de: 'Hochschule für Agrar-, Forst- und Lebensmittelwissenschaften', fr: 'Haute école des sciences agronomiques, forestières et alimentaires', it: 'Scuola universitaria professionale di scienze agrarie, forestali e alimentari', en: 'School of Agricultural, Forest and Food Sciences' },
         url: 'https://www.hafl.bfh.ch',
         display: 'hafl.bfh.ch',
@@ -167,7 +162,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'ETH Zürich — Waldwissenschaften',
+        title: { de: 'ETH Zürich — Waldwissenschaften', fr: 'ETH Zurich — Sciences forestières', it: 'ETH Zurigo — Scienze forestali', en: 'ETH Zurich — Forest Sciences' },
         subtitle: { de: 'Dept. Umweltsystemwissenschaften', fr: 'Dept. Sciences des systèmes environnementaux', it: 'Dept. Scienze dei sistemi ambientali', en: 'Dept. Environmental Systems Science' },
         url: 'https://usys.ethz.ch',
         display: 'usys.ethz.ch',
@@ -179,19 +174,19 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'BZWL Lyss',
-        subtitle: { de: 'Bildungszentrum Wald Lyss', fr: 'Centre forestier de formation Lyss', it: 'Centro di formazione forestale di Lyss', en: 'forestry training centre Lyss' },
+        title: { de: 'BZWL Lyss', fr: 'BZWL Lyss', it: 'BZWL Lyss', en: 'BZWL Lyss' },
+        subtitle: { de: 'Bildungszentrum Wald Lyss', fr: 'Centre forestier de formation Lyss', it: 'Centro di formazione forestale di Lyss', en: 'Forestry training centre Lyss' },
         url: 'https://www.bzwlyss.ch',
         display: 'bzwlyss.ch',
         desc: {
           de: 'Höhere Fachschule mit Ausbildungsgängen zur Förster:in HF, Forstwart-Vorarbeiter:in, Ranger:in und verschiedene Weiterbildungen',
           fr: 'École spécialisée supérieure avec des filières de formation pour garde forestier·ère ES, chef·fe d\'équipe, ranger et diverses formations continues',
           it: 'Scuola specializzata superiore con filiere di formazione per guardiaboschi, caposquadra forestale, ranger e vari corsi di perfezionamento',
-          en: 'Vocational school for forestry workers, further training for supervisors and foresters',
+          en: 'Vocational college with programmes for forest engineer, forestry supervisor, ranger and various continuing education courses',
         },
       },
       {
-        title: 'BZW Maienfeld',
+        title: { de: 'BZW Maienfeld', fr: 'BZW Maienfeld', it: 'BZW Maienfeld', en: 'BZW Maienfeld' },
         subtitle: { de: 'Bildungszentrum Wald Maienfeld', fr: 'Centre de formation forestière Maienfeld', it: 'Centro di formazione forestale Maienfeld', en: 'Forest Training Centre Maienfeld' },
         url: 'https://www.bzwmaienfeld.ch',
         display: 'bzwmaienfeld.ch',
@@ -199,11 +194,11 @@ const CATEGORIES = [
           de: 'Höhere Fachschule mit Ausbildungsgängen zur Förster:in HF, Forstwart-Vorarbeiter:in, Ranger:in und verschiedene Weiterbildungen',
           fr: 'École spécialisée supérieure avec des filières de formation pour garde forestier·ère ES, chef·fe d\'équipe, ranger et diverses formations continues',
           it: 'Scuola specializzata superiore con filiere di formazione per guardiaboschi, caposquadra forestale, ranger e vari corsi di perfezionamento',
-          en: 'Vocational school for forestry workers, further training for supervisors and foresters',
+          en: 'Vocational college with programmes for forest engineer, forestry supervisor, ranger and various continuing education courses',
         },
       },
       {
-        title: 'CODOC',
+        title: { de: 'CODOC', fr: 'CODOC', it: 'CODOC', en: 'CODOC' },
         subtitle: { de: 'Fachstelle für forstliche Bildung', fr: 'Centre de compétences pour la formation forestière', it: 'Servizio specializzato per la formazione forestale', en: 'Competence centre for forestry education' },
         url: 'http://www.codoc.ch',
         display: 'codoc.ch',
@@ -222,7 +217,7 @@ const CATEGORIES = [
     title: { de: 'GIS & Geodaten', fr: 'SIG & Géodonnées', it: 'GIS & Geodati', en: 'GIS & Geodata' },
     links: [
       {
-        title: 'map.geo.admin.ch',
+        title: { de: 'map.geo.admin.ch', fr: 'map.geo.admin.ch', it: 'map.geo.admin.ch', en: 'map.geo.admin.ch' },
         subtitle: { de: 'Nationaler Kartenviewer', fr: 'Visionneuse de cartes nationale', it: 'Visualizzatore di mappe nazionale', en: 'National map viewer' },
         url: 'https://map.geo.admin.ch',
         display: 'map.geo.admin.ch',
@@ -234,7 +229,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Planfor',
+        title: { de: 'Planfor', fr: 'Planfor', it: 'Planfor', en: 'Planfor' },
         subtitle: { de: 'Online-Plattform rund um die Waldplanung', fr: 'Plateforme en ligne dédiée à la planification forestière', it: 'Piattaforma online dedicata alla pianificazione forestale', en: 'Online platform for forest management planning' },
         url: 'https://www.planfor.ch',
         display: 'planfor.ch',
@@ -253,7 +248,7 @@ const CATEGORIES = [
     title: { de: 'Tools', fr: 'Outils', it: 'Strumenti', en: 'Tools' },
     links: [
       {
-        title: 'Tree-App',
+        title: { de: 'Tree-App', fr: 'Tree-App', it: 'Tree-App', en: 'Tree-App' },
         subtitle: { de: 'WSL Baumarten-Entscheidungshilfe', fr: 'Aide à la décision WSL pour les essences', it: 'Supporto decisionale WSL per le specie arboree', en: 'WSL tree species decision tool' },
         url: 'https://www.tree-app.ch',
         display: 'tree-app.ch',
@@ -265,7 +260,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'MOTI',
+        title: { de: 'MOTI', fr: 'MOTI', it: 'MOTI', en: 'MOTI' },
         subtitle: { de: 'Bestandesaufnahme und Monitoring', fr: 'Inventaire et monitoring des peuplements', it: 'Inventario e monitoraggio dei popolamenti', en: 'Stand inventory and monitoring' },
         url: 'https://www.moti.ch',
         display: 'moti.ch',
@@ -277,7 +272,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'HeProMo',
+        title: { de: 'HeProMo', fr: 'HeProMo', it: 'HeProMo', en: 'HeProMo' },
         subtitle: { de: 'WSL Holzernteproduktivität', fr: 'Productivité de la récolte de bois WSL', it: 'Produttività della raccolta del legno WSL', en: 'WSL timber harvesting productivity' },
         url: 'https://www.wsl.ch/de/services-produkte/hepromo/',
         display: 'wsl.ch › hepromo',
@@ -289,19 +284,19 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'JuWaPfl',
+        title: { de: 'JuWaPfl', fr: 'JuWaPfl', it: 'JuWaPfl', en: 'JuWaPfl' },
         subtitle: { de: 'WSL Jungwaldpflege', fr: 'Soins aux jeunes forêts WSL', it: 'Cure alle giovani foreste WSL', en: 'WSL young forest care' },
         url: 'https://www.wsl.ch/de/services-produkte/juwapfl/',
         display: 'wsl.ch › juwapfl',
         desc: {
           de: 'Kostenkalkulationsmodell der WSL für die Planung und Beurteilung von Jungwaldpflegeeingriffen und Bestandesbegründung',
           fr: "Modèle de calcul des coûts WSL pour la planification et l\'évaluation des interventions d\'entretien des jeunes forêts et de la régénération des peuplements",
-          it: 'I: Modello di calcolo dei costi WSL per la pianificazione e la valutazione degli interventi di cura dei giovani boschi e della rinnovazione dei soprassuoli',
+          it: 'Modello di calcolo dei costi WSL per la pianificazione e la valutazione degli interventi di cura dei giovani boschi e della rinnovazione dei soprassuoli',
           en: 'WSL cost calculation model for planning and assessing young forest tending operations and stand establishment',
         },
       },
       {
-        title: 'Seilaplan',
+        title: { de: 'Seilaplan', fr: 'Seilaplan', it: 'Seilaplan', en: 'Seilaplan' },
         subtitle: { de: 'WSL Seillinienplanung', fr: 'Planification de câble-grue WSL', it: 'Pianificazione gru a cavo WSL', en: 'WSL cable crane planning' },
         url: 'https://seilaplan.wsl.ch/de/',
         display: 'seilaplan.wsl.ch',
@@ -320,7 +315,7 @@ const CATEGORIES = [
     title: { de: 'Fachmedien & Wissen', fr: 'Médias spécialisés & Savoirs', it: 'Media specializzati & Conoscenza', en: 'Specialist Media & Knowledge' },
     links: [
       {
-        title: 'Schweizerische Zeitschrift für Forstwesen (SZF)',
+        title: { de: 'Schweizerische Zeitschrift für Forstwesen (SZF)', fr: 'Revue suisse des sciences forestières (SZF)', it: 'Rivista forestale svizzera (SZF)', en: 'Swiss Journal of Forestry (SZF)' },
         subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.szf-jfs.org',
         display: 'szf-jfs.org',
@@ -332,8 +327,8 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Waldwissen.net',
-        subtitle: { de: 'Wissensplattform rund um Wald', fr: '', it: '', en: '' },
+        title: { de: 'Waldwissen.net', fr: 'Waldwissen.net', it: 'Waldwissen.net', en: 'Waldwissen.net' },
+        subtitle: { de: 'Wissensplattform rund um Wald', fr: 'Plateforme de connaissances forestières', it: 'Piattaforma di conoscenze forestali', en: 'Forest knowledge platform' },
         url: 'https://www.waldwissen.net',
         display: 'waldwissen.net',
         desc: {
@@ -344,8 +339,8 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Fachstelle Waldbau',
-        subtitle: { de: 'Fachstelle für Waldbau', fr: 'Centre de compétences en sylviculture', it: 'Centro per la selvicoltura', en: 'competence centre for forest management' },
+        title: { de: 'Fachstelle Waldbau', fr: 'Sylviculture Suisse', it: 'Selvicoltura Svizzera', en: 'Swiss Silviculture' },
+        subtitle: { de: 'Fachstelle für Waldbau', fr: 'Centre de compétences en sylviculture', it: 'Centro per la selvicoltura', en: 'Competence centre for silviculture' },
         url: 'https://www.waldbau-sylviculture.ch',
         display: 'waldbau-sylviculture.ch',
         desc: {
@@ -356,8 +351,8 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Fachstelle Gebirgswaldpflege',
-        subtitle: { de: 'Fachstelle Gebirgswaldpflege', fr: 'Centre de sylviculture de montagne', it: 'Centro per la selvicoltura di montagna', en: 'competence centre for mountain- and protection-forest management' },
+        title: { de: 'Fachstelle Gebirgswaldpflege', fr: 'Forêt de montagne', it: 'Foresta di montagna', en: 'Mountain Forest' },
+        subtitle: { de: 'Fachstelle Gebirgswaldpflege', fr: 'Centre de sylviculture de montagne', it: 'Centro per la selvicoltura di montagna', en: 'Competence centre for mountain & protection forest management' },
         url: 'https://www.gebirgswald.ch',
         display: 'gebirgswald.ch',
         desc: {
@@ -375,7 +370,7 @@ const CATEGORIES = [
     title: { de: 'Waldberufe & Jobportale', fr: "Métiers de la forêt & Portails d'emploi", it: 'Professioni forestali & Portali di lavoro', en: 'Forest Careers & Job Portals' },
     links: [
       {
-        title: 'job-room.ch',
+        title: { de: 'job-room.ch', fr: 'job-room.ch', it: 'job-room.ch', en: 'job-room.ch' },
         subtitle: { de: 'arbeit.swiss / Öffentliche Stellenvermittlung', fr: "arbeit.swiss / Service public de l'emploi", it: 'arbeit.swiss / Collocamento pubblico', en: 'arbeit.swiss / Public employment service' },
         url: 'https://www.job-room.ch',
         display: 'job-room.ch',
@@ -387,7 +382,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Karriere im Wald',
+        title: { de: 'Karriere im Wald', fr: 'Carrière dans la forêt', it: 'Carriera nel bosco', en: 'Forest Careers' },
         subtitle: { de: 'CODOC Berufsübersicht', fr: 'Aperçu des métiers forestiers CODOC', it: 'Panoramica delle professioni forestali CODOC', en: 'CODOC overview of forest professions' },
         url: 'https://www.codoc.ch/karriere-im-wald/uebersicht-waldberufe/',
         display: 'codoc.ch › karriere-im-wald',
@@ -399,8 +394,8 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'umwelt-stellen.ch',
-        subtitle: { de: 'Umweltbezogenes freies Jobportal', fr: '', it: '', en: '' },
+        title: { de: 'umwelt-stellen.ch', fr: 'umwelt-stellen.ch', it: 'umwelt-stellen.ch', en: 'umwelt-stellen.ch' },
+        subtitle: { de: 'Umweltbezogenes freies Jobportal', fr: "Portail d'emploi environnemental", it: 'Portale di lavoro ambientale', en: 'Environmental job portal' },
         url: 'https://umwelt-stellen.ch',
         display: 'umwelt-stellen.ch',
         desc: {
@@ -411,7 +406,7 @@ const CATEGORIES = [
         },
       },
       {
-        title: 'Stellenmarkt WaldSchweiz',
+        title: { de: 'Stellenmarkt WaldSchweiz', fr: "Offres d'emploi WaldSchweiz", it: 'Offerte di lavoro WaldSchweiz', en: 'WaldSchweiz Job Board' },
         subtitle: { de: '', fr: '', it: '', en: '' },
         url: 'https://www.waldschweiz.ch/de/zeitschriften/stellenmarkt',
         display: 'waldschweiz.ch › stellenmarkt',
@@ -426,13 +421,10 @@ const CATEGORIES = [
   },
 ];
 
-const pageTitle = { de: 'Linksammlung', fr: 'Liens utiles', it: 'Raccolta di link', en: 'Link Collection' };
-const pageSubtitle = {
-  de: 'Kuratierte Ressourcen für den Schweizer Forstbereich',
-  fr: 'Ressources sélectionnées pour la sylviculture suisse',
-  it: 'Risorse selezionate per il settore forestale svizzero',
-  en: 'Curated resources for the Swiss forestry sector',
-};
+const pageTitle    = { de: 'Linksammlung', fr: 'Liens utiles', it: 'Raccolta di link', en: 'Link Collection' };
+const pageSubtitle = { de: 'Kuratierte Ressourcen für den Schweizer Forstbereich', fr: 'Ressources sélectionnées pour la sylviculture suisse', it: 'Risorse selezionate per il settore forestale svizzero', en: 'Curated resources for the Swiss forestry sector' };
+const filterLabel  = { de: 'Kategorie', fr: 'Catégorie', it: 'Categoria', en: 'Category' };
+const filterAll    = { de: 'Alle Kategorien', fr: 'Toutes les catégories', it: 'Tutte le categorie', en: 'All categories' };
 ---
 
 <BaseLayout
@@ -447,6 +439,17 @@ const pageSubtitle = {
       <p class="page-subtitle ml-text" data-de={pageSubtitle.de} data-fr={pageSubtitle.fr} data-it={pageSubtitle.it} data-en={pageSubtitle.en}>{pageSubtitle.de}</p>
     </header>
 
+    <!-- Category filter -->
+    <div class="filter-bar">
+      <label class="filter-label ml-text" for="category-filter" data-de={filterLabel.de} data-fr={filterLabel.fr} data-it={filterLabel.it} data-en={filterLabel.en}>{filterLabel.de}</label>
+      <select id="category-filter" class="filter-select">
+        <option value="" class="ml-opt" data-de={filterAll.de} data-fr={filterAll.fr} data-it={filterAll.it} data-en={filterAll.en}>{filterAll.de}</option>
+        {CATEGORIES.map(cat => (
+          <option value={cat.id} class="ml-opt" data-de={cat.title.de} data-fr={cat.title.fr} data-it={cat.title.it} data-en={cat.title.en}>{cat.emoji} {cat.title.de}</option>
+        ))}
+      </select>
+    </div>
+
     {CATEGORIES.map(cat => (
       <section class="category" id={cat.id}>
         <h2 class="category__title">
@@ -457,7 +460,7 @@ const pageSubtitle = {
           {cat.links.map(link => (
             <a href={link.url} target="_blank" rel="noopener noreferrer" class="link-card">
               <div class="link-card__body">
-                <span class="link-card__title">{link.title}</span>
+                <span class="ml-text link-card__title" data-de={link.title.de} data-fr={link.title.fr} data-it={link.title.it} data-en={link.title.en}>{link.title.de}</span>
                 {link.subtitle.de && (
                   <span class="ml-text link-card__subtitle" data-de={link.subtitle.de} data-fr={link.subtitle.fr} data-it={link.subtitle.it} data-en={link.subtitle.en}>{link.subtitle.de}</span>
                 )}
@@ -483,7 +486,7 @@ const pageSubtitle = {
 
   /* ── Page header ─────────────────────────────────── */
   .page-header {
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
   }
 
   .page-title {
@@ -499,6 +502,44 @@ const pageSubtitle = {
     font-size: 1rem;
     color: var(--clr-text-muted, #666);
     margin: 0;
+  }
+
+  /* ── Filter bar ──────────────────────────────────── */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    padding: 0.75rem 1rem;
+    background: #f4f8f0;
+    border: 1px solid #d4e8c4;
+    border-radius: 8px;
+  }
+
+  .filter-label {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--clr-green-dark);
+    white-space: nowrap;
+  }
+
+  .filter-select {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--clr-green-dark);
+    background: #fff;
+    border: 1.5px solid #c0d8b0;
+    border-radius: 6px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    flex: 1;
+    max-width: 320px;
+  }
+
+  .filter-select:focus {
+    outline: 2px solid var(--clr-green-light, #a8cc80);
+    outline-offset: 1px;
   }
 
   /* ── Category section ────────────────────────────── */
@@ -588,25 +629,41 @@ const pageSubtitle = {
     .link-grid {
       grid-template-columns: 1fr;
     }
+    .filter-select {
+      max-width: 100%;
+    }
   }
 </style>
 
 <script>
-  // Apply the active language to all .ml-text elements on this page.
-  // Hooks into the same localStorage key and event as the main i18n system.
+  // ── Language switching ────────────────────────────
   function applyLang(lang) {
+    // Regular text elements
     document.querySelectorAll('.ml-text').forEach((el) => {
       const text = el.dataset[lang] || el.dataset.de || '';
       if (text) el.textContent = text;
     });
+    // <option> elements
+    document.querySelectorAll('.ml-opt').forEach((el) => {
+      const base = el.dataset[lang] || el.dataset.de || '';
+      const emoji = el.dataset.emoji || '';
+      el.textContent = emoji ? `${emoji} ${base}` : base;
+    });
   }
 
-  // Apply on load
   const lang = localStorage.getItem('dendromat-lang') || 'de';
   applyLang(lang);
 
-  // React to language switches
   document.addEventListener('dendromat:langchange', (e) => {
     applyLang(e.detail.lang);
+  });
+
+  // ── Category filter ───────────────────────────────
+  const select = document.getElementById('category-filter');
+  select?.addEventListener('change', () => {
+    const val = select.value;
+    document.querySelectorAll('.category').forEach((section) => {
+      section.style.display = (!val || section.id === val) ? '' : 'none';
+    });
   });
 </script>
