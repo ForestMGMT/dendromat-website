@@ -62,6 +62,10 @@ export const t = {
         title: 'Geodaten Downloader',
         desc: 'Zeichne ein Gebiet auf der Karte und lade Schweizer Geodaten (swisstopo, BAFU, Kantone) als GeoTIFF oder GeoPackage herunter.',
       },
+      pflanzverband: {
+        title: 'Pflanzverband-Rechner',
+        desc: 'Berechne die Anzahl benötigter Pflanzen für Flächen- und Trupppflanzungen – mit Vorschau des Pflanzschemas.',
+      },
     },
     footer: {
       // TODO: Replace with real footer content
@@ -82,6 +86,7 @@ export const t = {
       timelapse: 'Créateur Timelapse',
       baumportraets: 'Portraits d\'essences',
       geodaten: 'Téléchargeur de géodonnées',
+      pflanzverband: 'Calculateur de plantation',
       ressourcen: 'Ressources',
       about: 'À propos',
       contact: 'Contact',
@@ -114,6 +119,10 @@ export const t = {
         title: 'Téléchargeur de géodonnées',
         desc: 'Dessinez une zone sur la carte et téléchargez des géodonnées suisses (swisstopo, OFEV, cantons) en GeoTIFF ou GeoPackage.',
       },
+      pflanzverband: {
+        title: 'Calculateur de plantation',
+        desc: 'Calculez le nombre de plants nécessaires pour des plantations en plein ou en bouquets – avec aperçu du schéma de plantation.',
+      },
     },
     footer: {
       copyright: '© 2025 Dendromat. Tous droits réservés.',
@@ -133,6 +142,7 @@ export const t = {
       timelapse: 'Creatore Timelapse',
       baumportraets: 'Ritratti di specie arboree',
       geodaten: 'Scaricatore di geodati',
+      pflanzverband: 'Calcolatore di impianto',
       ressourcen: 'Risorse',
       about: 'Chi siamo',
       contact: 'Contatto',
@@ -165,6 +175,10 @@ export const t = {
         title: 'Scaricatore di geodati',
         desc: 'Disegna un\'area sulla mappa e scarica geodati svizzeri (swisstopo, UFAM, cantoni) in formato GeoTIFF o GeoPackage.',
       },
+      pflanzverband: {
+        title: 'Calcolatore di impianto',
+        desc: 'Calcola il numero di piante necessarie per impianti a pieno campo o a gruppi – con anteprima dello schema di piantagione.',
+      },
     },
     footer: {
       copyright: '© 2025 Dendromat. Tutti i diritti riservati.',
@@ -184,6 +198,7 @@ export const t = {
       timelapse: 'Timelapse Creator',
       baumportraets: 'Tree Species Portraits',
       geodaten: 'Geodata Downloader',
+      pflanzverband: 'Planting Spacing Calculator',
       ressourcen: 'Resources',
       about: 'About',
       contact: 'Contact',
@@ -215,6 +230,10 @@ export const t = {
       geodaten: {
         title: 'Geodata Downloader',
         desc: 'Draw an area on the map and download Swiss geodata (swisstopo, FOEN, cantons) as GeoTIFF or GeoPackage.',
+      },
+      pflanzverband: {
+        title: 'Planting Spacing Calculator',
+        desc: 'Calculate the number of plants needed for area or group plantings – with a preview of the planting pattern.',
       },
     },
     footer: {

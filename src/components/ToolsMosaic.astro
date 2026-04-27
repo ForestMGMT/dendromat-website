@@ -42,6 +42,14 @@ const tools = [
     imageAlt:   'Geodaten Downloader Vorschau',
     ready:      true,
   },
+  {
+    slug:       'pflanzverband',
+    i18nTitle:  'tools.pflanzverband.title',
+    i18nDesc:   'tools.pflanzverband.desc',
+    image:      '/previews/Thumbnail_pflanzverband.png',
+    imageAlt:   'Pflanzverband-Rechner Vorschau',
+    ready:      true,
+  },
   // TODO: Add more tools here following the pattern above
 ];
 ---
@@ -92,12 +100,14 @@ const tools = [
               {tool.slug === 'timelapse'     && 'Timelapse Creator'}
               {tool.slug === 'baumportraets' && 'Baumarten\u00adportr\u00e4ts'}
               {tool.slug === 'geodaten'      && 'Geodaten Downloader'}
+              {tool.slug === 'pflanzverband' && 'Pflanzverband-Rechner'}
             </h3>
             <p class="card__desc" data-i18n={tool.i18nDesc}>
               {/* Fallback text before JS hydration */}
               {tool.slug === 'timelapse'     && 'Erstelle Zeitraffer­aufnahmen aus dem Wald.'}
               {tool.slug === 'baumportraets' && 'Detaillierte Porträts heimischer Baumarten.'}
               {tool.slug === 'geodaten'      && 'Schweizer Geodaten als GeoTIFF oder GeoPackage herunterladen.'}
+              {tool.slug === 'pflanzverband' && 'Anzahl Pflanzen für Flächen- und Trupppflanzungen berechnen.'}
             </p>
             <a
               href={tool.ready ? `/tools/${tool.slug}` : '#'}
