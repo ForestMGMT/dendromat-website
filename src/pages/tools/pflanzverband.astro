@@ -6,6 +6,7 @@
  *   - Flächige Pflanzung: Vierecksverband (a²) or Dreiecksverband (a²·√3/2)
  *   - Trupppflanzung: groups in triangular arrangement (d²·√3/2 per group)
  *
+ * Language syncs with Dendromat via dendromat:langchange event.
  * Renders a canvas preview of the planting pattern.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -50,12 +51,12 @@ import Footer from '../../components/Footer.astro';
 
             <!-- Step 1: Type -->
             <div class="pv-field">
-              <div class="pv-field__label" id="pv-type-label">Pflanzverband</div>
-              <div class="pv-toggle" role="group" aria-labelledby="pv-type-label">
-                <button class="pv-toggle__btn pv-toggle__btn--active" id="btn-flaechig" data-type="flaechig">
+              <div class="pv-field__label" id="pv-label-type">Pflanzverband</div>
+              <div class="pv-toggle" role="group" aria-labelledby="pv-label-type">
+                <button class="pv-toggle__btn pv-toggle__btn--active" id="btn-flaechig">
                   🌳 Flächige Pflanzung
                 </button>
-                <button class="pv-toggle__btn" id="btn-trupp" data-type="trupp">
+                <button class="pv-toggle__btn" id="btn-trupp">
                   🌿 Trupppflanzung
                 </button>
               </div>
@@ -63,7 +64,7 @@ import Footer from '../../components/Footer.astro';
 
             <!-- Step 2: Plot size -->
             <div class="pv-field">
-              <label class="pv-field__label" for="pv-area">Fläche</label>
+              <label class="pv-field__label" id="pv-label-area" for="pv-area">Fläche</label>
               <div class="pv-input-group">
                 <input type="number" id="pv-area" class="pv-input" min="1" step="100" value="1000">
                 <span class="pv-input-unit">m²</span>
@@ -75,14 +76,14 @@ import Footer from '../../components/Footer.astro';
             <div id="pv-params-flaechig">
               <div class="pv-field-row">
                 <div class="pv-field">
-                  <label class="pv-field__label" for="pv-spacing">Pflanzabstand</label>
+                  <label class="pv-field__label" id="pv-label-spacing" for="pv-spacing">Pflanzabstand</label>
                   <div class="pv-input-group">
                     <input type="number" id="pv-spacing" class="pv-input" min="0.3" max="20" step="0.1" value="2.0">
                     <span class="pv-input-unit">m</span>
                   </div>
                 </div>
                 <div class="pv-field">
-                  <label class="pv-field__label" for="pv-pattern">Verband</label>
+                  <label class="pv-field__label" id="pv-label-pattern" for="pv-pattern">Verband</label>
                   <select id="pv-pattern" class="pv-select">
                     <option value="dreieck">Dreiecksverband ▲</option>
                     <option value="viereck">Vierecksverband ▪</option>
@@ -95,14 +96,14 @@ import Footer from '../../components/Footer.astro';
             <div id="pv-params-trupp" style="display:none">
               <div class="pv-field-row">
                 <div class="pv-field">
-                  <label class="pv-field__label" for="pv-plants-per-trupp">Pflanzen pro Trupp</label>
+                  <label class="pv-field__label" id="pv-label-plants-per-trupp" for="pv-plants-per-trupp">Pflanzen pro Trupp</label>
                   <div class="pv-input-group">
-                    <input type="number" id="pv-plants-per-trupp" class="pv-input" min="1" max="50" step="1" value="5">
-                    <span class="pv-input-unit">Stk.</span>
+                    <input type="number" id="pv-plants-per-trupp" class="pv-input" min="1" max="25" step="1" value="5">
+                    <span class="pv-input-unit" id="pv-unit-pcs">Stk.</span>
                   </div>
                 </div>
                 <div class="pv-field">
-                  <label class="pv-field__label" for="pv-trupp-spacing">Abstand zwischen Trupps</label>
+                  <label class="pv-field__label" id="pv-label-trupp-spacing" for="pv-trupp-spacing">Abstand zwischen Trupps</label>
                   <div class="pv-input-group">
                     <input type="number" id="pv-trupp-spacing" class="pv-input" min="1" max="200" step="0.5" value="10">
                     <span class="pv-input-unit">m</span>
@@ -117,27 +118,27 @@ import Footer from '../../components/Footer.astro';
           <div class="pv-results">
             <div class="pv-result-card">
               <div class="pv-result-num" id="pv-total">—</div>
-              <div class="pv-result-label">Pflanzen total</div>
+              <div class="pv-result-label" id="pv-label-total">Pflanzen total</div>
             </div>
             <div class="pv-result-card">
               <div class="pv-result-num" id="pv-per-ha">—</div>
-              <div class="pv-result-label">Pflanzen / ha</div>
+              <div class="pv-result-label" id="pv-label-per-ha">Pflanzen / ha</div>
             </div>
             <div class="pv-result-card" id="pv-card-trupps" style="display:none">
               <div class="pv-result-num" id="pv-num-trupps">—</div>
-              <div class="pv-result-label">Trupps total</div>
+              <div class="pv-result-label" id="pv-label-trupps">Trupps total</div>
             </div>
           </div>
 
           <!-- ── Canvas preview ────────────────────────────── -->
           <div class="pv-preview">
-            <div class="pv-preview__label">Vorschau Pflanzschema</div>
+            <div class="pv-preview__label" id="pv-label-preview">Vorschau Pflanzschema</div>
             <canvas id="pv-canvas" width="640" height="340"></canvas>
           </div>
 
           <!-- ── Formula note ──────────────────────────────── -->
           <div class="pv-formula-note">
-            <strong>Formeln:</strong>
+            <strong id="pv-label-formula">Formel:</strong>
             <span id="pv-formula-text"></span>
           </div>
 
@@ -153,11 +154,143 @@ import Footer from '../../components/Footer.astro';
 <script is:inline>
 /* ══════════════════════════════════════════════════════════
    PFLANZVERBAND-RECHNER
+   Language syncs with Dendromat via dendromat:langchange.
 ══════════════════════════════════════════════════════════ */
 
-var pvType = 'flaechig'; // 'flaechig' | 'trupp'
+/* ── UI strings ─────────────────────────────────────────── */
+var PV_UI = {
+  de: {
+    typeLabel:          'Pflanzverband',
+    btnFlaechig:        '🌳 Flächige Pflanzung',
+    btnTrupp:           '🌿 Trupppflanzung',
+    areaLabel:          'Fläche',
+    spacingLabel:       'Pflanzabstand',
+    patternLabel:       'Verband',
+    optDreieck:         'Dreiecksverband ▲',
+    optViereck:         'Vierecksverband ▪',
+    plantsPerTruppLabel:'Pflanzen pro Trupp',
+    truppSpacingLabel:  'Abstand zwischen Trupps',
+    unitPcs:            'Stk.',
+    resultTotal:        'Pflanzen total',
+    resultPerHa:        'Pflanzen / ha',
+    resultTrupps:       'Trupps total',
+    previewLabel:       'Vorschau Pflanzschema',
+    formulaLabel:       'Formel:',
+    fViereck:           'Vierecksverband: Fläche/Pflanze = a² =',
+    fDreieck:           'Dreiecksverband: Fläche/Pflanze = a²·(√3/2) =',
+    fTrupp:             'Dreiecksverband Trupps: Fläche/Trupp = d²·(√3/2) =',
+    fTruppMid:          'Trupps ×',
+    fTruppEnd:          'Pflanzen',
+  },
+  fr: {
+    typeLabel:          'Mode de plantation',
+    btnFlaechig:        '🌳 Plantation en plein',
+    btnTrupp:           '🌿 Plantation en cellules',
+    areaLabel:          'Surface',
+    spacingLabel:       'Espacement',
+    patternLabel:       'Disposition',
+    optDreieck:         'Disposition triangulaire ▲',
+    optViereck:         'Disposition en carré ▪',
+    plantsPerTruppLabel:'Plants par cellule',
+    truppSpacingLabel:  'Distance entre cellules',
+    unitPcs:            'pcs',
+    resultTotal:        'Plants au total',
+    resultPerHa:        'Plants / ha',
+    resultTrupps:       '# Cellules total',
+    previewLabel:       'Aperçu du schéma',
+    formulaLabel:       'Formule :',
+    fViereck:           'Carré : Surface/plant = a² =',
+    fDreieck:           'Triangle : Surface/plant = a²·(√3/2) =',
+    fTrupp:             'Triangle cellules : Surface/cellules = d²·(√3/2) =',
+    fTruppMid:          'cellules ×',
+    fTruppEnd:          'plants',
+  },
+  it: {
+    typeLabel:          'Schema di impianto',
+    btnFlaechig:        '🌳 Impianto a pieno campo',
+    btnTrupp:           '🌿 Impianto a gruppi',
+    areaLabel:          'Superficie',
+    spacingLabel:       'Spaziatura',
+    patternLabel:       'Disposizione',
+    optDreieck:         'Disposizione triangolare ▲',
+    optViereck:         'Disposizione quadrata ▪',
+    plantsPerTruppLabel:'Piante per gruppo',
+    truppSpacingLabel:  'Distanza tra gruppi',
+    unitPcs:            'pz.',
+    resultTotal:        'Piante totali',
+    resultPerHa:        'Piante / ha',
+    resultTrupps:       'Gruppi totali',
+    previewLabel:       'Anteprima schema',
+    formulaLabel:       'Formula:',
+    fViereck:           'Quadrato: Superficie/pianta = a² =',
+    fDreieck:           'Triangolare: Superficie/pianta = a²·(√3/2) =',
+    fTrupp:             'Triangolare gruppi: Superficie/gruppo = d²·(√3/2) =',
+    fTruppMid:          'gruppi ×',
+    fTruppEnd:          'piante',
+  },
+  en: {
+    typeLabel:          'Planting type',
+    btnFlaechig:        '🌳 Area planting',
+    btnTrupp:           '🌿 Group planting',
+    areaLabel:          'Area',
+    spacingLabel:       'Spacing',
+    patternLabel:       'Pattern',
+    optDreieck:         'Triangular ▲',
+    optViereck:         'Square ▪',
+    plantsPerTruppLabel:'Plants per group',
+    truppSpacingLabel:  'Distance between groups',
+    unitPcs:            'pcs',
+    resultTotal:        'Total plants',
+    resultPerHa:        'Plants / ha',
+    resultTrupps:       'Total groups',
+    previewLabel:       'Planting pattern preview',
+    formulaLabel:       'Formula:',
+    fViereck:           'Square: Area/plant = a² =',
+    fDreieck:           'Triangle: Area/plant = a²·(√3/2) =',
+    fTrupp:             'Triangle groups: Area/group = d²·(√3/2) =',
+    fTruppMid:          'groups ×',
+    fTruppEnd:          'plants',
+  },
+};
+
+/* ── Language state ──────────────────────────────────────── */
+var pvLang = localStorage.getItem('dendromat-lang') || 'de';
+if (!PV_UI[pvLang]) pvLang = 'de';
+
+function pvt(key) {
+  return (PV_UI[pvLang] || PV_UI.de)[key] || PV_UI.de[key] || key;
+}
+
+/* ── Apply language to all static labels ─────────────────── */
+function pvApplyLanguage() {
+  document.getElementById('pv-label-type').textContent            = pvt('typeLabel');
+  document.getElementById('btn-flaechig').textContent             = pvt('btnFlaechig');
+  document.getElementById('btn-trupp').textContent                = pvt('btnTrupp');
+  document.getElementById('pv-label-area').textContent            = pvt('areaLabel');
+  document.getElementById('pv-label-spacing').textContent         = pvt('spacingLabel');
+  document.getElementById('pv-label-pattern').textContent         = pvt('patternLabel');
+  document.getElementById('pv-label-plants-per-trupp').textContent= pvt('plantsPerTruppLabel');
+  document.getElementById('pv-label-trupp-spacing').textContent   = pvt('truppSpacingLabel');
+  document.getElementById('pv-unit-pcs').textContent              = pvt('unitPcs');
+  document.getElementById('pv-label-total').textContent           = pvt('resultTotal');
+  document.getElementById('pv-label-per-ha').textContent          = pvt('resultPerHa');
+  document.getElementById('pv-label-trupps').textContent          = pvt('resultTrupps');
+  document.getElementById('pv-label-preview').textContent         = pvt('previewLabel');
+  document.getElementById('pv-label-formula').textContent         = pvt('formulaLabel');
+
+  // Update select options (preserve current value)
+  var sel = document.getElementById('pv-pattern');
+  var cur = sel.value;
+  sel.options[0].text = pvt('optDreieck');
+  sel.options[1].text = pvt('optViereck');
+  sel.value = cur;
+
+  pvUpdate();
+}
 
 /* ── Type toggle ─────────────────────────────────────────── */
+var pvType = 'flaechig';
+
 document.getElementById('btn-flaechig').addEventListener('click', function () {
   pvType = 'flaechig';
   document.getElementById('btn-flaechig').classList.add('pv-toggle__btn--active');
@@ -183,6 +316,13 @@ document.getElementById('btn-trupp').addEventListener('click', function () {
 });
 document.getElementById('pv-pattern').addEventListener('change', pvUpdate);
 
+// Hard-clamp plants-per-trupp to 1–25 while typing
+document.getElementById('pv-plants-per-trupp').addEventListener('input', function () {
+  var v = parseInt(this.value);
+  if (v > 25) this.value = 25;
+  if (v < 1)  this.value = 1;
+});
+
 /* ── Calculate & update ──────────────────────────────────── */
 function pvUpdate() {
   var area = parseFloat(document.getElementById('pv-area').value) || 0;
@@ -190,7 +330,7 @@ function pvUpdate() {
   // ha hint
   var haEl = document.getElementById('pv-area-ha');
   haEl.textContent = area > 0
-    ? '≈ ' + (area / 10000).toLocaleString('de-CH', { maximumFractionDigits: 4 }) + ' ha'
+    ? '≈ ' + (area / 10000).toLocaleString('de-CH', { maximumFractionDigits: 4 }) + ' ha'
     : '';
 
   if (area <= 0) { pvClearResults(); pvDraw(); return; }
@@ -201,21 +341,20 @@ function pvUpdate() {
     if (a <= 0) { pvClearResults(); pvDraw(); return; }
 
     var areaPerPlant = pat === 'viereck' ? a * a : a * a * Math.sqrt(3) / 2;
-    var total  = Math.ceil(area / areaPerPlant);
-    var perHa  = Math.round(10000 / areaPerPlant);
+    var total = Math.ceil(area / areaPerPlant);
+    var perHa = Math.round(10000 / areaPerPlant);
 
     document.getElementById('pv-total').textContent  = total.toLocaleString('de-CH');
     document.getElementById('pv-per-ha').textContent = perHa.toLocaleString('de-CH');
     document.getElementById('pv-card-trupps').style.display = 'none';
 
-    var formulaLabel = pat === 'viereck'
-      ? 'Vierecksverband: Fläche/Pflanze = a² = ' + (areaPerPlant).toFixed(2) + ' m²'
-      : 'Dreiecksverband: Fläche/Pflanze = a²·(√3/2) = ' + (areaPerPlant).toFixed(2) + ' m²';
-    document.getElementById('pv-formula-text').textContent = formulaLabel;
+    document.getElementById('pv-formula-text').textContent =
+      (pat === 'viereck' ? pvt('fViereck') : pvt('fDreieck'))
+      + ' ' + areaPerPlant.toFixed(2) + ' m²';
 
   } else {
     var d = parseFloat(document.getElementById('pv-trupp-spacing').value) || 0;
-    var n = parseInt(document.getElementById('pv-plants-per-trupp').value)  || 0;
+    var n = parseInt(document.getElementById('pv-plants-per-trupp').value) || 0;
     if (d <= 0 || n <= 0) { pvClearResults(); pvDraw(); return; }
 
     var areaPerTrupp = d * d * Math.sqrt(3) / 2;
@@ -229,9 +368,8 @@ function pvUpdate() {
     document.getElementById('pv-card-trupps').style.display = '';
 
     document.getElementById('pv-formula-text').textContent =
-      'Dreiecksverband Trupps: Fläche/Trupp = d²·(√3/2) = '
-      + areaPerTrupp.toFixed(1) + ' m²  →  '
-      + numTrupps + ' Trupps × ' + n + ' Pflanzen';
+      pvt('fTrupp') + ' ' + areaPerTrupp.toFixed(1) + ' m²  →  '
+      + numTrupps + ' ' + pvt('fTruppMid') + ' ' + n + ' ' + pvt('fTruppEnd');
   }
 
   pvDraw();
@@ -257,11 +395,9 @@ function pvDraw() {
   ctx.fillRect(0, 0, W, H);
 
   if (pvType === 'flaechig') {
-    var a   = parseFloat(document.getElementById('pv-spacing').value) || 2;
-    var pat = document.getElementById('pv-pattern').value;
+    var a    = parseFloat(document.getElementById('pv-spacing').value) || 2;
+    var pat  = document.getElementById('pv-pattern').value;
     var rowH = pat === 'dreieck' ? a * Math.sqrt(3) / 2 : a;
-
-    // Scale to show ~9 columns
     var scale = W / (9 * a);
     var cols  = Math.ceil(W / (a * scale)) + 2;
     var rows  = Math.ceil(H / (rowH * scale)) + 2;
@@ -271,49 +407,42 @@ function pvDraw() {
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
         var xOff = (pat === 'dreieck' && r % 2 === 1) ? a * scale / 2 : 0;
-        var x = ox + c * a * scale + xOff;
-        var y = oy + r * rowH * scale;
-        pvDot(ctx, x, y, 5, '#2a5c28');
+        pvDot(ctx, ox + c * a * scale + xOff, oy + r * rowH * scale, 5, '#2a5c28');
       }
     }
 
   } else {
-    var d    = parseFloat(document.getElementById('pv-trupp-spacing').value) || 10;
-    var n    = parseInt(document.getElementById('pv-plants-per-trupp').value)  || 5;
+    var d     = parseFloat(document.getElementById('pv-trupp-spacing').value) || 10;
+    var n     = parseInt(document.getElementById('pv-plants-per-trupp').value) || 5;
     var rowHt = d * Math.sqrt(3) / 2;
-
-    // Scale to show ~5 trupps across
     var scale = W / (5 * d);
     var cols  = Math.ceil(W / (d * scale)) + 2;
     var rows  = Math.ceil(H / (rowHt * scale)) + 2;
     var ox    = (W - (cols - 1) * d * scale) / 2;
     var oy    = (H - (rows - 1) * rowHt * scale) / 2;
-    var tr    = Math.min(d * scale * 0.2, 24); // trupp plant-spread radius
 
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
         var xOff = (r % 2 === 1) ? d * scale / 2 : 0;
         var cx = ox + c * d * scale + xOff;
         var cy = oy + r * rowHt * scale;
-
-        // Trupp area
+        var td = pvGetTruppData(Math.min(n, 19), d, scale);
+        // boundary circle = 2.5 m radius in real world
+        var boundaryR = 2.5 * Math.min(1.0, (d * 0.45) / 2.5) * scale;
         ctx.beginPath();
-        ctx.arc(cx, cy, tr * 1.5, 0, Math.PI * 2);
-        ctx.fillStyle   = 'rgba(46,104,48,0.07)';
+        ctx.arc(cx, cy, boundaryR, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(46,104,48,0.07)';
         ctx.fill();
         ctx.strokeStyle = 'rgba(46,104,48,0.18)';
-        ctx.lineWidth   = 1;
+        ctx.lineWidth = 1;
         ctx.stroke();
-
-        // Individual plants within trupp
-        pvTruppPositions(n, tr).forEach(function (p) {
+        td.positions.forEach(function (p) {
           pvDot(ctx, cx + p.x, cy + p.y, 3, '#2a5c28');
         });
       }
     }
   }
 
-  // Border
   ctx.strokeStyle = 'rgba(46,104,48,0.25)';
   ctx.lineWidth   = 1;
   ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
@@ -326,27 +455,62 @@ function pvDot(ctx, x, y, r, color) {
   ctx.fill();
 }
 
-function pvTruppPositions(n, r) {
-  if (n <= 0) return [];
-  if (n === 1) return [{ x: 0, y: 0 }];
-  if (n <= 6) {
-    return Array.from({ length: n }, function (_, i) {
-      var angle = (2 * Math.PI * i / n) - Math.PI / 2;
-      return { x: Math.cos(angle) * r, y: Math.sin(angle) * r };
-    });
+/* ── Trupp plant positions — 3 rings max, real-world scaled ─ */
+function pvGetTruppData(n, d_m, scale) {
+  // Ring radii in real-world metres:
+  //   ring1 = 1.25 m radius (2.5 m diameter)
+  //   ring2 = 2.50 m radius (5.0 m diameter) ← defines trupp footprint
+  //   ring3 = 3.75 m radius (only used for display n > 19, stays within cap)
+  var rM = [1.25, 2.5, 3.75];
+  // Scale down only when d is very small (outer ring must fit within 45 % of d)
+  var sf = Math.min(1.0, (d_m * 0.45) / rM[1]);
+  var r  = [rM[0] * sf * scale, rM[1] * sf * scale, rM[2] * sf * scale];
+
+  var pos = [];
+  var outerR = r[0];
+
+  function ring(count, radius) {
+    for (var i = 0; i < count; i++) {
+      var a = (2 * Math.PI * i / count) - Math.PI / 2;
+      pos.push({ x: Math.cos(a) * radius, y: Math.sin(a) * radius });
+    }
   }
-  // n > 6: centre + outer ring
-  var pos = [{ x: 0, y: 0 }];
-  var outer = n - 1;
-  for (var i = 0; i < outer; i++) {
-    var angle = (2 * Math.PI * i / outer) - Math.PI / 2;
-    pos.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r });
+
+  if (n === 1) {
+    // Centre only
+    pos.push({ x: 0, y: 0 });
+    outerR = r[0] * 0.5;
+  } else if (n <= 7) {
+    // Centre + Ring 1 (n-1)
+    pos.push({ x: 0, y: 0 });
+    ring(n - 1, r[0]);
+    outerR = r[0];
+  } else if (n <= 19) {
+    // Centre + Ring 1 (6) + Ring 2 (n-7)
+    pos.push({ x: 0, y: 0 });
+    ring(6,     r[0]);
+    ring(n - 7, r[1]);
+    outerR = r[1];
+  } else {
+    // Centre + Ring 1 (6) + Ring 2 (12) + Ring 3 (n-19), max n = 25
+    pos.push({ x: 0, y: 0 });
+    ring(6,      r[0]);
+    ring(12,     r[1]);
+    ring(n - 19, r[2]);
+    outerR = r[2];
   }
-  return pos;
+
+  return { positions: pos, outerR: outerR };
 }
 
+/* ── Language sync ───────────────────────────────────────── */
+document.addEventListener('dendromat:langchange', function (e) {
+  var lang = e.detail && e.detail.lang;
+  if (lang && PV_UI[lang]) { pvLang = lang; pvApplyLanguage(); }
+});
+
 /* ── Init ────────────────────────────────────────────────── */
-pvUpdate();
+pvApplyLanguage();
 </script>
 
 <style>
