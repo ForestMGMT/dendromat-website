@@ -1,0 +1,738 @@
+---
+/**
+ * tools/volumenrechner.astro — Volumenrechner 
+ *
+ * Bidirectional unit converter. Any field can be the input source.
+ *
+ *   V [fm] = BHD [m]² × 10   (Denzin formula)
+ *
+ * Conversions (all bidirectional):
+ *   Ster      : × 1.33 (1 m) / × 1.40 (50 cm, default) / × 1.50 (30 cm)
+ *   Hackschnitzel (Sm³) : × 2.80
+ *   Sägespäne (m³)      : × 3.00
+ *   Streichhölzer       : × 1'000'000 / 0.15
+ *
+ * Source: Holzenergie Schweiz / BFE Schweizerische Holzenergiestatistik;
+ *         Scheitlängen-Faktoren nach Schweizer Forstpraxis.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavBar from '../../components/NavBar.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Volumenrechner Stamm- und Brennholzvolumen – Dendromat"
+  description="Schätze das Stammvolumen eines Baumes anhand des Durchmessers – mit Umrechnungen in Ster, Hackschnitzel, Sägespäne und mehr."
+>
+  <NavBar />
+
+  <main class="tool-page">
+
+    <!-- ── Hero ─────────────────────────────────────────────── -->
+    <div class="tool-page__hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Dendromat</a>
+          <span aria-hidden="true">›</span>
+          <span data-i18n="nav.tools">Werkzeuge</span>
+          <span aria-hidden="true">›</span>
+          <span data-i18n="nav.volumenrechner">Volumenrechner</span>
+        </nav>
+        <h1 class="tool-page__title" data-i18n="tools.volumenrechner.title">
+          Volumenrechner Stamm- und Brennholzvolumen
+        </h1>
+        <p class="tool-page__lead" data-i18n="tools.volumenrechner.desc">
+          Schätze das Stammvolumen eines Baumes anhand des Durchmessers – mit Umrechnungen in Ster, Hackschnitzel, Sägespäne und mehr.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Tool body ─────────────────────────────────────────── -->
+    <div class="tool-body">
+      <div class="container">
+        <div class="vr-layout">
+
+          <!-- ── Left: inputs + Festmeter ─────────────────── -->
+          <section class="vr-inputs" aria-label="Eingaben">
+
+            <!-- BHD slider -->
+            <div class="vr-field">
+              <label class="vr-label" id="vr-lbl-bhd" for="vr-bhd">
+                BHD (Brusthöhendurchmesser)
+              </label>
+              <div class="vr-slider-row">
+                <input
+                  type="range"
+                  id="vr-slider"
+                  min="1" max="200" value="40" step="1"
+                  class="vr-slider"
+                  aria-labelledby="vr-lbl-bhd"
+                >
+                <div class="vr-number-wrap">
+                  <input
+                    type="number"
+                    id="vr-bhd"
+                    class="vr-input"
+                    min="0" max="200" value="40" step="0.1"
+                    aria-labelledby="vr-lbl-bhd"
+                  >
+                  <span class="vr-unit">cm</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Festmeter result — below slider, editable -->
+            <div class="vr-fm-block">
+              <div class="vr-fm-row">
+                <input
+                  type="number"
+                  id="res-fm"
+                  class="vr-fm-input"
+                  min="0" step="any"
+                  placeholder="0.000"
+                  aria-label="Festmeter"
+                >
+                <span class="vr-fm-unit">fm</span>
+              </div>
+              <div class="vr-fm-label" id="vr-lbl-res-fm">Festmeter</div>
+            </div>
+
+            <!-- Scheitlänge toggle -->
+            <div class="vr-field">
+              <div class="vr-label" id="vr-lbl-scheit">Scheitlänge (für Ster)</div>
+              <div class="vr-toggle-group" role="group" aria-labelledby="vr-lbl-scheit">
+                <button class="vr-toggle-btn" data-factor="1.33" data-label="1 m">1 m</button>
+                <button class="vr-toggle-btn vr-toggle-btn--active" data-factor="1.40" data-label="50 cm">50 cm</button>
+                <button class="vr-toggle-btn" data-factor="1.50" data-label="30 cm">30 cm</button>
+              </div>
+            </div>
+
+            <!-- Formula info box -->
+            <div class="vr-formula-box">
+              <div class="vr-formula-eq">V = BHD² × 10</div>
+              <div class="vr-formula-note" id="vr-formula-note">
+                Formel von Denzin: BHD in Metern, V in Festmetern. Näherungsformel für mitteleuropäische Waldbäume.
+              </div>
+            </div>
+
+          </section><!-- end vr-inputs -->
+
+          <!-- ── Right: conversion results ─────────────────── -->
+          <section class="vr-results" aria-label="Ergebnisse">
+
+            <div class="vr-results-grid">
+
+              <!-- Ster -->
+              <div class="vr-card">
+                <div class="vr-card__icon" aria-hidden="true">🪵</div>
+                <input type="number" class="vr-result-input" id="res-ster"
+                  min="0" step="any" placeholder="0.00"
+                  aria-labelledby="vr-lbl-res-ster">
+                <div class="vr-card__unit">Ster</div>
+                <div class="vr-card__label" id="vr-lbl-res-ster">
+                  Ster (<span id="vr-scheit-active">50 cm</span>)
+                </div>
+              </div>
+
+              <!-- Hackschnitzel -->
+              <div class="vr-card">
+                <div class="vr-card__icon" aria-hidden="true">🪓</div>
+                <input type="number" class="vr-result-input" id="res-hack"
+                  min="0" step="any" placeholder="0.00"
+                  aria-labelledby="vr-lbl-res-hack">
+                <div class="vr-card__unit">Sm³</div>
+                <div class="vr-card__label" id="vr-lbl-res-hack">Hackschnitzel</div>
+              </div>
+
+              <!-- Sägespäne -->
+              <div class="vr-card">
+                <div class="vr-card__icon" aria-hidden="true">🌾</div>
+                <input type="number" class="vr-result-input" id="res-saege"
+                  min="0" step="any" placeholder="0.00"
+                  aria-labelledby="vr-lbl-res-saege">
+                <div class="vr-card__unit">m³</div>
+                <div class="vr-card__label" id="vr-lbl-res-saege">Sägespäne</div>
+              </div>
+
+              <!-- Streichhölzer — fun card -->
+              <div class="vr-card vr-card--fun">
+                <div class="vr-card__icon" aria-hidden="true">🔥</div>
+                <input type="number" class="vr-result-input" id="res-matches"
+                  min="0" step="1" placeholder="0"
+                  aria-labelledby="vr-lbl-unit-matches">
+                <div class="vr-card__unit" id="vr-lbl-unit-matches">Streichhölzer</div>
+                <div class="vr-card__label" id="vr-lbl-res-matches">(@ 0.15 cm³/Stk.)</div>
+              </div>
+
+            </div><!-- end vr-results-grid -->
+
+          </section><!-- end vr-results -->
+
+        </div><!-- end vr-layout -->
+
+        <!-- Disclaimer -->
+        <p class="vr-disclaimer" id="vr-disclaimer-text">
+          Die Formel von Denzin ist eine Näherungsformel und liefert Richtwerte für das Derbholzvolumen (&gt;7 cm) in (Tarif-)Festmetern. Sie eignet sich für durchschnittliche mitteleuropäische Waldbäume auf wüchsigen Standorten, kann aber stark vom tatsächlichen Volumen abweichen. Die Faktoren für die Umrechnung unterschiedlicher Masseinheiten stammen von der IG Industrieholz und sind ebenfalls als Richtwerte zu verstehen. Die Faktoren für die Umrechnung unterschiedlicher Masseinheiten stammen von der IG Industrieholz und sind ebenfalls als Richtwerte zu verstehen.
+        </p>
+
+      </div><!-- end container -->
+    </div><!-- end tool-body -->
+
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<!-- ── Styles ──────────────────────────────────────────────── -->
+<style>
+  /* ── Layout ─────────────────────────────────────────────── */
+  .vr-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+    margin-bottom: var(--space-lg);
+  }
+
+  @media (max-width: 760px) {
+    .vr-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── Left column inputs ──────────────────────────────────── */
+  .vr-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .vr-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .vr-label {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--clr-green-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* BHD slider row */
+  .vr-slider-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .vr-slider {
+    flex: 1;
+    accent-color: var(--clr-green-dark);
+    height: 6px;
+    cursor: pointer;
+  }
+
+  .vr-number-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .vr-input {
+    width: 6rem;
+    padding: 0.45rem 0.6rem;
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    border: 2px solid var(--clr-green-light);
+    border-radius: 6px;
+    background: var(--clr-white);
+    color: var(--clr-text);
+    text-align: right;
+    transition: border-color 0.15s;
+  }
+
+  .vr-input:focus {
+    outline: none;
+    border-color: var(--clr-green-dark);
+  }
+
+  .vr-unit {
+    font-size: 0.9rem;
+    color: var(--clr-text-muted);
+    white-space: nowrap;
+  }
+
+  /* Festmeter block (primary result, below slider) */
+  .vr-fm-block {
+    margin-top: 0.25rem;
+  }
+
+  .vr-fm-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    background: var(--clr-green-deep);
+    border-radius: 10px;
+    padding: 0.8rem 1.2rem;
+  }
+
+  .vr-fm-input {
+    flex: 1;
+    font-family: var(--font-serif);
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--clr-white);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    text-align: right;
+    padding: 0;
+    min-width: 0;
+    transition: border-color 0.15s;
+    -moz-appearance: textfield;
+  }
+
+  .vr-fm-input::-webkit-inner-spin-button,
+  .vr-fm-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .vr-fm-input::placeholder { color: rgba(255,255,255,0.3); }
+
+  .vr-fm-input:focus {
+    outline: none;
+    border-bottom-color: rgba(255,255,255,0.5);
+  }
+
+  .vr-fm-unit {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .vr-fm-label {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    text-align: right;
+    margin-top: 0.3rem;
+    padding-right: 0.2rem;
+  }
+
+  /* Scheitlänge toggle */
+  .vr-toggle-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .vr-toggle-btn {
+    padding: 0.45rem 1rem;
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    background: var(--clr-white);
+    color: var(--clr-green-deep);
+    border: 2px solid var(--clr-green-light);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+
+  .vr-toggle-btn:hover { border-color: var(--clr-green-dark); }
+
+  .vr-toggle-btn--active {
+    background: var(--clr-green-dark);
+    border-color: var(--clr-green-dark);
+    color: var(--clr-white);
+  }
+
+  /* Formula info box */
+  .vr-formula-box {
+    background: var(--clr-green-bg);
+    border-left: 3px solid var(--clr-green-dark);
+    border-radius: 0 8px 8px 0;
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .vr-formula-eq {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--clr-green-deep);
+    margin-bottom: 0.3rem;
+  }
+
+  .vr-formula-note {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── Right column results ────────────────────────────────── */
+  .vr-results {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .vr-results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+
+  /* ── Card ────────────────────────────────────────────────── */
+  .vr-card {
+    background: var(--clr-white);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(42, 92, 40, 0.1);
+    padding: var(--space-lg) var(--space-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.15rem;
+    transition: box-shadow 0.15s;
+  }
+
+  .vr-card:focus-within {
+    box-shadow: 0 4px 18px rgba(42, 92, 40, 0.2);
+  }
+
+  .vr-card--fun {
+    background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+    border: 2px solid #f9c74f;
+    grid-column: auto; /* stay in the 2×2 grid, no full-width spanning */
+  }
+
+  .vr-card__icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-bottom: 0.15rem;
+  }
+
+  /* Editable result inputs inside cards */
+  .vr-result-input {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--clr-green-deep);
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    width: 100%;
+    padding: 0.05rem 0;
+    transition: border-color 0.15s;
+    -moz-appearance: textfield;
+  }
+
+  .vr-result-input::-webkit-inner-spin-button,
+  .vr-result-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .vr-result-input::placeholder { color: var(--clr-green-light); }
+
+  .vr-result-input:focus {
+    outline: none;
+    border-bottom-color: var(--clr-green-dark);
+  }
+
+  .vr-card--fun .vr-result-input {
+    color: #8b5e00;
+    font-size: 2rem;
+  }
+
+  .vr-card--fun .vr-result-input:focus {
+    border-bottom-color: #c89a00;
+  }
+
+  .vr-card__unit {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--clr-text-muted);
+    margin-top: 0.1rem;
+  }
+
+  .vr-card--fun .vr-card__unit { color: #8b5e00; }
+
+  .vr-card__label {
+    font-size: 0.72rem;
+    color: var(--clr-text-muted);
+  }
+
+  .vr-card--fun .vr-card__label { color: #a07010; }
+
+  /* ── Disclaimer ─────────────────────────────────────────── */
+  .vr-disclaimer {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted);
+    border-top: 1px solid var(--clr-green-light);
+    padding-top: var(--space-md);
+    margin-top: var(--space-md);
+    line-height: 1.6;
+  }
+</style>
+
+<!-- ── Script ──────────────────────────────────────────────── -->
+<script is:inline>
+(function () {
+
+  /* ── i18n ──────────────────────────────────────────────── */
+  var VR_UI = {
+    de: {
+      lbl_bhd:          'BHD (Brusthöhendurchmesser)',
+      lbl_scheit:       'Scheitlänge (für Ster)',
+      formula_note:     'Formel von Denzin: BHD in Metern, V in Festmetern. Näherungsformel für mitteleuropäische Waldbäume.',
+      res_fm:           'Festmeter',
+      res_ster:         'Ster',
+      res_hack:         'Hackschnitzel',
+      res_saege:        'Sägespäne',
+      unit_matches:     'Streichhölzer',
+      res_matches_note: '(@ 0.15 cm³/Stk.)',
+      disclaimer:       'Die Formel von Denzin ist eine Näherungsformel und liefert Richtwerte für das Derbholzvolumen (>7 cm) in (Tarif-)Festmetern. Sie eignet sich für durchschnittliche mitteleuropäische Waldbäume auf wüchsigen Standorten, kann aber stark vom tatsächlichen Volumen abweichen. Die Faktoren für die Umrechnung unterschiedlicher Masseinheiten stammen von der IG Industrieholz und sind ebenfalls als Richtwerte zu verstehen.',
+    },
+    fr: {
+      lbl_bhd:          'DHP (diamètre à hauteur poitrine)',
+      lbl_scheit:       'Longueur de bûches (pour stères)',
+      formula_note:     'Formule de Denzin : DHP en mètres, V en sylves.',
+      res_fm:           'Sylves',
+      res_ster:         'Stères',
+      res_hack:         'Plaquettes forestières',
+      res_saege:        'Sciure',
+      unit_matches:     'Allumettes',
+      res_matches_note: '(@ 0.15 cm³/pce)',
+      disclaimer:       'La formule de Denzin est une formule approchée fournissant des valeurs indicatives pour le volume de bois fort (>7 cm) en mètres cubes solides tarifaires. Elle convient aux arbres forestiers d\'Europe centrale de stations productives, mais peut fortement s\'écarter du volume réel. Les facteurs de conversion des différentes unités de mesure proviennent de l\'IG Industrieholz et doivent également être compris comme des valeurs indicatives.',
+    },
+    it: {
+      lbl_bhd:          'DBH (diametro a petto d\'uomo)',
+      lbl_scheit:       'Lunghezza ceppi (per stere)',
+      formula_note:     'Formula di Denzin: DBH in metri, V in metri cubi solidi.',
+      res_fm:           'Metro cubo solido',
+      res_ster:         'Stere',
+      res_hack:         'Cippato',
+      res_saege:        'Segatura',
+      unit_matches:     'Fiammiferi',
+      res_matches_note: '(@ 0.15 cm³/pz.)',
+      disclaimer:       'La formula di Denzin è una formula approssimativa che fornisce valori indicativi per il volume del legno forte (>7 cm) in metri cubi solidi (tariffari). È adatta per alberi forestali dell\'Europa centrale su stazioni produttive, ma può discostarsi notevolmente dal volume reale. I fattori di conversione delle diverse unità di misura provengono dall\'IG Industrieholz e devono essere considerati come valori indicativi.',
+    },
+    en: {
+      lbl_bhd:          'DBH (diameter at breast height)',
+      lbl_scheit:       'Log length (for steres)',
+      formula_note:     'Denzin formula: DBH in metres, V in cubic metres solid.',
+      res_fm:           'Cubic metre solid',
+      res_ster:         'Stere',
+      res_hack:         'Woodchips',
+      res_saege:        'Sawdust',
+      unit_matches:     'Matchsticks',
+      res_matches_note: '(@ 0.15 cm³ each)',
+      disclaimer:       'The Denzin formula is an approximation giving indicative values for merchantable wood volume (>7 cm) in (tariff) cubic metres solid. It is suitable for average Central European forest trees on productive sites, but may deviate substantially from the actual volume. The conversion factors for the various units of measurement are provided by IG Industrieholz and should also be regarded as indicative values. ',
+    },
+  };
+
+  /* ── Language state (module-level, like pflanzverband) ──── */
+  var vrLang = localStorage.getItem('dendromat-lang') || 'de';
+  if (!VR_UI[vrLang]) vrLang = 'de';
+
+  function vrt(key) {
+    return (VR_UI[vrLang] || VR_UI.de)[key] || VR_UI.de[key] || key;
+  }
+
+  function vrApplyLanguage() {
+    setText('vr-lbl-bhd',          vrt('lbl_bhd'));
+    setText('vr-lbl-scheit',       vrt('lbl_scheit'));
+    setText('vr-formula-note',     vrt('formula_note'));
+    setText('vr-lbl-res-fm',       vrt('res_fm'));
+    setText('vr-lbl-res-hack',     vrt('res_hack'));
+    setText('vr-lbl-res-saege',    vrt('res_saege'));
+    setText('vr-lbl-unit-matches', vrt('unit_matches'));
+    setText('vr-lbl-res-matches',  vrt('res_matches_note'));
+    setText('vr-disclaimer-text',  vrt('disclaimer'));
+
+    // Ster label keeps the active scheit-length span
+    var scheitEl = document.getElementById('vr-scheit-active');
+    var scheitText = scheitEl ? scheitEl.textContent : '50 cm';
+    var sterLabel = document.getElementById('vr-lbl-res-ster');
+    if (sterLabel) {
+      sterLabel.innerHTML = escHtml(vrt('res_ster')) +
+        ' (<span id="vr-scheit-active">' + escHtml(scheitText) + '</span>)';
+    }
+  }
+
+  function setText(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ── Bidirectional calculation ─────────────────────────── */
+  var scheitFactor = 1.40;
+  var vrBusy = false;      // prevents circular update loops
+
+  /**
+   * Given fm, update every field except the one that triggered the call.
+   * skipId: id of the element that was just edited by the user.
+   */
+  function vrSetAll(fm, skipId) {
+    if (vrBusy) return;
+    vrBusy = true;
+
+    // BHD + slider (back-calculate from fm)
+    if (skipId !== 'vr-bhd' && skipId !== 'vr-slider') {
+      var bhd_cm = fm > 0 ? Math.sqrt(fm / 10) * 100 : 0;
+      var bhdEl    = document.getElementById('vr-bhd');
+      var sliderEl = document.getElementById('vr-slider');
+      if (bhdEl)    bhdEl.value    = bhd_cm > 0 ? +bhd_cm.toFixed(2) : '';
+      if (sliderEl) sliderEl.value = Math.min(200, Math.max(0, bhd_cm));
+    }
+
+    // Festmeter
+    setResultInput('res-fm',      skipId, fm,                     4);
+    // Ster
+    setResultInput('res-ster',    skipId, fm * scheitFactor,       3);
+    // Hackschnitzel
+    setResultInput('res-hack',    skipId, fm * 2.80,               3);
+    // Sägespäne
+    setResultInput('res-saege',   skipId, fm * 3.00,               3);
+    // Streichhölzer (integer)
+    if (skipId !== 'res-matches') {
+      var matchEl = document.getElementById('res-matches');
+      if (matchEl) matchEl.value = fm > 0 ? Math.round(fm * 1000000 / 0.15) : '';
+    }
+
+    vrBusy = false;
+  }
+
+  function setResultInput(id, skipId, val, decimals) {
+    if (id === skipId) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.value = val > 0 ? +val.toFixed(decimals) : '';
+  }
+
+  /* Derive fm from BHD in cm */
+  function fmFromBhd(bhd_cm) {
+    var m = bhd_cm / 100;
+    return m * m * 10;
+  }
+
+  /* ── Event wiring ──────────────────────────────────────── */
+  // Script is is:inline at bottom of page — DOM is already ready, no DOMContentLoaded needed.
+
+  var slider   = document.getElementById('vr-slider');
+  var bhdInput = document.getElementById('vr-bhd');
+
+    /* Slider */
+    if (slider) {
+      slider.addEventListener('input', function () {
+        if (vrBusy) return;
+        var bhd = parseFloat(slider.value) || 0;
+        // Sync BHD number input silently
+        vrBusy = true;
+        if (bhdInput) bhdInput.value = bhd;
+        vrBusy = false;
+        vrSetAll(fmFromBhd(bhd), 'vr-slider');
+      });
+    }
+
+    /* BHD number input */
+    if (bhdInput) {
+      bhdInput.addEventListener('input', function () {
+        if (vrBusy) return;
+        var bhd = Math.max(0, parseFloat(bhdInput.value) || 0);
+        vrBusy = true;
+        if (slider) slider.value = Math.min(200, bhd);
+        vrBusy = false;
+        vrSetAll(fmFromBhd(bhd), 'vr-bhd');
+      });
+    }
+
+    /* Festmeter (editable) → back-calc everything */
+    var fmInput = document.getElementById('res-fm');
+    if (fmInput) {
+      fmInput.addEventListener('input', function () {
+        if (vrBusy) return;
+        vrSetAll(Math.max(0, parseFloat(fmInput.value) || 0), 'res-fm');
+      });
+    }
+
+    /* Ster → back-calc */
+    var sterInput = document.getElementById('res-ster');
+    if (sterInput) {
+      sterInput.addEventListener('input', function () {
+        if (vrBusy) return;
+        var ster = Math.max(0, parseFloat(sterInput.value) || 0);
+        vrSetAll(ster / scheitFactor, 'res-ster');
+      });
+    }
+
+    /* Hackschnitzel → back-calc */
+    var hackInput = document.getElementById('res-hack');
+    if (hackInput) {
+      hackInput.addEventListener('input', function () {
+        if (vrBusy) return;
+        var hack = Math.max(0, parseFloat(hackInput.value) || 0);
+        vrSetAll(hack / 2.80, 'res-hack');
+      });
+    }
+
+    /* Sägespäne → back-calc */
+    var saegeInput = document.getElementById('res-saege');
+    if (saegeInput) {
+      saegeInput.addEventListener('input', function () {
+        if (vrBusy) return;
+        var saege = Math.max(0, parseFloat(saegeInput.value) || 0);
+        vrSetAll(saege / 3.00, 'res-saege');
+      });
+    }
+
+    /* Streichhölzer → back-calc */
+    var matchInput = document.getElementById('res-matches');
+    if (matchInput) {
+      matchInput.addEventListener('input', function () {
+        if (vrBusy) return;
+        var matches = Math.max(0, parseFloat(matchInput.value) || 0);
+        vrSetAll(matches * 0.15 / 1000000, 'res-matches');
+      });
+    }
+
+    /* Scheitlänge toggle */
+    document.querySelectorAll('.vr-toggle-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.vr-toggle-btn').forEach(function (b) {
+          b.classList.remove('vr-toggle-btn--active');
+        });
+        btn.classList.add('vr-toggle-btn--active');
+        scheitFactor = parseFloat(btn.dataset.factor);
+
+        var activeEl = document.getElementById('vr-scheit-active');
+        if (activeEl) activeEl.textContent = btn.dataset.label;
+
+        // Recalculate from current fm
+        var currentFm = Math.max(0, parseFloat(document.getElementById('res-fm').value) || 0);
+        vrSetAll(currentFm, 'res-fm'); // keep fm fixed, update conversions
+      });
+    });
+
+  /* Language change — event fires on document (see LanguageSwitcher.astro) */
+  document.addEventListener('dendromat:langchange', function (e) {
+    var lang = e.detail && e.detail.lang;
+    if (lang && VR_UI[lang]) { vrLang = lang; vrApplyLanguage(); }
+  });
+
+  /* ── Initial render ────────────────────────────────────── */
+  vrApplyLanguage();
+  vrSetAll(fmFromBhd(40), '__init__');
+
+})();
+</script>

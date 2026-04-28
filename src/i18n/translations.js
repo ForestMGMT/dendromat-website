@@ -29,6 +29,8 @@ export const t = {
       timelapse: 'Timelapse Creator',
       baumportraets: 'Baumarten­porträts',
       geodaten: 'Geodaten Downloader',
+      pflanzverband: 'Pflanzverband-Rechner',
+      volumenrechner: 'Volumenrechner',
       ressourcen: 'Ressourcen',
       about: 'Über uns',       // TODO: add /about page later
       contact: 'Kontakt',     // TODO: add /contact page later
@@ -66,6 +68,10 @@ export const t = {
         title: 'Pflanzverband-Rechner',
         desc: 'Berechne die Anzahl benötigter Pflanzen für Flächen- und Trupppflanzungen – mit Vorschau des Pflanzschemas.',
       },
+      volumenrechner: {
+        title: 'Volumenrechner Stamm- und Brennholzvolumen',
+        desc: 'Schätze das Stammvolumen eines Baumes anhand des Durchmessers – mit Umrechnungen in Ster, Hackschnitzel, Sägespäne und mehr.',
+      },
     },
     footer: {
       // TODO: Replace with real footer content
@@ -87,6 +93,7 @@ export const t = {
       baumportraets: 'Portraits d\'essences',
       geodaten: 'Téléchargeur de géodonnées',
       pflanzverband: 'Calculateur de plantation',
+      volumenrechner: 'Calculateur de volume',
       ressourcen: 'Ressources',
       about: 'À propos',
       contact: 'Contact',
@@ -121,7 +128,11 @@ export const t = {
       },
       pflanzverband: {
         title: 'Calculateur de plantation',
-        desc: 'Calculez le nombre de plants nécessaires pour des plantations en plein ou en bouquets – avec aperçu du schéma de plantation.',
+        desc: 'Calculez le nombre de plants nécessaires pour des plantations en plein ou en cellules – avec aperçu du schéma de plantation.',
+      },
+      volumenrechner: {
+        title: 'Calculateur de volume grumes et de bois de feu',
+        desc: 'Estimez le volume du tronc d\'un arbre avec la formule de Denzin – avec conversions en stères, plaquettes, sciure et plus.',
       },
     },
     footer: {
@@ -143,6 +154,7 @@ export const t = {
       baumportraets: 'Ritratti di specie arboree',
       geodaten: 'Scaricatore di geodati',
       pflanzverband: 'Calcolatore di impianto',
+      volumenrechner: 'Calcolatore di volume',
       ressourcen: 'Risorse',
       about: 'Chi siamo',
       contact: 'Contatto',
@@ -179,6 +191,10 @@ export const t = {
         title: 'Calcolatore di impianto',
         desc: 'Calcola il numero di piante necessarie per impianti a pieno campo o a gruppi – con anteprima dello schema di piantagione.',
       },
+      volumenrechner: {
+        title: 'Calcolatore di volume',
+        desc: 'Stima il volume del fusto di un albero con la formula di Denzin – con conversioni in stere, cippato, segatura e altro.',
+      },
     },
     footer: {
       copyright: '© 2025 Dendromat. Tutti i diritti riservati.',
@@ -199,6 +215,7 @@ export const t = {
       baumportraets: 'Tree Species Portraits',
       geodaten: 'Geodata Downloader',
       pflanzverband: 'Planting Spacing Calculator',
+      volumenrechner: 'Volume Calculator',
       ressourcen: 'Resources',
       about: 'About',
       contact: 'Contact',
@@ -234,6 +251,10 @@ export const t = {
       pflanzverband: {
         title: 'Planting Spacing Calculator',
         desc: 'Calculate the number of plants needed for area or group plantings – with a preview of the planting pattern.',
+      },
+      volumenrechner: {
+        title: 'Stem and Firewood Volume Calculator',
+        desc: 'Estimate the stem volume of a tree using the Denzin formula – with conversions to steres, woodchips, sawdust and more.',
       },
     },
     footer: {

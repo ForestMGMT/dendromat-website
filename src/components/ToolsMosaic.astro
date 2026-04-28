@@ -50,6 +50,14 @@ const tools = [
     imageAlt:   'Pflanzverband-Rechner Vorschau',
     ready:      true,
   },
+  {
+    slug:       'volumenrechner',
+    i18nTitle:  'tools.volumenrechner.title',
+    i18nDesc:   'tools.volumenrechner.desc',
+    image:      '/previews/Thumbnail_volumenrechner.png',
+    imageAlt:   'Volumenrechner Vorschau',
+    ready:      true,
+  },
   // TODO: Add more tools here following the pattern above
 ];
 ---
@@ -100,14 +108,16 @@ const tools = [
               {tool.slug === 'timelapse'     && 'Timelapse Creator'}
               {tool.slug === 'baumportraets' && 'Baumarten\u00adportr\u00e4ts'}
               {tool.slug === 'geodaten'      && 'Geodaten Downloader'}
-              {tool.slug === 'pflanzverband' && 'Pflanzverband-Rechner'}
+              {tool.slug === 'pflanzverband'    && 'Pflanzverband-Rechner'}
+              {tool.slug === 'volumenrechner'  && 'Volumenrechner (Denzin)'}
             </h3>
             <p class="card__desc" data-i18n={tool.i18nDesc}>
               {/* Fallback text before JS hydration */}
               {tool.slug === 'timelapse'     && 'Erstelle Zeitraffer­aufnahmen aus dem Wald.'}
               {tool.slug === 'baumportraets' && 'Detaillierte Porträts heimischer Baumarten.'}
               {tool.slug === 'geodaten'      && 'Schweizer Geodaten als GeoTIFF oder GeoPackage herunterladen.'}
-              {tool.slug === 'pflanzverband' && 'Anzahl Pflanzen für Flächen- und Trupppflanzungen berechnen.'}
+              {tool.slug === 'pflanzverband'    && 'Anzahl Pflanzen für Flächen- und Trupppflanzungen berechnen.'}
+              {tool.slug === 'volumenrechner'  && 'Stammvolumen mit der Formel von Denzin berechnen.'}
             </p>
             <a
               href={tool.ready ? `/tools/${tool.slug}` : '#'}
