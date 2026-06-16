@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/NavBar.astro';
+import Footer from '../components/Footer.astro';
+
+const title = {
+  de: 'Datenschutzerklärung',
+  fr: 'Politique de confidentialité',
+  it: 'Informativa sulla privacy',
+  en: 'Privacy Policy',
+};
+const subtitle = {
+  de: 'Stand: Juni 2026',
+  fr: 'Mise à jour : juin 2026',
+  it: 'Aggiornamento: giugno 2026',
+  en: 'Last updated: June 2026',
+};
+
+const sections = [
+  {
+    heading: {
+      de: 'Verantwortliche Person',
+      fr: 'Personne responsable',
+      it: 'Persona responsabile',
+      en: 'Data controller',
+    },
+    body: {
+      de: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSchweiz\n\nE-Mail: info[at]rundumwald.ch',
+      fr: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSuisse\n\nE-mail : info[at]rundumwald.ch',
+      it: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSvizzera\n\nE-mail: info[at]rundumwald.ch',
+      en: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSwitzerland\n\nEmail: info[at]rundumwald.ch',
+    },
+    pre: true,
+  },
+  {
+    heading: {
+      de: 'Grundsatz',
+      fr: 'Principe',
+      it: 'Principio',
+      en: 'Principles',
+    },
+    body: {
+      de: 'Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website verarbeitet so wenig personenbezogene Daten wie möglich. Es werden keine Tracking-Werkzeuge, Werbenetzwerke oder Social-Media-Plugins eingesetzt.',
+      fr: "La protection de vos données personnelles m'importe. Ce site web traite le moins de données personnelles possible. Aucun outil de suivi, réseau publicitaire ou plugin de réseau social n'est utilisé.",
+      it: 'La protezione dei vostri dati personali è importante per me. Questo sito web tratta il minor numero possibile di dati personali. Non vengono utilizzati strumenti di tracciamento, reti pubblicitarie o plugin di social media.',
+      en: 'The protection of your personal data is important to me. This website processes as little personal data as possible. No tracking tools, advertising networks or social media plugins are used.',
+    },
+  },
+  {
+    heading: {
+      de: 'Serverlog-Dateien',
+      fr: 'Fichiers journaux du serveur',
+      it: 'File di log del server',
+      en: 'Server log files',
+    },
+    body: {
+      de: 'Der Hosting-Anbieter dieser Website erhebt automatisch Informationen in Server-Logfiles, die Ihr Browser übermittelt (Browsertyp, Betriebssystem, Referrer-URL, IP-Adresse, Datum und Uhrzeit). Diese Daten dienen ausschliesslich dem sicheren Betrieb der Website und werden nicht mit anderen Datenquellen zusammengeführt.',
+      fr: "L'hébergeur de ce site web collecte automatiquement des informations dans des fichiers journaux transmis par votre navigateur (type de navigateur, système d'exploitation, URL de référence, adresse IP, date et heure). Ces données servent exclusivement au fonctionnement sécurisé du site web et ne sont pas croisées avec d'autres sources de données.",
+      it: "Il provider di hosting di questo sito web raccoglie automaticamente informazioni nei file di log del server trasmessi dal vostro browser (tipo di browser, sistema operativo, URL di riferimento, indirizzo IP, data e ora). Questi dati servono esclusivamente per il funzionamento sicuro del sito web e non vengono incrociati con altre fonti di dati.",
+      en: 'The hosting provider of this website automatically collects information in server log files transmitted by your browser (browser type, operating system, referrer URL, IP address, date and time). This data is used solely for the secure operation of the website and is not combined with other data sources.',
+    },
+  },
+  {
+    heading: {
+      de: 'Lokaler Speicher (localStorage)',
+      fr: 'Stockage local (localStorage)',
+      it: 'Archiviazione locale (localStorage)',
+      en: 'Local storage (localStorage)',
+    },
+    body: {
+      de: 'Diese Website speichert Ihre Spracheinstellung (Deutsch, Français, Italiano, English) ausschliesslich lokal in Ihrem Browser. Diese Information verlässt Ihr Gerät nicht und wird nicht an Server übertragen.',
+      fr: 'Ce site web enregistre votre préférence linguistique (Deutsch, Français, Italiano, English) exclusivement en local dans votre navigateur. Cette information ne quitte pas votre appareil et n\'est pas transmise à des serveurs.',
+      it: 'Questo sito web memorizza la vostra preferenza linguistica (Deutsch, Français, Italiano, English) esclusivamente in modo locale nel vostro browser. Questa informazione non lascia il vostro dispositivo e non viene trasmessa a server.',
+      en: 'This website stores your language preference (Deutsch, Français, Italiano, English) exclusively in your local browser storage. This information does not leave your device and is not transmitted to any server.',
+    },
+  },
+  {
+    heading: {
+      de: 'Google Fonts',
+      fr: 'Google Fonts',
+      it: 'Google Fonts',
+      en: 'Google Fonts',
+    },
+    body: {
+      de: 'Diese Website lädt Schriftarten über den Dienst Google Fonts (Google LLC, USA). Dabei wird Ihre IP-Adresse an Google-Server übertragen. Dies geschieht auf Grundlage des berechtigten Interesses an einer einheitlichen Darstellung (Art. 31 Abs. 1 DSG).',
+      fr: "Ce site web charge des polices via le service Google Fonts (Google LLC, États-Unis). Votre adresse IP est ainsi transmise aux serveurs de Google. Cela se fait sur la base de l'intérêt légitime à une présentation uniforme (art. 31 al. 1 LPD).",
+      it: 'Questo sito web carica i caratteri tipografici tramite il servizio Google Fonts (Google LLC, USA). In questo processo, il vostro indirizzo IP viene trasmesso ai server di Google. Ciò avviene sulla base del legittimo interesse a una presentazione uniforme (art. 31 cpv. 1 nLPD).',
+      en: "This website loads fonts via the Google Fonts service (Google LLC, USA). In doing so, your IP address is transmitted to Google's servers. This is done on the basis of the legitimate interest in a consistent presentation (Art. 31 para. 1 FADP).",
+    },
+    linkLabel: {
+      de: 'Datenschutzerklärung von Google',
+      fr: 'Politique de confidentialité de Google',
+      it: 'Informativa sulla privacy di Google',
+      en: "Google's privacy policy",
+    },
+    linkUrl: 'https://policies.google.com/privacy',
+  },
+  {
+    heading: {
+      de: 'Ihre Rechte',
+      fr: 'Vos droits',
+      it: 'I vostri diritti',
+      en: 'Your rights',
+    },
+    body: {
+      de: 'Sie haben das Recht auf Auskunft, Berichtigung und Löschung der Sie betreffenden Personendaten. Wenden Sie sich per E-Mail an die oben genannte Adresse.',
+      fr: 'Vous avez le droit d\'accéder à vos données personnelles, de les rectifier et de les faire supprimer. Veuillez vous adresser par e-mail à l\'adresse indiquée ci-dessus.',
+      it: 'Avete il diritto di accedere, rettificare e cancellare i dati personali che vi riguardano. Rivolgetevi via e-mail all\'indirizzo indicato sopra.',
+      en: 'You have the right to access, rectify and delete your personal data. Please contact us by email at the address given above.',
+    },
+  },
+  {
+    heading: {
+      de: 'Änderungen dieser Datenschutzerklärung',
+      fr: 'Modifications de cette politique de confidentialité',
+      it: 'Modifiche alla presente informativa',
+      en: 'Changes to this privacy policy',
+    },
+    body: {
+      de: 'Diese Datenschutzerklärung kann jederzeit angepasst werden. Es gilt jeweils die auf dieser Seite veröffentlichte Version.',
+      fr: 'Cette politique de confidentialité peut être adaptée à tout moment. La version publiée sur cette page fait foi.',
+      it: 'La presente informativa sulla privacy può essere adattata in qualsiasi momento. Fa fede la versione pubblicata su questa pagina.',
+      en: 'This privacy policy may be updated at any time. The version published on this page shall apply in each case.',
+    },
+  },
+];
+---
+
+<BaseLayout
+  title="Datenschutz — Dendromat"
+  description="Datenschutzerklärung von Dendromat."
+>
+  <NavBar />
+
+  <main class="datenschutz-page container">
+    <header class="page-header">
+      <h1 class="page-title ml-text" data-de={title.de} data-fr={title.fr} data-it={title.it} data-en={title.en}>{title.de}</h1>
+      <p class="page-subtitle ml-text" data-de={subtitle.de} data-fr={subtitle.fr} data-it={subtitle.it} data-en={subtitle.en}>{subtitle.de}</p>
+    </header>
+
+    <div class="datenschutz-body">
+      {sections.map(s => (
+        <section class="ds-section">
+          <h2 class="section-heading ml-text" data-de={s.heading.de} data-fr={s.heading.fr} data-it={s.heading.it} data-en={s.heading.en}>{s.heading.de}</h2>
+          {s.pre
+            ? <pre class="section-pre ml-text" data-de={s.body.de} data-fr={s.body.fr} data-it={s.body.it} data-en={s.body.en}>{s.body.de}</pre>
+            : <p class="section-text ml-text" data-de={s.body.de} data-fr={s.body.fr} data-it={s.body.it} data-en={s.body.en}>{s.body.de}</p>
+          }
+          {s.linkLabel && s.linkUrl && (
+            <p class="section-link">
+              <a href={s.linkUrl} target="_blank" rel="noopener noreferrer" class="ml-text" data-de={s.linkLabel.de} data-fr={s.linkLabel.fr} data-it={s.linkLabel.it} data-en={s.linkLabel.en}>{s.linkLabel.de}</a>
+              {' ↗'}
+            </p>
+          )}
+        </section>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .datenschutz-page {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+    max-width: 720px;
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--clr-green-dark);
+    margin: 0 0 0.4rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.95rem;
+    color: var(--clr-text-muted, #666);
+    margin: 0;
+  }
+
+  .datenschutz-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .ds-section {
+    border-left: 3px solid var(--clr-green-light, #a8cc80);
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .section-heading {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--clr-green-dark);
+    margin: 0;
+  }
+
+  .section-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--clr-text, #333);
+    margin: 0;
+  }
+
+  .section-pre {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--clr-text, #333);
+    white-space: pre-wrap;
+    margin: 0;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .section-link {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .section-link a {
+    color: var(--clr-green-mid, #2e6830);
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  function applyLang(lang) {
+    document.querySelectorAll('.ml-text').forEach((el) => {
+      const text = el.dataset[lang] || el.dataset.de || '';
+      if (text) el.textContent = text;
+    });
+  }
+
+  const lang = localStorage.getItem('dendromat-lang') || 'de';
+  applyLang(lang);
+
+  document.addEventListener('dendromat:langchange', (e) => {
+    applyLang(e.detail.lang);
+  });
+</script>

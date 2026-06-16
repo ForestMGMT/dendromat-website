@@ -1,0 +1,181 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/NavBar.astro';
+import Footer from '../components/Footer.astro';
+
+const title = { de: 'Impressum', fr: 'Mentions légales', it: 'Impressum', en: 'Legal Notice' };
+const subtitle = {
+  de: 'Angaben gemäss Art. 13 DSG (Schweiz)',
+  fr: "Informations selon l'art. 13 LPD (Suisse)",
+  it: 'Informazioni ai sensi dell'art. 13 nLPD (Svizzera)',
+  en: 'Information pursuant to Art. 13 FADP (Switzerland)',
+};
+
+const sections = [
+  {
+    heading: {
+      de: 'Betreiber dieser Website',
+      fr: 'Exploitant de ce site web',
+      it: 'Gestore di questo sito web',
+      en: 'Website operator',
+    },
+    body: {
+      de: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSchweiz\n\nE-Mail: info[at]rundumwald.ch',
+      fr: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSuisse\n\nE-mail : info[at]rundumwald.ch',
+      it: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSvizzera\n\nE-mail: info[at]rundumwald.ch',
+      en: 'Julian Muhmenthaler\nHardernstrasse 20\n3250 Lyss\nSwitzerland\n\nEmail: info[at]rundumwald.ch',
+    },
+    pre: true,
+  },
+  {
+    heading: {
+      de: 'Haftungsausschluss — Inhalt',
+      fr: 'Clause de non-responsabilité — Contenu',
+      it: 'Limitazione di responsabilità — Contenuto',
+      en: 'Disclaimer — Content',
+    },
+    body: {
+      de: 'Die Inhalte dieser Website werden mit grösster Sorgfalt erstellt und laufend aktualisiert. Dennoch kann keine Gewähr für die Richtigkeit, Vollständigkeit und Aktualität der bereitgestellten Informationen übernommen werden.',
+      fr: "Les contenus de ce site web sont créés et mis à jour avec le plus grand soin. Toutefois, aucune garantie ne peut être donnée quant à l'exactitude, l'exhaustivité et l'actualité des informations fournies.",
+      it: 'I contenuti di questo sito web vengono creati e aggiornati con la massima cura. Tuttavia, non è possibile garantire la correttezza, la completezza e l'attualità delle informazioni fornite.',
+      en: 'The contents of this website are compiled and updated with the greatest care. Nevertheless, no guarantee can be given for the accuracy, completeness and timeliness of the information provided.',
+    },
+  },
+  {
+    heading: {
+      de: 'Haftungsausschluss — Externe Links',
+      fr: 'Clause de non-responsabilité — Liens externes',
+      it: 'Limitazione di responsabilità — Link esterni',
+      en: 'Disclaimer — External links',
+    },
+    body: {
+      de: 'Diese Website enthält Links zu externen Websites Dritter, auf deren Inhalte kein Einfluss besteht. Für diese Inhalte ist der jeweilige Anbieter verantwortlich. Zum Zeitpunkt der Verlinkung wurden die verlinkten Seiten auf mögliche Rechtsverstösse überprüft — rechtswidrige Inhalte waren nicht erkennbar. Bei bekannt werdenden Rechtsverletzungen werden betreffende Links umgehend entfernt.',
+      fr: "Ce site web contient des liens vers des sites web tiers sur lesquels nous n'avons aucune influence. Le prestataire respectif est responsable de ces contenus. Au moment de la mise en lien, les pages liées ont été vérifiées pour d'éventuelles violations du droit — aucun contenu illégal n'était reconnaissable. Les liens concernés seront supprimés dès que des violations du droit sont portées à notre connaissance.",
+      it: 'Questo sito web contiene link a siti web di terzi sui cui contenuti non abbiamo alcuna influenza. Il rispettivo fornitore è responsabile di tali contenuti. Al momento della creazione del link, le pagine collegate sono state verificate per possibili violazioni legali — non erano riconoscibili contenuti illegali. I link in questione verranno rimossi non appena si venga a conoscenza di violazioni legali.',
+      en: 'This website contains links to external third-party websites over whose content we have no control. The respective provider is responsible for the content of these pages. The linked pages were checked for possible legal violations at the time of linking — no illegal content was recognisable. Links concerned will be removed immediately upon becoming aware of any legal infringements.',
+    },
+  },
+  {
+    heading: {
+      de: 'Urheberrecht',
+      fr: "Droit d'auteur",
+      it: "Diritto d'autore",
+      en: 'Copyright',
+    },
+    body: {
+      de: 'Die durch den Betreiber dieser Website erstellten Inhalte und Werke unterliegen dem Schweizer Urheberrecht. Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung ausserhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des Betreibers.',
+      fr: "Les contenus et œuvres créés par l'exploitant de ce site web sont soumis au droit d'auteur suisse. La reproduction, l'adaptation, la distribution et toute forme d'exploitation au-delà des limites du droit d'auteur nécessitent le consentement écrit de l'exploitant.",
+      it: "I contenuti e le opere creati dal gestore di questo sito web sono soggetti al diritto d'autore svizzero. La riproduzione, l'elaborazione, la distribuzione e qualsiasi forma di sfruttamento al di là dei limiti del diritto d'autore richiedono il consenso scritto del gestore.",
+      en: "Contents and works created by the operator of this website are subject to Swiss copyright law. Reproduction, editing, distribution and any kind of exploitation beyond the limits of copyright require the written consent of the operator.",
+    },
+  },
+];
+---
+
+<BaseLayout
+  title="Impressum — Dendromat"
+  description="Impressum und rechtliche Angaben zu Dendromat."
+>
+  <NavBar />
+
+  <main class="impressum-page container">
+    <header class="page-header">
+      <h1 class="page-title ml-text" data-de={title.de} data-fr={title.fr} data-it={title.it} data-en={title.en}>{title.de}</h1>
+      <p class="page-subtitle ml-text" data-de={subtitle.de} data-fr={subtitle.fr} data-it={subtitle.it} data-en={subtitle.en}>{subtitle.de}</p>
+    </header>
+
+    <div class="impressum-body">
+      {sections.map(s => (
+        <section class="impressum-section">
+          <h2 class="section-heading ml-text" data-de={s.heading.de} data-fr={s.heading.fr} data-it={s.heading.it} data-en={s.heading.en}>{s.heading.de}</h2>
+          {s.pre
+            ? <pre class="section-pre ml-text" data-de={s.body.de} data-fr={s.body.fr} data-it={s.body.it} data-en={s.body.en}>{s.body.de}</pre>
+            : <p class="section-text ml-text" data-de={s.body.de} data-fr={s.body.fr} data-it={s.body.it} data-en={s.body.en}>{s.body.de}</p>
+          }
+        </section>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .impressum-page {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+    max-width: 720px;
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--clr-green-dark);
+    margin: 0 0 0.4rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.95rem;
+    color: var(--clr-text-muted, #666);
+    margin: 0;
+  }
+
+  .impressum-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .impressum-section {
+    border-left: 3px solid var(--clr-green-light, #a8cc80);
+    padding-left: 1.25rem;
+  }
+
+  .section-heading {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--clr-green-dark);
+    margin: 0 0 0.6rem;
+  }
+
+  .section-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--clr-text, #333);
+    margin: 0;
+  }
+
+  .section-pre {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--clr-text, #333);
+    white-space: pre-wrap;
+    margin: 0;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+</style>
+
+<script>
+  function applyLang(lang) {
+    document.querySelectorAll('.ml-text').forEach((el) => {
+      const text = el.dataset[lang] || el.dataset.de || '';
+      if (text) el.textContent = text;
+    });
+  }
+
+  const lang = localStorage.getItem('dendromat-lang') || 'de';
+  applyLang(lang);
+
+  document.addEventListener('dendromat:langchange', (e) => {
+    applyLang(e.detail.lang);
+  });
+</script>
