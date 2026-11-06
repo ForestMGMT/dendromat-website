@@ -235,8 +235,27 @@ def read_window(collection_key: str, year: int,
 
 # ── Forest mask (swissTLM3D Wald) ────────────────────────────────────────────
 
-WFS_URL = "https://wfs.geo.admin.ch/"
 FOREST_LAYER = "ch.swisstopo.swisstlm3d-wald"
+
+# api3.geo.admin.ch is the primary public API (globally DNS-resolvable from
+# cloud providers); wfs.geo.admin.ch fails DNS on some US-hosted servers.
+_WFS_CANDIDATES = [
+    "https://api3.geo.admin.ch/rest/services/ech/WFS",
+    "https://wfs.geo.admin.ch/",
+]
+
+
+def _fetch_wfs_geojson(params: dict, timeout: int = 30) -> list:
+    """Try each WFS endpoint in turn; return the GeoJSON feature list or raise."""
+    last_exc = None
+    for base_url in _WFS_CANDIDATES:
+        try:
+            resp = requests.get(base_url, params=params, timeout=timeout)
+            resp.raise_for_status()
+            return resp.json().get("features", [])
+        except Exception as exc:
+            last_exc = exc
+    raise last_exc  # all candidates failed
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
@@ -267,9 +286,7 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
     }
 
     try:
-        resp = requests.get(WFS_URL, params=params, timeout=30)
-        resp.raise_for_status()
-        features = resp.json().get("features", [])
+        features = _fetch_wfs_geojson(params)
 
         if not features:
             return np.zeros(out_shape, dtype=bool)  # no forest in area
@@ -785,7 +802,8 @@ def main():
             col1, col2, col3, col4 = st.columns(4)
             col1.metric("Mittlere Änderung", f"{np.mean(valid_vals):.2f} m")
             col2.metric("Median", f"{np.median(valid_vals):.2f} m")
-            col3.metric("Max. Zuwachs", f"+{np.max(valid_vals):.2f} m")
+            col3.metric("Max. Zuwachs", f"+{np.max(valid_vals):.2f} m",
+                        help="Sehr hohe Werte können auf singuläre Artefakte zurückzuführen sein.")
             col4.metric("Max. Abnahme", f"{np.min(valid_vals):.2f} m")
 
         # Inline preview (matplotlib figure → st.image)
