@@ -21,6 +21,7 @@ Resolution rule:
 import io
 import json
 import tempfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import folium
 import matplotlib.colors as mcolors
@@ -77,9 +78,12 @@ _to_wgs84 = Transformer.from_crs("EPSG:2056", "EPSG:4326", always_xy=True)
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_stac_items(collection_key: str) -> dict:
     """
-    Return {year: (minx, miny, maxx, maxy)} in WGS84 for each STAC item.
-    Years before 2017 (Stereo) often have partial Swiss coverage — the bbox
-    reflects the actual footprint, so we can intersect against the drawn area.
+    Return {year: {"bbox": (minx,miny,maxx,maxy), "geom": Polygon}} in WGS84.
+
+    The item geometry is the precise survey footprint (a strip for LiDAR, a
+    partial-country polygon for older Stereo years).  Using it for intersection
+    is much more accurate than the bounding box alone, and avoids false positives
+    for years where the bbox overlaps the drawn area but the actual strip does not.
     """
     coll_id = COLLECTIONS[collection_key]
     url = f"{STAC_BASE}/{coll_id}/items?limit=100"
@@ -93,9 +97,13 @@ def fetch_stac_items(collection_key: str) -> dict:
             try:
                 year = int(item_id.split("_")[-1])
                 bbox = feat.get("bbox")
+                geom_json = feat.get("geometry")
                 if bbox:
-                    items[year] = tuple(bbox)
-            except ValueError:
+                    items[year] = {
+                        "bbox": tuple(bbox),
+                        "geom": shape(geom_json) if geom_json else None,
+                    }
+            except (ValueError, Exception):
                 pass
         return items
     except Exception:
@@ -115,15 +123,18 @@ def geojson_to_shapely(geojson_geom: dict):
 
 def years_in_area(stac_items: dict, poly_wgs84) -> list[int]:
     """
-    Return sorted years whose STAC bbox intersects the drawn polygon.
-    Polygons from 2017 onward in both collections use the full Swiss bbox,
-    so they'll always intersect any Swiss area — which is correct.
+    Return sorted years whose STAC footprint intersects the drawn polygon.
+
+    Uses the precise item geometry when available (survey strip, not full-country
+    bbox), which eliminates false positives for strip-based LiDAR acquisitions
+    and avoids unnecessary COG requests for years that don't cover the area.
+    Falls back to bbox if the item has no geometry.
     """
     from shapely.geometry import box as shapely_box
     result = []
-    for year, bbox in stac_items.items():
-        item_box = shapely_box(*bbox)
-        if item_box.intersects(poly_wgs84):
+    for year, item in stac_items.items():
+        footprint = item.get("geom") or shapely_box(*item["bbox"])
+        if footprint.intersects(poly_wgs84):
             result.append(year)
     return sorted(result)
 
@@ -183,13 +194,27 @@ def _open_and_clip(url: str, bbox_2056: tuple, overview_level: int | None = None
 def has_data(collection_key: str, year: int,
              bbox_2056: tuple[float, float, float, float]) -> bool:
     """
-    Check whether a COG has valid canopy-height pixels in the given LV95 bbox.
-    Uses a coarse overview for a tiny network request. Returns False on any error.
+    Check whether a COG has a valid canopy-height value at the center of the bbox.
+
+    Reads a single pixel via HTTP range request — fast enough to run in parallel
+    for all candidate years.  The STAC geometry intersection (years_in_area) already
+    removes obvious misses; this catch remaining edge cases (nodata at exact location).
     """
+    import rasterio
+    import rasterio.windows
+
     url = cog_url(collection_key, year)
+    cx = (bbox_2056[0] + bbox_2056[2]) / 2
+    cy = (bbox_2056[1] + bbox_2056[3]) / 2
     try:
-        _, arr = _open_and_clip(url, bbox_2056, overview_level=4)
-        return int(np.sum(np.isfinite(arr))) > 0
+        with rasterio.open(url) as src:
+            row, col = src.index(cx, cy)
+            win = rasterio.windows.Window(col, row, 1, 1)
+            val = src.read(1, window=win).astype(np.float32)[0, 0]
+            nd = src.nodata
+            if nd is not None and val == nd:
+                return False
+            return -100.0 <= float(val) <= 500.0
     except Exception:
         return False
 
@@ -552,19 +577,32 @@ def main():
     lidar_years_bbox  = years_in_area(lidar_items,  drawn_poly)
     stereo_years_bbox = years_in_area(stereo_items, drawn_poly)
 
-    with st.spinner("Datenabdeckung für das Gebiet wird geprüft (kann etwas dauern)…"):
+    all_to_check = (
+        [("lidar",  y) for y in lidar_years_bbox] +
+        [("stereo", y) for y in stereo_years_bbox]
+    )
+
+    with st.spinner("Datenabdeckung wird geprüft…"):
         prog = st.progress(0)
-        all_to_check = (
-            [("lidar",  y) for y in lidar_years_bbox] +
-            [("stereo", y) for y in stereo_years_bbox]
-        )
-        lidar_covered  = []
-        stereo_covered = []
-        for i, (ck, yr) in enumerate(all_to_check):
-            if has_data(ck, yr, bbox_2056):
-                (lidar_covered if ck == "lidar" else stereo_covered).append(yr)
-            prog.progress((i + 1) / max(len(all_to_check), 1))
+        covered: dict[str, list[int]] = {}
+        done_count = 0
+        total = max(len(all_to_check), 1)
+
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            futures = {
+                pool.submit(has_data, ck, yr, bbox_2056): (ck, yr)
+                for ck, yr in all_to_check
+            }
+            for fut in as_completed(futures):
+                ck, yr = futures[fut]
+                if fut.result():
+                    covered.setdefault(ck, []).append(yr)
+                done_count += 1
+                prog.progress(done_count / total)
         prog.empty()
+
+    lidar_covered  = sorted(covered.get("lidar",  []))
+    stereo_covered = sorted(covered.get("stereo", []))
 
     col1, col2 = st.columns(2)
     with col1:
