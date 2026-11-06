@@ -301,26 +301,34 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
     # ── Attempt 2: OpenStreetMap Overpass (WGS84 → reproject to LV95) ────────
     if geoms_lv95 is None:
         try:
+            from shapely.geometry import Polygon as _Polygon
             west, south, east, north = bbox_wgs84
-            # Overpass expects (south, west, north, east)
+            # [out:json] with "out geom" returns way coordinates inline —
+            # no separate node lookup needed; [out:geojson] is not widely supported.
             query = (
-                f"[out:geojson][timeout:30];\n"
+                f"[out:json][timeout:30];\n"
                 f"(\n"
                 f'  way["landuse"="forest"]({south},{west},{north},{east});\n'
-                f'  relation["landuse"="forest"]({south},{west},{north},{east});\n'
                 f'  way["natural"="wood"]({south},{west},{north},{east});\n'
-                f'  relation["natural"="wood"]({south},{west},{north},{east});\n'
                 f");\nout geom;"
             )
             resp = requests.post(
                 _OVERPASS_URL, data={"data": query}, timeout=35
             )
             resp.raise_for_status()
-            features = resp.json().get("features", [])
+            geoms_wgs84 = []
+            for el in resp.json().get("elements", []):
+                pts = el.get("geometry", [])
+                if len(pts) >= 3:
+                    try:
+                        geoms_wgs84.append(
+                            _Polygon([(p["lon"], p["lat"]) for p in pts])
+                        )
+                    except Exception:
+                        pass
             geoms_lv95 = [
-                shapely_transform(lambda x, y: _to_2056.transform(x, y), shape(feat["geometry"]))
-                for feat in features
-                if feat.get("geometry")
+                shapely_transform(lambda x, y: _to_2056.transform(x, y), g)
+                for g in geoms_wgs84
             ]
         except Exception as e:
             st.warning(
