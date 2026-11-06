@@ -31,6 +31,7 @@ export const t = {
       geodaten: 'Geodaten Downloader',
       pflanzverband: 'Pflanzverband-Rechner',
       volumenrechner: 'Volumenrechner',
+      hoehenveraenderung: 'Waldhöhen-Veränderungskarte',
       ressourcen: 'Ressourcen',
       about: 'Über uns',       // TODO: add /about page later
       contact: 'Kontakt',     // TODO: add /contact page later
@@ -72,6 +73,10 @@ export const t = {
         title: 'Volumenrechner Stamm- und Brennholzvolumen',
         desc: 'Schätze das Stammvolumen eines Baumes anhand des Durchmessers – mit Umrechnungen in Ster, Hackschnitzel, Sägespäne und mehr.',
       },
+      hoehenveraenderung: {
+        title: 'Waldhöhen-Veränderungskarte',
+        desc: 'Zeichne ein Gebiet auf der Karte und vergleiche Vegetationshöhenmodelle aus verschiedenen Jahren — Waldwachstum und Eingriffe werden als georeferenzierte Differenzkarte sichtbar.',
+      },
     },
     footer: {
       // TODO: Replace with real footer content
@@ -94,6 +99,7 @@ export const t = {
       geodaten: 'Téléchargeur de géodonnées',
       pflanzverband: 'Calculateur de plantation',
       volumenrechner: 'Calculateur de volume',
+      hoehenveraenderung: 'Carte de variation de hauteur des forêts',
       ressourcen: 'Ressources',
       about: 'À propos',
       contact: 'Contact',
@@ -134,6 +140,10 @@ export const t = {
         title: 'Calculateur de volume grumes et de bois de feu',
         desc: 'Estimez le volume du tronc d\'un arbre avec la formule de Denzin – avec conversions en stères, plaquettes, sciure et plus.',
       },
+      hoehenveraenderung: {
+        title: 'Carte de variation de la hauteur des forêts',
+        desc: 'Dessinez une zone sur la carte et comparez des modèles de hauteur de végétation de différentes années — la croissance forestière et les interventions deviennent visibles sous forme de carte de différence géoréférencée.',
+      },
     },
     footer: {
       copyright: '© 2025 Dendromat. Tous droits réservés.',
@@ -155,6 +165,7 @@ export const t = {
       geodaten: 'Scaricatore di geodati',
       pflanzverband: 'Calcolatore di impianto',
       volumenrechner: 'Calcolatore di volume',
+      hoehenveraenderung: 'Mappa di variazione dell\'altezza delle foreste',
       ressourcen: 'Risorse',
       about: 'Chi siamo',
       contact: 'Contatto',
@@ -195,6 +206,10 @@ export const t = {
         title: 'Calcolatore di volume',
         desc: 'Stima il volume del fusto di un albero con la formula di Denzin – con conversioni in stere, cippato, segatura e altro.',
       },
+      hoehenveraenderung: {
+        title: 'Mappa di variazione dell\'altezza delle foreste',
+        desc: 'Disegna un\'area sulla mappa e confronta modelli di altezza della vegetazione di anni diversi — la crescita forestale e gli interventi diventano visibili come mappa di differenza georeferenziata.',
+      },
     },
     footer: {
       copyright: '© 2025 Dendromat. Tutti i diritti riservati.',
@@ -216,6 +231,7 @@ export const t = {
       geodaten: 'Geodata Downloader',
       pflanzverband: 'Planting Spacing Calculator',
       volumenrechner: 'Volume Calculator',
+      hoehenveraenderung: 'Forest Height Change Map',
       ressourcen: 'Resources',
       about: 'About',
       contact: 'Contact',
@@ -255,6 +271,10 @@ export const t = {
       volumenrechner: {
         title: 'Stem and Firewood Volume Calculator',
         desc: 'Estimate the stem volume of a tree using the Denzin formula – with conversions to steres, woodchips, sawdust and more.',
+      },
+      hoehenveraenderung: {
+        title: 'Forest Height Change Map',
+        desc: 'Draw an area on the map and compare vegetation height models from different years — forest growth and harvesting become visible as a georeferenced difference map.',
       },
     },
     footer: {

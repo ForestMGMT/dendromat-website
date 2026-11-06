@@ -58,6 +58,14 @@ const tools = [
     imageAlt:   'Volumenrechner Vorschau',
     ready:      true,
   },
+  {
+    slug:       'hoehenveraenderung',
+    i18nTitle:  'tools.hoehenveraenderung.title',
+    i18nDesc:   'tools.hoehenveraenderung.desc',
+    image:      null,
+    imageAlt:   'Waldhöhen-Veränderungskarte Vorschau',
+    ready:      true,
+  },
   // TODO: Add more tools here following the pattern above
 ];
 ---
@@ -109,7 +117,8 @@ const tools = [
               {tool.slug === 'baumportraets' && 'Baumarten\u00adportr\u00e4ts'}
               {tool.slug === 'geodaten'      && 'Geodaten Downloader'}
               {tool.slug === 'pflanzverband'    && 'Pflanzverband-Rechner'}
-              {tool.slug === 'volumenrechner'  && 'Volumenrechner (Denzin)'}
+              {tool.slug === 'volumenrechner'      && 'Volumenrechner (Denzin)'}
+              {tool.slug === 'hoehenveraenderung' && 'Waldhöhen-Veränderungskarte'}
             </h3>
             <p class="card__desc" data-i18n={tool.i18nDesc}>
               {/* Fallback text before JS hydration */}
@@ -117,7 +126,8 @@ const tools = [
               {tool.slug === 'baumportraets' && 'Detaillierte Porträts heimischer Baumarten.'}
               {tool.slug === 'geodaten'      && 'Schweizer Geodaten als GeoTIFF oder GeoPackage herunterladen.'}
               {tool.slug === 'pflanzverband'    && 'Anzahl Pflanzen für Flächen- und Trupppflanzungen berechnen.'}
-              {tool.slug === 'volumenrechner'  && 'Stammvolumen mit der Formel von Denzin berechnen.'}
+              {tool.slug === 'volumenrechner'      && 'Stammvolumen mit der Formel von Denzin berechnen.'}
+              {tool.slug === 'hoehenveraenderung' && 'Waldwachstum und Eingriffe als georeferenzierte Differenzkarte darstellen.'}
             </p>
             <a
               href={tool.ready ? `/tools/${tool.slug}` : '#'}
