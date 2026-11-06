@@ -272,6 +272,7 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
     _errors: list[str] = []
 
     # ── Attempt 1: swisstopo MapServer REST (LV95 in, LV95 out) ──────────────
+    # geo.admin.ch uses `sr` (not `inSR`/`outSR`) for the spatial reference.
     try:
         minx, miny, maxx, maxy = bbox_2056
         resp = requests.get(
@@ -279,11 +280,10 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
             params={
                 "geometryType": "esriGeometryEnvelope",
                 "geometry": f"{minx},{miny},{maxx},{maxy}",
-                "inSR": "2056",
-                "outSR": "2056",
+                "sr": "2056",
                 "spatialRel": "esriSpatialRelIntersects",
                 "returnGeometry": "true",
-                "outfields": "*",
+                "outFields": "*",
                 "f": "geojson",
                 "resultRecordCount": "5000",
             },
@@ -291,11 +291,15 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
         )
         resp.raise_for_status()
         features = resp.json().get("features", [])
-        geoms_lv95 = [
-            shape(feat["geometry"])
-            for feat in features
-            if feat.get("geometry")
-        ]
+        if features:
+            geoms_lv95 = [
+                shape(feat["geometry"])
+                for feat in features
+                if feat.get("geometry")
+            ]
+            _errors.append(f"MapServer: OK ({len(geoms_lv95)} polygons)")
+        else:
+            _errors.append("MapServer: 0 features returned")
     except Exception as e:
         _errors.append(f"MapServer: {e}")
 
@@ -305,7 +309,7 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
         "https://overpass.kumi.systems/api/interpreter",
         "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
     ]
-    if geoms_lv95 is None:
+    if not geoms_lv95:  # also try Overpass when MapServer returned 0 features
         from shapely.geometry import Polygon as _Polygon
         west, south, east, north = bbox_wgs84
         query = (
