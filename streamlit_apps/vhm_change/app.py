@@ -235,86 +235,113 @@ def read_window(collection_key: str, year: int,
 
 # ── Forest mask (swissTLM3D Wald) ────────────────────────────────────────────
 
-FOREST_LAYER = "ch.swisstopo.swisstlm3d-wald"
+# Attempt 1: swisstopo MapServer REST (ArcGIS format) on api3.geo.admin.ch.
+# This uses a completely different URL and query format than WFS and is more
+# reliably accessible from US-hosted cloud providers.
+_MAPSERVER_URL = (
+    "https://api3.geo.admin.ch/rest/services/all/MapServer/"
+    "ch.swisstopo.swisstlm3d-wald/query"
+)
 
-# api3.geo.admin.ch is the primary public API (globally DNS-resolvable from
-# cloud providers); wfs.geo.admin.ch fails DNS on some US-hosted servers.
-_WFS_CANDIDATES = [
-    "https://api3.geo.admin.ch/rest/services/ech/WFS",
-    "https://wfs.geo.admin.ch/",
-]
-
-
-def _fetch_wfs_geojson(params: dict, timeout: int = 30) -> list:
-    """Try each WFS endpoint in turn; return the GeoJSON feature list or raise."""
-    last_exc = None
-    for base_url in _WFS_CANDIDATES:
-        try:
-            resp = requests.get(base_url, params=params, timeout=timeout)
-            resp.raise_for_status()
-            return resp.json().get("features", [])
-        except Exception as exc:
-            last_exc = exc
-    raise last_exc  # all candidates failed
+# Attempt 2: OpenStreetMap Overpass (global CDN, always reachable from cloud).
+# Swiss forest data in OSM is very complete (landuse=forest / natural=wood).
+_OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
-                      raster_bounds: tuple) -> np.ndarray:
+                      raster_bounds: tuple, bbox_wgs84: tuple) -> np.ndarray:
     """
-    Query swissTLM3D Wald polygons via geo.admin.ch WFS and rasterize them
-    onto the raster grid.  Returns a boolean array: True = forest.
-    Falls back to all-True (no masking) on any network/parse error.
+    Fetch swissTLM3D Wald polygons and rasterize them onto the raster grid.
+    Returns a boolean array: True = forest.
 
-    bbox_2056   : (minx, miny, maxx, maxy) in LV95 — used for the WFS bbox filter
+    Strategy (each attempt is tried in order; first success wins):
+      1. swisstopo MapServer REST API (api3.geo.admin.ch, ArcGIS/GeoJSON format)
+      2. OpenStreetMap Overpass API (globally reachable; landuse=forest + natural=wood)
+      3. all-True fallback so the tool still produces a result
+
+    bbox_2056   : (minx, miny, maxx, maxy) in LV95
     out_shape   : (height, width) of the target raster
-    raster_bounds : actual raster bounds from da.rio.bounds() — used for rasterize
+    raster_bounds : actual raster bounds from da.rio.bounds()
+    bbox_wgs84  : (minx, miny, maxx, maxy) in WGS84 — used by OSM Overpass
     """
     from rasterio.features import rasterize
     from rasterio.transform import from_bounds as rio_from_bounds
 
-    minx, miny, maxx, maxy = bbox_2056
-    params = {
-        "SERVICE": "WFS",
-        "VERSION": "2.0.0",
-        "REQUEST": "GetFeature",
-        "TYPENAMES": FOREST_LAYER,
-        "BBOX": f"{minx},{miny},{maxx},{maxy},EPSG:2056",
-        "COUNT": "5000",
-        "OUTPUTFORMAT": "application/json",
-        "SRSNAME": "EPSG:2056",
-    }
+    geoms_lv95 = None  # list[Shapely geometry] in LV95, or None if attempt failed
 
+    # ── Attempt 1: swisstopo MapServer REST (LV95 in, LV95 out) ──────────────
     try:
-        features = _fetch_wfs_geojson(params)
-
-        if not features:
-            return np.zeros(out_shape, dtype=bool)  # no forest in area
-
-        geoms = [
+        minx, miny, maxx, maxy = bbox_2056
+        resp = requests.get(
+            _MAPSERVER_URL,
+            params={
+                "geometryType": "esriGeometryEnvelope",
+                "geometry": f"{minx},{miny},{maxx},{maxy}",
+                "inSR": "2056",
+                "outSR": "2056",
+                "spatialRel": "esriSpatialRelIntersects",
+                "returnGeometry": "true",
+                "outfields": "*",
+                "f": "geojson",
+                "resultRecordCount": "5000",
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+        features = resp.json().get("features", [])
+        geoms_lv95 = [
             shape(feat["geometry"])
             for feat in features
             if feat.get("geometry")
         ]
+    except Exception:
+        pass  # fall through to Overpass
 
-        height, width = out_shape
-        transform = rio_from_bounds(*raster_bounds, width=width, height=height)
-        mask = rasterize(
-            [(g, 1) for g in geoms],
-            out_shape=out_shape,
-            transform=transform,
-            fill=0,
-            dtype=np.uint8,
-        )
-        return mask.astype(bool)
+    # ── Attempt 2: OpenStreetMap Overpass (WGS84 → reproject to LV95) ────────
+    if geoms_lv95 is None:
+        try:
+            west, south, east, north = bbox_wgs84
+            # Overpass expects (south, west, north, east)
+            query = (
+                f"[out:geojson][timeout:30];\n"
+                f"(\n"
+                f'  way["landuse"="forest"]({south},{west},{north},{east});\n'
+                f'  relation["landuse"="forest"]({south},{west},{north},{east});\n'
+                f'  way["natural"="wood"]({south},{west},{north},{east});\n'
+                f'  relation["natural"="wood"]({south},{west},{north},{east});\n'
+                f");\nout geom;"
+            )
+            resp = requests.post(
+                _OVERPASS_URL, data={"data": query}, timeout=35
+            )
+            resp.raise_for_status()
+            features = resp.json().get("features", [])
+            geoms_lv95 = [
+                shapely_transform(lambda x, y: _to_2056.transform(x, y), shape(feat["geometry"]))
+                for feat in features
+                if feat.get("geometry")
+            ]
+        except Exception as e:
+            st.warning(
+                f"Waldmaske konnte nicht geladen werden ({e}). "
+                "Berechnung ohne Waldmaske."
+            )
+            return np.ones(out_shape, dtype=bool)
 
-    except Exception as e:
-        # Return all-True so the tool still works without forest masking
-        st.warning(
-            f"Waldmaske konnte nicht geladen werden ({e}). "
-            "Berechnung ohne Waldmaske."
-        )
-        return np.ones(out_shape, dtype=bool)
+    if not geoms_lv95:
+        return np.zeros(out_shape, dtype=bool)  # no forest in area
+
+    height, width = out_shape
+    transform = rio_from_bounds(*raster_bounds, width=width, height=height)
+    mask = rasterize(
+        [(g, 1) for g in geoms_lv95],
+        out_shape=out_shape,
+        transform=transform,
+        fill=0,
+        dtype=np.uint8,
+    )
+    return mask.astype(bool)
 
 
 # ── Coarse preview ────────────────────────────────────────────────────────────
@@ -749,6 +776,7 @@ def main():
                 bbox_2056,
                 out_shape=da_a.shape,
                 raster_bounds=raster_bounds,
+                bbox_wgs84=tuple(drawn_poly.bounds),
             )
 
         n_forest = int(np.sum(forest_mask))
