@@ -312,11 +312,15 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
     if not geoms_lv95:  # also try Overpass when MapServer returned 0 features
         from shapely.geometry import Polygon as _Polygon
         west, south, east, north = bbox_wgs84
+        # Include both ways AND relations — large Swiss forests are typically
+        # mapped as OSM multipolygon relations, not simple ways.
         query = (
             f"[out:json][timeout:30];\n"
             f"(\n"
             f'  way["landuse"="forest"]({south},{west},{north},{east});\n'
             f'  way["natural"="wood"]({south},{west},{north},{east});\n'
+            f'  relation["landuse"="forest"]({south},{west},{north},{east});\n'
+            f'  relation["natural"="wood"]({south},{west},{north},{east});\n'
             f");\nout geom;"
         )
         for mirror in _OVERPASS_MIRRORS:
@@ -330,18 +334,32 @@ def fetch_forest_mask(bbox_2056: tuple, out_shape: tuple,
                 resp.raise_for_status()
                 geoms_wgs84 = []
                 for el in resp.json().get("elements", []):
-                    pts = el.get("geometry", [])
-                    if len(pts) >= 3:
-                        try:
-                            geoms_wgs84.append(
-                                _Polygon([(p["lon"], p["lat"]) for p in pts])
-                            )
-                        except Exception:
-                            pass
+                    if el["type"] == "way":
+                        pts = el.get("geometry", [])
+                        if len(pts) >= 3:
+                            try:
+                                geoms_wgs84.append(
+                                    _Polygon([(p["lon"], p["lat"]) for p in pts])
+                                )
+                            except Exception:
+                                pass
+                    elif el["type"] == "relation":
+                        outers, inners = [], []
+                        for member in el.get("members", []):
+                            pts = member.get("geometry", [])
+                            if len(pts) >= 3:
+                                ring = [(p["lon"], p["lat"]) for p in pts]
+                                (outers if member.get("role") == "outer" else inners).append(ring)
+                        for outer in outers:
+                            try:
+                                geoms_wgs84.append(_Polygon(outer, inners))
+                            except Exception:
+                                pass
                 geoms_lv95 = [
                     shapely_transform(lambda x, y: _to_2056.transform(x, y), g)
                     for g in geoms_wgs84
                 ]
+                _errors.append(f"Overpass ({mirror}): OK ({len(geoms_lv95)} polygons)")
                 break  # success — stop trying mirrors
             except Exception as e:
                 _errors.append(f"Overpass ({mirror}): {e}")
