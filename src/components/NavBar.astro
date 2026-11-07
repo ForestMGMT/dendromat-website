@@ -1,24 +1,16 @@
 ---
-/**
- * NavBar.astro — sticky navigation bar.
- *
- * Sticks to top on scroll.
- * Contains: logo wordmark + nav links + language switcher.
- *
- * TODO: Add active link highlighting based on current path.
- */
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
-const navLinks = [
-  { href: '/',                   key: 'nav.home'         },
-  { href: '/tools/timelapse',    key: 'nav.timelapse'    },
-  { href: '/tools/baumportraets',key: 'nav.baumportraets'},
-  { href: '/tools/geodaten',     key: 'nav.geodaten'     },
-  { href: '/tools/hoehenveraenderung', key: 'nav.hoehenveraenderung' },
-  { href: '/ressourcen',         key: 'nav.ressourcen'   },
-  // TODO: add /about and /contact pages when ready
-  // { href: '/about',           key: 'nav.about'        },
-  // { href: '/contact',         key: 'nav.contact'      },
+const primaryLinks = [
+  { href: '/',                              key: 'nav.home'              },
+  { href: '/tools/timelapse',               key: 'nav.timelapse'         },
+  { href: '/tools/baumportraets',           key: 'nav.baumportraets'     },
+  { href: '/tools/hoehenveraenderung',      key: 'nav.hoehenveraenderung'},
+];
+
+const moreLinks = [
+  { href: '/tools/geodaten',  key: 'nav.geodaten'  },
+  { href: '/ressourcen',      key: 'nav.ressourcen' },
 ];
 ---
 
@@ -46,21 +38,33 @@ const navLinks = [
     <!-- Navigation links -->
     <nav id="nav-menu" class="navbar__nav" role="navigation">
       <ul class="navbar__links" role="list">
-        {navLinks.map(link => (
+        {primaryLinks.map(link => (
           <li>
             <a href={link.href} class="navbar__link" data-i18n={link.key}>
-              {/* Fallback text (German) shown before JS hydrates */}
-              {link.key === 'nav.home'          && 'Start'}
-              {link.key === 'nav.timelapse'     && 'Timelapse Creator'}
-              {link.key === 'nav.baumportraets' && 'Baumarten\u00adportr\u00e4ts'}
-              {link.key === 'nav.geodaten'      && 'Geodaten Downloader'}
-              {link.key === 'nav.hoehenveraenderung' && 'Waldhöhen-Karte'}
-              {link.key === 'nav.ressourcen'    && 'Ressourcen'}
-              {link.key === 'nav.about'         && '\u00dcber uns'}
-              {link.key === 'nav.contact'       && 'Kontakt'}
+              {link.key === 'nav.home'               && 'Start'}
+              {link.key === 'nav.timelapse'          && 'Timelapse Creator'}
+              {link.key === 'nav.baumportraets'      && 'Baumarten­porträts'}
+              {link.key === 'nav.hoehenveraenderung' && 'Vegetationshöhen-Veränderungskarte'}
             </a>
           </li>
         ))}
+
+        <!-- "Mehr" dropdown -->
+        <li class="navbar__dropdown-wrap">
+          <button class="navbar__link navbar__more-btn" id="more-toggle" aria-expanded="false" data-i18n="nav.more">
+            Mehr <span class="navbar__more-arrow" aria-hidden="true">▾</span>
+          </button>
+          <ul class="navbar__dropdown" id="more-menu" role="list">
+            {moreLinks.map(link => (
+              <li>
+                <a href={link.href} class="navbar__dropdown-link" data-i18n={link.key}>
+                  {link.key === 'nav.geodaten'   && 'Geodaten Downloader'}
+                  {link.key === 'nav.ressourcen' && 'Ressourcen'}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
       </ul>
     </nav>
 
@@ -97,7 +101,6 @@ const navLinks = [
     transition: background 0.3s;
   }
 
-  /* Subtle darkening when user has scrolled */
   .navbar.scrolled {
     background: var(--clr-green-deep);
   }
@@ -167,10 +170,77 @@ const navLinks = [
     text-decoration: none;
   }
 
-  /* Active link (set via JS based on pathname) */
   .navbar__link.active {
     color: var(--clr-yellow);
     border-bottom-color: var(--clr-yellow-mid);
+  }
+
+  /* -------------------------------------------------------
+     "Mehr" dropdown button
+  ------------------------------------------------------- */
+  .navbar__more-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .navbar__more-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.15s;
+  }
+
+  .navbar__more-btn[aria-expanded="true"] .navbar__more-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* -------------------------------------------------------
+     Dropdown panel
+  ------------------------------------------------------- */
+  .navbar__dropdown-wrap {
+    position: relative;
+  }
+
+  .navbar__dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 200px;
+    background: var(--clr-green-deep);
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    list-style: none;
+    padding: 0.4rem 0;
+    z-index: 200;
+  }
+
+  .navbar__dropdown.open {
+    display: block;
+  }
+
+  .navbar__dropdown-link {
+    display: block;
+    padding: 0.55rem 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--clr-white);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .navbar__dropdown-link:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--clr-yellow);
+    text-decoration: none;
+  }
+
+  .navbar__dropdown-link.active {
+    color: var(--clr-yellow);
   }
 
   /* -------------------------------------------------------
@@ -226,7 +296,6 @@ const navLinks = [
     transition: transform 0.25s, opacity 0.25s;
   }
 
-  /* Hamburger → X when open */
   .navbar__hamburger[aria-expanded="true"] span:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
   }
@@ -275,6 +344,31 @@ const navLinks = [
     .navbar__link {
       font-size: 1rem;
     }
+
+    /* On mobile: flatten the dropdown — always visible inline */
+    .navbar__dropdown-wrap {
+      width: 100%;
+    }
+
+    .navbar__more-btn {
+      display: none;
+    }
+
+    .navbar__dropdown {
+      display: block;
+      position: static;
+      background: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0;
+      min-width: unset;
+    }
+
+    .navbar__dropdown-link {
+      padding: 0 0 0 0.75rem;
+      font-size: 1rem;
+      border-left: 2px solid rgba(255,255,255,0.2);
+    }
   }
 </style>
 
@@ -300,12 +394,31 @@ const navLinks = [
   });
 
   // -------------------------------------------------------
+  // "Mehr" dropdown toggle
+  // -------------------------------------------------------
+  const moreBtn  = document.getElementById('more-toggle');
+  const moreMenu = document.getElementById('more-menu');
+
+  moreBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const expanded = moreBtn.getAttribute('aria-expanded') === 'true';
+    moreBtn.setAttribute('aria-expanded', String(!expanded));
+    moreMenu?.classList.toggle('open', !expanded);
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    moreBtn?.setAttribute('aria-expanded', 'false');
+    moreMenu?.classList.remove('open');
+  });
+
+  // -------------------------------------------------------
   // Active link
   // -------------------------------------------------------
   const path = window.location.pathname;
-  document.querySelectorAll('.navbar__link').forEach((link) => {
+  document.querySelectorAll('.navbar__link, .navbar__dropdown-link').forEach((link) => {
     const href = link.getAttribute('href');
-    if (href === path || (href !== '/' && path.startsWith(href))) {
+    if (href && (href === path || (href !== '/' && path.startsWith(href)))) {
       link.classList.add('active');
     }
   });
@@ -317,7 +430,6 @@ const navLinks = [
   const audio = document.getElementById('bg-audio');
 
   if (audio && soundBtn) {
-    // Show button only on homepage
     soundBtn.style.display = 'inline-flex';
 
     soundBtn.addEventListener('click', () => {
@@ -328,7 +440,6 @@ const navLinks = [
         soundBtn.setAttribute('aria-label', 'Sound einschalten');
         soundBtn.setAttribute('aria-pressed', 'false');
       } else {
-        // Resume playback if browser paused it
         audio.play().catch(() => {});
         soundBtn.textContent = '🔊';
         soundBtn.setAttribute('aria-label', 'Sound ausschalten');
